@@ -113,6 +113,12 @@ def get_model_obj(modelType, n_clusters=None, **kwargs):
         from sklearn.linear_model import LinearRegression, RANSACRegressor
         ransac_model = RANSACRegressor(LinearRegression())
         return ransac_model
+    elif modelType == 'pca':
+        from sklearn.decomposition import PCA
+        if not kwargs or not 'copy' in kwargs:
+            kwargs['copy'] = True
+        pca = PCA(**kwargs)
+        return pca
 
     elif modelType == 'kde':
          from sklearn.neighbors.kde import KernelDensity

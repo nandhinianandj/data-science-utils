@@ -104,6 +104,11 @@ def correlation_analyze(df, exclude_columns = [], categories=[],
     print("# Pandas co-variance coefficients matrix")
     print(df.cov())
 
+def factor_analyze(df, target=None, **kwargs):
+    model = utils.get_model_obj('pca')
+    model.fit(df)
+    return model
+
 def regression_analyze(df, col1, col2, trainsize=0.8, non_linear=False):
     """
     Plot regressed data vs original data for the passed columns.
