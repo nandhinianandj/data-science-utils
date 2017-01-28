@@ -105,9 +105,10 @@ def correlation_analyze(df, exclude_columns = [], categories=[],
     print(df.cov())
 
 def factor_analyze(df, target=None, **kwargs):
-    model = utils.get_model_obj('pca')
+    model = utils.get_model_obj('pca', **kwargs)
     model.fit(df)
-    return model
+    trans_df = pd.DataFrame(model.transform(df))
+    correlation_analyze(trans_df)
 
 def regression_analyze(df, col1, col2, trainsize=0.8, non_linear=False):
     """
@@ -129,7 +130,6 @@ def regression_analyze(df, col1, col2, trainsize=0.8, non_linear=False):
     #         d, parabolic function??
     #   Additionally plot the fitted y and the correct y in different colours against the same x
 
-    import pdb; pdb.set_trace()
     if non_linear:
         plots = list()
         import ace
@@ -151,18 +151,17 @@ def regression_analyze(df, col1, col2, trainsize=0.8, non_linear=False):
             ]
     plots = list()
     for model in models:
-        scatter = plotter.scatterplot(new_df, col1, col2)
-        source = new_df[col1].as_matrix()
-        flatSrc = [item for sublist in source for item in sublist]
+        scatter = plotter.scatterplot(new_df, col1, col2, plttitle=model.__repr__())
+        source = new_df[col1].as_matrix().reshape(-1,1)
         predicted = list(model.predict(source))
-        scatter.line(flatSrc,
-                predicted,
-                line_color='red')
+        flatSrc = [item for sublist in source for item in sublist]
+        scatter.line(flatSrc, predicted,
+                     line_color='red')
         plots.append(scatter)
-        plotter.show(scatter)
         print("Regression Score")
         print(model.score(source, new_df[col2].as_matrix().reshape(-1,1)))
-    pass
+    grid = gridplot(list(utils.chunks(plots, size=2)))
+    plotter.show(grid)
 
 def time_series_analysis(df, timeCol='date', valueCol=None, timeInterval='30min',
         plot_title = 'timeseries',
@@ -252,7 +251,7 @@ def silhouette_analyze(dataframe, cluster_type='KMeans', n_clusters=None):
         # The silhouette_score gives the average value for all the samples.
         # This gives a perspective into the density and separation of the formed
         # clusters
-        if len(cluster_labels) > 1:
+        if len(set(cluster_labels)) > 1:
             silhouette_avg = silhouette_score(dataframe, cluster_labels)
             cluster_scores_df.loc[j] = [cluster, silhouette_avg]
             print("For clusters =", cluster,
@@ -283,7 +282,9 @@ def silhouette_analyze(dataframe, cluster_type='KMeans', n_clusters=None):
 
                 # Compute the new y_lower for next plot
                 y_lower = y_upper + 10  # 10 for the 0 samples
-
+        else:
+            print("No cluster found with cluster no:%d and algo type: %s"%(cluster, cluster_type))
+            continue
         ax1.set_title("The silhouette plot for the various clusters.")
         ax1.set_xlabel("The silhouette coefficient values")
         ax1.set_ylabel("Cluster label")

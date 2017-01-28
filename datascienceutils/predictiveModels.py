@@ -28,6 +28,7 @@ def train(dataframe, target, modelType, column=None, **kwargs):
     model = get_model_obj(modelType, **kwargs)
     if column:
         source = dataframe[column].reshape((len(target), 1))
+        print(len(source), len(target))
         model.fit(source, target)
     else:
         model.fit(dataframe, target)
