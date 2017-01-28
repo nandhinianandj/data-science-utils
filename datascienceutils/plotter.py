@@ -325,7 +325,7 @@ def heatmap(heatMapDF,xlabel, ylabel, value_label,
 
 def scatterplot(scatterDF, xcol, ycol, width=300, height=300,
                 xlabel=None, ylabel=None, group=None, plttitle=None, **kwargs):
-    p = figure(width=width, height=height)
+    p = figure(width=width, height=height, title=plttitle)
     from bokeh.charts import Scatter
 
     if not xlabel:

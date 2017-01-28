@@ -158,7 +158,7 @@ def regression_analyze(df, col1, col2, trainsize=0.8, non_linear=False):
         scatter.line(flatSrc, predicted,
                      line_color='red')
         plots.append(scatter)
-        print("Regression Score")
+        print("Regression Score: %s"%(model.__repr__()))
         print(model.score(source, new_df[col2].as_matrix().reshape(-1,1)))
     grid = gridplot(list(utils.chunks(plots, size=2)))
     plotter.show(grid)
