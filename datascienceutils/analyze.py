@@ -16,10 +16,16 @@ def dist_analyze(df, column=None, categories=[]):
         plots=[]
         numericalColumns = df.select_dtypes(include=[np.number]).columns
         for column in numericalColumns:
+            print("Variance of %s"%column)
+            print(df[column].var())
+            print("Skewness of %s"%column)
+            print(df[column].skew())
             plots.append(plotter.sb_violinplot(df[column], inner='box'))
         catColumns = set(df.columns).difference(set(numericalColumns))
         for column in catColumns:
-            plots.append(plotter.pieChart(df, column))
+            plots.append(plotter.pieChart(df, column, title='Distribution of %s'%column))
+
+
         grid = gridplot(list(utils.chunks(plots, size=2)))
         plotter.show(grid)
         if categories:
@@ -32,6 +38,10 @@ def dist_analyze(df, column=None, categories=[]):
             grid = gridplot(list(utils.chunks(barplots, size=2)))
             plotter.show(grid)
     else:
+        print("Variance of %s"%column)
+        print(df[column].var())
+        print("Skewness of %s"%column)
+        print(df[column].skew())
         plotter.show(plotter.sb_violinplot(df[column], inner='box'))
 
 def correlation_analyze(df, exclude_columns = [], categories=[],
@@ -104,9 +114,14 @@ def correlation_analyze(df, exclude_columns = [], categories=[],
     print("# Pandas co-variance coefficients matrix")
     print(df.cov())
 
-def factor_analyze(df, target=None, **kwargs):
-    model = utils.get_model_obj('pca', **kwargs)
-    model.fit(df)
+def factor_analyze(df, target=None, model_type ='pca', **kwargs):
+
+    model = utils.get_model_obj(model_type, **kwargs)
+    if model_type == 'lda':
+        assert target is not None, "Target class/category necessary for LDA factor analysis"
+        model.fit(df, target)
+    else:
+        model.fit(df)
     trans_df = pd.DataFrame(model.transform(df))
     correlation_analyze(trans_df)
 

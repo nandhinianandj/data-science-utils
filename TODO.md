@@ -25,7 +25,7 @@
 
 	* Add Gaussian Mixture Model to clustering models
 
-	* Add factor_analyze function to analyze.py(probably something like PCA or the likes)
+	* ~~Add factor_analyze function to analyze.py(probably something like PCA or the likes)~~
 
 	* Add plots for regression analysis with different models(may be [r-squared like]
 	  http://scikit-learn.org/stable/auto_examples/linear_model/plot_lasso_and_elasticnet.html#sphx-glr-auto-examples-linear-model-plot-lasso-and-elasticnet-py)

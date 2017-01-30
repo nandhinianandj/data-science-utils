@@ -114,12 +114,23 @@ def get_model_obj(modelType, n_clusters=None, **kwargs):
         ransac_model = RANSACRegressor(LinearRegression())
         return ransac_model
 
+    # Dimensionality reduction/ factor analysis models
     elif modelType == 'pca':
         from sklearn.decomposition import PCA
         if not kwargs or not 'copy' in kwargs:
             kwargs['copy'] = True
         pca = PCA(**kwargs)
         return pca
+
+    elif modelType == 'lda':
+        from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
+        lda = LDA(**kwargs)
+        return lda
+
+    elif modelType == 'tsne':
+       from sklearn.manifold import TSNE
+       tsne = TSNE(**kwargs)
+       return TSNE
 
     elif modelType == 'kde':
          from sklearn.neighbors.kde import KernelDensity

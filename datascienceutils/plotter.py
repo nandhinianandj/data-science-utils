@@ -345,7 +345,7 @@ def scatterplot(scatterDF, xcol, ycol, width=300, height=300,
     p.yaxis.axis_label = str(ycol)
     return p
 
-def pieChart(df, column):
+def pieChart(df, column, **kwargs):
 
     wedges = []
     wedge_sum = 0
@@ -360,7 +360,7 @@ def pieChart(df, column):
         wedge['name'] = '{}-{:.2f} %'.format(key, pct)
         wedge['color'] = colors.pop()
         wedges.append(wedge)
-    p = figure(x_range=(-1,1), y_range=(-1,1), x_axis_label=column)
+    p = figure(x_range=(-1,1), y_range=(-1,1), x_axis_label=column, **kwargs)
 
     for i, wedge in enumerate(wedges):
         p.wedge(x=0, y=0, radius=1, start_angle=wedge['start'], end_angle=wedge['end'],
