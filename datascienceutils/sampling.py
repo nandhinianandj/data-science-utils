@@ -83,4 +83,5 @@ def reservoir_sample_stream(filename, sampleSize):
 
 
 if __name__ == '__main__':
-    file_split('/home/anand/DataScientist/kaggle/bosch/data/train_numeric.csv', sampleSize=100, k=2)
+    pass
+    #file_split('/home/anand/DataScientist/kaggle/bosch/data/train_numeric.csv', sampleSize=100, k=2)
