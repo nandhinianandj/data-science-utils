@@ -10,6 +10,7 @@
 	* Add support for feature filtering..(tsfresh module and also others) in features.py
 
 	* Add Gini Coefficient-like measure visual for the cluster analyze
+	* Add dendrogram style visuals for cluster analyze
 
 	* Add support for https://github.com/ANNetGPGPU/ANNetGPGPU in the cluster analyze logic
 
