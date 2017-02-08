@@ -35,6 +35,8 @@
 	* Add a way to check for non-linear correlations(aka ace algorithm)
 
 	* Implement the trellis plots for correlation analyze (when there's categories)
+	* Show pie-charts for dist_analyze of categories only when there's < 5 categories. else use
+	  horizontal stacked bar charts.
 
 	* Add support for [RANSAC](https://en.wikipedia.org/wiki/Random_sample_consensus)
 
