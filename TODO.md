@@ -11,15 +11,23 @@
 
 	* Add Gini Coefficient-like measure visual for the cluster analyze
 	* Add dendrogram style visuals for cluster analyze
-
 	* Add support for https://github.com/ANNetGPGPU/ANNetGPGPU in the cluster analyze logic
+
+	* Add a dimensional analysis function/option.
+		* - No. of independent(aka orthogonal) dimensions(aka degrees of freedom of the
+		                  system)
+		* - Maximally orthogonal combinations of all given features/dimensions.
+		* - Most significant dimensions(w.r.t predicted/target variable)
+		* - Also add interpretation of factor_analyze.(the transformations pca/lda acts on
+		                  the dataset)
 
 	* Add 3D heatmaps and may be 3D + 1D(time) visualizations/Animations(like the gapminder
 	  bubble chart for ex:)
 
-    	* analyze TODO: May be add a way to plot joint distributions of two variables?
-
-    	* ~~analyze TODO: add grouped violinplots by categorical variables too.~~
+    	* dist_analyze TODO: May be add a way to plot joint distributions of two variables?
+    	* ~~dist_analyze TODO: add grouped violinplots by categorical variables too.~~
+	* Show pie-charts for dist_analyze of categories only when there's < 5 categories. else use
+	  horizontal stacked bar charts.
 
 	* Add a separate grid search function to grid search a data set with the given
 	  model.(wrapper around sklearn model_selection's grid search)
@@ -35,8 +43,7 @@
 	* Add a way to check for non-linear correlations(aka ace algorithm)
 
 	* Implement the trellis plots for correlation analyze (when there's categories)
-	* Show pie-charts for dist_analyze of categories only when there's < 5 categories. else use
-	  horizontal stacked bar charts.
+
 
 	* Add support for [RANSAC](https://en.wikipedia.org/wiki/Random_sample_consensus)
 

@@ -3,6 +3,8 @@
 #   UniVariate Outliers
 ##################################################################
 import numpy as np
+
+
 def getOutliers(data, m = 2.):
     """
     data -- is a pandas data frame
@@ -52,3 +54,7 @@ def zScoreSpikes(seq, zthresh=2 ):
 #    -- Transforming(like log or others) and binning
 #    -- Imputing values
 
+#####################################################################
+# Influence of a point Implement something like this:
+    # https://stat.ethz.ch/R-manual/R-devel/library/stats/html/influence.measures.html
+#####################################################################
