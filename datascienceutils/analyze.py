@@ -21,9 +21,9 @@ def dist_analyze(df, column=None, categories=[]):
             print("Skewness of %s"%column)
             print(df[column].skew())
             plots.append(plotter.sb_violinplot(df[column], inner='box'))
-        catColumns = set(df.columns).difference(set(numericalColumns))
-        for column in catColumns:
-            plots.append(plotter.pieChart(df, column, title='Distribution of %s'%column))
+        #catColumns = set(df.columns).difference(set(numericalColumns))
+        #for column in catColumns:
+        #    plots.append(plotter.pieChart(df, column, title='Distribution of %s'%column))
 
 
         grid = gridplot(list(utils.chunks(plots, size=2)))
