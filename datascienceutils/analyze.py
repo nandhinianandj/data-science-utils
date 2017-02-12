@@ -85,14 +85,10 @@ def correlation_analyze(df, exclude_columns = [], categories=[],
             # Do a group by on categories and use count() to heatmap
             measures.remove('count')
             for combo in combos:
-                counts = list()
                 print("# Correlation btw Columns %s & %s by count" % (combo[0], combo[1]))
-                group0 = df.groupby(list(combo)).size()
-                for idx, each in df.iterrows():
-                    counts.append(each[cols.index(combo[0])][cols.index(combo[1])])
-                df['counts'] = counts
-                heatmaps.append(plotter.heatmap(df, combo[0], combo[1], 'counts'))
-            df.drop('counts', 1, inplace=True)
+                group0 = df.groupby(list(combo)).size().reset_index()
+                group0.rename(columns={0: 'counts'}, inplace=True)
+                heatmaps.append(plotter.heatmap(group0, combo[0], combo[1], 'counts'))
 
         for meas in measures:
             # Plot heatmaps for measure across all combination of categories
@@ -100,7 +96,9 @@ def correlation_analyze(df, exclude_columns = [], categories=[],
                 print("# Correlation btw Columns %s & %s by measure %s" % (combo[0],
                     combo[1],
                     meas))
-                heatmaps.append(plotter.heatmap(df, combo[0], combo[1], meas,
+                group0 = df.groupby(list(combo)).sum().reset_index()
+                group0.rename(columns={0: 'sum_%s'%meas}, inplace=True)
+                heatmaps.append(plotter.heatmap(group0, combo[0], combo[1], 'sum_%s'%meas,
                                                 title="%s vs %s %s heatmap"%(combo[0], combo[1], meas)
                                                 ))
         hmGrid = gridplot(list(utils.chunks(heatmaps, size=2)))
