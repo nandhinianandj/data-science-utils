@@ -42,7 +42,7 @@ Operating System :: MacOS
 
 MAJOR = 1
 MINOR = 1
-MICRO =6
+MICRO = 8
 ISRELEASED = True
 VERSION = '%d.%d.%d' % (MAJOR, MINOR, MICRO)
 
@@ -170,8 +170,8 @@ def setup_package():
         maintainer_email="softwaremechanic32@gmail.com",
         description=DOCLINES[0],
         long_description="\n".join(DOCLINES[2:]),
-        url="https://github.com/greytip/-data-science-utils.git",
-        download_url="https://github.com/greytip/-data-science-utils/releases",
+        url="https://github.com/softwaremechanic/data-science-utils",
+        download_url="https://github.com/softwaremechanic/data-science-utils/releases",
         license='GNU GPL v3',
         cmdclass=cmdclass,
         classifiers=[_f for _f in CLASSIFIERS.split('\n') if _f],
