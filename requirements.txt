@@ -2,7 +2,14 @@
 bokeh
 seaborn
 matplotlib
+
 #pygal
+
+# Vision
+scikit-image
+
+#Satellite imagery
+descartes
 
 # Stats Packages
 statsmodels
@@ -27,7 +34,6 @@ pandas
 sqlalchemy
 scikit-learn
 scipy
-scikit-image
 
 #Non-linear correlation measures
 ace
