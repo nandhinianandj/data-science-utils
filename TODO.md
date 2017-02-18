@@ -1,6 +1,4 @@
 ## TODO
-	* ~~Refactor out matplotlib dependencies present in clusteringModels and predictiveModels
-	  modules, replacing with calls to the plotter module(which wraps bokeh and seaborn)~~
 
 	* Add a dask/airflow/luigi/pinball support for training models with different samples on
 	  distributed systems.
@@ -25,7 +23,6 @@
 	  bubble chart for ex:)
 
     	* dist_analyze TODO: May be add a way to plot joint distributions of two variables?
-    	* ~~dist_analyze TODO: add grouped violinplots by categorical variables too.~~
 	* Show pie-charts for dist_analyze of categories only when there's < 5 categories. else use
 	  horizontal stacked bar charts.
 
@@ -34,7 +31,6 @@
 
 	* Add Gaussian Mixture Model to clustering models
 
-	* ~~Add factor_analyze function to analyze.py(probably something like PCA or the likes)~~
 
 	* Add plots for regression analysis with different models(may be [r-squared like]
 	  http://scikit-learn.org/stable/auto_examples/linear_model/plot_lasso_and_elasticnet.html#sphx-glr-auto-examples-linear-model-plot-lasso-and-elasticnet-py)
@@ -51,3 +47,9 @@
 
 	* Create a function to take dataframe, run tree/randomforest, pick out best tree, create a
 	  neural network based on the tree, and return it.. (The user can then train it).
+
+	* ~~Refactor out matplotlib dependencies present in clusteringModels and predictiveModels
+	  modules, replacing with calls to the plotter module(which wraps bokeh and seaborn)~~
+
+	* ~~dist_analyze TODO: add grouped violinplots by categorical variables too.~~
+	* ~~Add factor_analyze function to analyze.py(probably something like PCA or the likes)~~

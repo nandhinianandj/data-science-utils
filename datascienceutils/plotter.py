@@ -499,7 +499,7 @@ def cross_validate():
 def roc_plot(dataframe, target, score, cls_list=[],multi_class=True):
     import numpy as np
     import pandas as pd
-    import matplotlib.pyplot as plt
+    #import matplotlib.pyplot as plt
     from sklearn.cross_validation import StratifiedKFold
     from sklearn.metrics import roc_curve, auc
     from sklearn.preprocessing import label_binarize
