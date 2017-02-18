@@ -34,6 +34,7 @@ pandas
 sqlalchemy
 scikit-learn
 scipy
+scikit-plot
 
 #Non-linear correlation measures
 ace
@@ -46,7 +47,7 @@ rasterio
 
 #Light GBM
 -e git+https://github.com/Microsoft/LightGBM.git#egg=lightgbm
--e git+https://github.com/ArdalanM/pyLightGBM.git
+-e git+https://github.com/ArdalanM/pyLightGBM.git#egg=pylightgbm
 
 
 # Package for map projections

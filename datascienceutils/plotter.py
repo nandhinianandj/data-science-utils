@@ -78,6 +78,9 @@ def show_tree_model(model, model_type='tree'):
         os.remove(dot_fname)
     elif model_type == 'randomforest':
         graph_plots = list()
+        if len(model.estimators_) > 10:
+            print("Sorry more that 10 trees can't be displayed")
+            return
         for tree_model in model.estimators_:
             fout = tempfile.NamedTemporaryFile(suffix='.png')
             dot_fname = '.'.join([fout.name.split('.')[0], 'dot'])
