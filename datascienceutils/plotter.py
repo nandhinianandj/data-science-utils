@@ -300,9 +300,15 @@ class BokehTwinLinePlot(object):
         return min_y_range, max_y_range
 
 
-def histogram(histDF,values, **kwargs):
-    from bokeh.charts import Histogram
-    return Histogram(histDF[values], **kwargs)
+def histogram(histDF,values, bayesian_bin=False,**kwargs):
+    if not bayesian_bin:
+        from bokeh.charts import Histogram
+        return Histogram(histDF[values], **kwargs)
+    else:
+        from . import bayesian_bins
+        bins = bayesian_bins(histDF[values])
+        pass
+
 
 def barplot(barDF, xlabel, ylabel, title="Bar Plot",
                             agg='sum', **kwargs):
