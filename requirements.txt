@@ -4,7 +4,9 @@ seaborn
 matplotlib
 
 #pygal
-
+#Meta learning
+auto-sklearn
+optunity
 # Vision
 scikit-image
 

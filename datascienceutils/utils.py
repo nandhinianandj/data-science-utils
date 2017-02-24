@@ -1,8 +1,93 @@
-import os
 import logging
+import math
+import os
 
 from sklearn.cluster import KMeans, SpectralClustering, DBSCAN, MeanShift,\
                             Birch, AffinityPropagation, AgglomerativeClustering
+
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.naive_bayes import *
+from sklearn.ensemble import RandomForestClassifier
+from sklearn import tree
+# For svm models
+from sklearn.svm import *
+# For regression models
+from sklearn.linear_model import *
+# Dimensionality reduction/ factor analysis models
+# PCA
+from sklearn.decomposition import PCA
+# LDA
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
+# tsne
+from sklearn.manifold import TSNE
+# kernel density estimators
+from sklearn.neighbors.kde import KernelDensity
+# TIME SERIES MODELS
+from statsmodels.api.tsa.statespace import SARIMAX
+from statsmodels.api.tsa import AR
+# Online classifiers http://scikit-learn.org/stable/auto_examples/linear_model/plot_sgd_comparison.html
+# xgboost
+import xgboost as xgb
+# LightGBM models
+from pylightgbm.models import *
+# Sigh lightgbm insist this is the only way
+os.environ['LIGHTGBM_EXEC'] = os.path.join(os.getenv("HOME"), 'bin', 'lightgbm')
+
+# (Gaussian) Mixture models
+from sklearn.mixture import *
+
+models_dict = { 'knn': KNeighborsClassifier,
+                'gaussianNB': GaussianNB,
+                'multinomialNB': MultinomialNB,
+                'bernoulliNB': BernoulliNB,
+                'randomForest': RandomForestClassifier,
+                'tree': DecisionTreeClassifier,
+                'svm': SVC,
+                'LinearRegression': LinearRegression,
+                'RidgeRegression': RidgeRegression,
+                'RidgeRegressionCV': RidgeRegressionCV,
+                'LassoRegression': LassoRegression,
+                'ElasticNetRegression': ElasticNet,
+                'LogisticRegression': LogisticRegression,
+                'RANSACRegression': RANSACRegressor,
+                'pca': PCA,
+                'lda': LinearDiscriminantAnalysis,
+                'tsne': TSNE,
+                'kde': KernelDensity,
+                'AR': AR,
+                'SARIMAX': SARIMAX,
+                'sgd': SGDClassifier,
+                'perceptron': Perceptron,
+                'xgboost': xgb.XGBClassifier,
+                'baseNN': create_base_nn,
+                'lightGBMRegression': GBMRegressor,
+                'lightGBMBinaryClass': GBMClassifier,
+                'KMeans':  KMeans,
+                'dbscan': DBSCAN,
+                'affinity_prop': AffinityPropagation,
+                'spectral': SpectralClustering,
+                'birch': Birch,
+                'agglomerativeCluster': AgglomerativeClustering,
+                'meanShift': MeanShift,
+                'gmm': GaussianMixture,
+                'bgmm': BayesianGaussianMixture,
+
+        }
+
+def create_base_nn(**kwargs):
+    from keras.models import Sequential
+    from keras.layers import Dense
+    # create model
+    model = Sequential()
+    assert kwargs.get('inputParams', None)
+    assert kwargs.get('outputParams', None)
+    model.add(Dense(inputParams))
+    model.add(Dense(outputParams))
+    if kwargs.get('compileParams'):
+        # Compile model
+        model.compile(compileParams)# loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+    return model
+
 # Type checkers taken from here. http://stackoverflow.com/questions/25039626/find-numeric-columns-in-pandas-python
 def is_type(df, baseType):
     import numpy as np
@@ -17,6 +102,28 @@ def calculate_anova(df, targetCol, sourceCol):
             data=df).fit()
     table = anova_lm(lm, typ=2)
     return table
+
+def average(x):
+    assert len(x) > 0
+    return float(sum(x)) / len(x)
+
+def pearson_def(x, y):
+    assert len(x) == len(y)
+    n = len(x)
+    assert n > 0
+    avg_x = average(x)
+    avg_y = average(y)
+    diffprod = 0
+    xdiff2 = 0
+    ydiff2 = 0
+    for idx in range(n):
+        xdiff = x[idx] - avg_x
+        ydiff = y[idx] - avg_y
+        diffprod += xdiff * ydiff
+        xdiff2 += xdiff * xdiff
+        ydiff2 += ydiff * ydiff
+
+    return diffprod / math.sqrt(xdiff2 * ydiff2)
 
 def is_float(df):
     import numpy as np
@@ -34,220 +141,13 @@ def chunks(combos, size=9):
     for i in range(0, len(combos), size):
         yield combos[i:i + size]
 
-# Sigh lightgbm insist this is the only wa
-os.environ['LIGHTGBM_EXEC'] = os.path.join(os.getenv("HOME"), 'bin', 'lightgbm')
+
 def get_model_obj(modelType, n_clusters=None, **kwargs):
-    if modelType == 'knn':
-        from sklearn.neighbors import KNeighborsClassifier
-        # 6 seems to give the best trade-off between accuracy and precision
-        knn = KNeighborsClassifier(n_neighbors=6, **kwargs)
-        return knn
-    elif modelType == 'gaussianNB':
-        from sklearn.naive_bayes import GaussianNB
-        gnb = GaussianNB(**kwargs)
-        return gnb
-
-    elif modelType == 'multinomialNB':
-        from sklearn.naive_bayes import MultinomialNB
-        # TODO: figure out how to configure binomial distribution
-        mnb = MultinomialNB(**kwargs)
-        return mnb
-
-    elif modelType == 'bernoulliNB':
-        from sklearn.naive_bayes import BernoulliNB
-        bnb = BernoulliNB(**kwargs)
-        return bnb
-
-    elif modelType == 'randomForest':
-        from sklearn.ensemble import RandomForestClassifier
-        rfc = RandomForestClassifier(random_state=234, **kwargs)
-        return rfc
-
-    elif modelType == 'svm':
-        from sklearn.svm import SVC
-        svc = SVC(random_state=0, probability=True, **kwargs)
-        return svc
-
-    elif modelType == 'LinearRegression':
-        #assert column, "Column name required for building a linear model"
-        #assert dataframe[column].shape == target.shape
-        from sklearn import linear_model
-        l_reg = linear_model.LinearRegression(**kwargs)
-        return l_reg
-
-    elif modelType == 'RidgeRegression':
-        from sklearn.linear_model import Ridge
-        if not kwargs:
-            kwargs = {'alpha': 0.5}
-        ridge_reg = Ridge(**kwargs)
-        return ridge_reg
-
-    elif modelType == 'RidgeRegressionCV':
-        from sklearn import linear_model
-        if not kwargs:
-            kwargs = {'alphas': [0.1, 1.0, 10.0] }
-        ridge_cv_reg = linear_model.RidgeCV(**kwargs)
-        return ridge_cv_reg
-
-    elif modelType == 'LassoRegression':
-        from sklearn import linear_model
-        if not kwargs:
-            kwargs = {'alpha': 0.1}
-        lasso_reg = linear_model.Lasso(**kwargs)
-        return lasso_reg
-
-    elif modelType == 'ElasticNetRegression':
-        from sklearn.metrics import r2_score
-        from sklearn import linear_model
-        if not kwargs:
-            kwargs = {'alpha': 0.1, 'l1_ratio': 0.7}
-        enet_reg = linear_model.ElasticNet(**kwargs)
-        return enet_reg
-
-    elif modelType == 'LogisticRegression':
-        from sklearn.linear_model import LogisticRegression
-        log_reg = LogisticRegression(random_state=123, **kwargs)
-        return log_reg
-
-    elif modelType == 'RANSACRegression':
-        from sklearn.linear_model import LinearRegression, RANSACRegressor
-        ransac_model = RANSACRegressor(LinearRegression())
-        return ransac_model
-
-    # Dimensionality reduction/ factor analysis models
-    elif modelType == 'pca':
-        from sklearn.decomposition import PCA
-        if not kwargs or not 'copy' in kwargs:
-            kwargs['copy'] = True
-        pca = PCA(**kwargs)
-        return pca
-
-    elif modelType == 'lda':
-        from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
-        lda = LDA(**kwargs)
-        return lda
-
-    elif modelType == 'tsne':
-       from sklearn.manifold import TSNE
-       tsne = TSNE(**kwargs)
-       return TSNE
-
-    elif modelType == 'kde':
-         from sklearn.neighbors.kde import KernelDensity
-         kde = KernelDensity(kernel='gaussian', bandwidth=0.2, **kwargs)
-         return kde
-
-    elif modelType == 'AR':
-        import statsmodels.api as sm
-        # fit an AR model and forecast
-        ar_fitted = sm.tsa.AR(dataframe).fit(maxlag=9, method='mle', disp=-1, **kwargs)
-        #ts_forecast = ar_fitted.predict(start='2008', end='2050')
-        return ar_fitted
-
-    elif modelType == 'SARIMAX':
-        mod = sm.tsa.statespace.SARIMAX(df.riders, trend='n', order=(0,1,0),
-                seasonal_order=(1,1,1,12), **kwargs)
-        return mod
-
-    elif modelType == 'sgd':
-        # Online classifiers http://scikit-learn.org/stable/auto_examples/linear_model/plot_sgd_comparison.html
-        from sklearn.linear_model import SGDClassifier
-        sgd = SGDClassifier(**kwargs)
-        return sgd
-
-    elif modelType == 'perceptron':
-        from sklearn.linear_model import Perceptron
-        perceptron = Perceptron(**kwargs)
-        return perceptron
-
-    elif modelType == 'xgboost':
-        import xgboost as xgb
-        xgbm = xgb.XGBClassifier(**kwargs)
-        return xgbm
-
-    elif modelType == 'baseNN':
-        from keras.models import Sequential
-        from keras.layers import Dense
-        # create model
-        model = Sequential()
-        assert args.get('inputParams', None)
-        assert args.get('outputParams', None)
-        model.add(Dense(inputParams))
-        model.add(Dense(outputParams))
-        if args.get('compileParams'):
-            # Compile model
-            model.compile(compileParams)# loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
-        return model
-
-    elif modelType == 'lightGBMRegression':
-        from pylightgbm.models import GBMRegressor
-        lgbm_lreg = GBMRegressor(   num_iterations=100, early_stopping_round=10,
-                                    num_leaves=10, min_data_in_leaf=10)
-        return lgbm_lreg
-
-    elif modelType == 'lightGBMBinaryClass':
-        from pylightgbm.models import GBMClassifier
-        lgbm_bc = GBMClassifier(metric='binary_error', min_data_in_leaf=1)
-        return lgbm_bc
-
-    # Clustering models
-    elif modelType == 'KMeans':
-        assert n_clusters, "Number of clusters argument mandatory"
-        cluster_callable = KMeans
-        # seed of 10 for reproducibility.
-        clusterer = cluster_callable(n_clusters=n_clusters, random_state=10)
-        return clusterer
-
-    elif modelType ==  'dbscan':
-        if not n_clusters:
-           logging.warn("Number of clusters irrelevant for cluster type : %s"%(modelType))
-        cluster_callable = DBSCAN
-        clusterer = cluster_callable(eps=0.5)
-        return clusterer
-
-    elif modelType == 'affinity_prop':
-        if not  n_clusters:
-            logging.warn("Number of clusters irrelevant for cluster type : %s"%(modelType))
-        clusterer = AffinityPropagation(damping=.9, preference=-200)
-        return clusterer
-    elif modelType == 'spectral':
-        assert n_clusters, "Number of clusters argument mandatory"
-        clusterer = SpectralClustering(n_clusters=n_clusters,
-                                              eigen_solver='arpack',
-                                              affinity="nearest_neighbors")
-        return clusterer
-    elif modelType == 'birch':
-        if not n_clusters:
-           logging.warn("Number of clusters irrelevant for cluster type : %s"%(modelType))
-        clusterer = Birch(n_clusters=2)
-        return clusterer
-
-    elif modelType == 'agglomerativeCluster':
-        # connectivity matrix for structured Ward
-        connectivity = kneighbors_graph(dataframe, n_neighbors=10, include_self=False)
-        # make connectivity symmetric
-        connectivity = 0.5 * (connectivity + connectivity.T)
-        clusterer = AgglomerativeClustering(n_clusters=cluster, linkage='ward',
-                                            connectivity=connectivity)
-        return clusterer
-
-    elif modelType == 'meanShift':
-        # estimate bandwidth for mean shift
-        bandwidth = cluster.estimate_bandwidth(dataframe, quantile=0.3)
-        clusterer = cluster.MeanShift(bandwidth=bandwidth, bin_seeding=True)
-        return clusterer
-
-    elif modelType == 'gmm':
-        from sklearn import mixture
-        gmm = mixture.GaussianMixture(n_components=5, covariance_type='full')
-        return gmm
-
-    elif modelType == 'dgmm':
-        from sklearn import mixture
-        dgmm =  mixture.BayesianGaussianMixture(n_components=5,
-                                                        covariance_type='full')
-        return dgmm
-
+    global models_dict
+    if modelType in models_dict:
+        return models_dict[modelType](**kwargs)
     else:
         raise 'Unknown model type: see utils.py for available'
+
+
 
