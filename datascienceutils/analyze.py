@@ -116,7 +116,7 @@ def correlation_analyze(df, exclude_columns = [], categories=[],
     print(df.cov())
 
 def factor_analyze(df, target=None, model_type ='pca', **kwargs):
-
+    #from sklearn.decomposition import FactorAnalysis
     model = utils.get_model_obj(model_type, **kwargs)
     if model_type == 'lda':
         assert target is not None, "Target class/category necessary for LDA factor analysis"
