@@ -3,7 +3,6 @@ from bokeh.layouts import gridplot
 
 import itertools
 import functools
-import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
@@ -12,6 +11,8 @@ from . import plotter
 from . import utils
 
 def dist_analyze(df, column=None, categories=[]):
+    #TODO: add is_normal, and other basic distribution similarity checks
+    #TODO: add check  for heteroskedasticity
     if not column:
         plots=[]
         numericalColumns = df.select_dtypes(include=[np.number]).columns
@@ -60,6 +61,7 @@ def correlation_analyze(df, exclude_columns = [], categories=[],
         measures: List of measures to plot heatmap of categories
         trellis: Plot trellis type plots for the categories only valid if categories is passed
     """
+    #TODO: add check for multi-collinearity
     columns = set(filter(lambda x: x not in exclude_columns, df.columns))
     assert len(columns) > 1, "Too few columns"
     if not measures:
@@ -114,6 +116,25 @@ def correlation_analyze(df, exclude_columns = [], categories=[],
     # Add co-variance matrix http://scikit-learn.org/stable/modules/covariance.html#covariance
     print("# Pandas co-variance coefficients matrix")
     print(df.cov())
+
+def degrees_freedom(df, dof_range = None):
+    """
+    Find what are the maximum orthogonal dimensions in the data
+
+    """
+    assert hasattr(dof_range, __iter__)
+    # TODO: Extend/generalise this to more than 2-norm (aka 2-D plane)
+    from scipy import spatial
+    dof_range = [2]
+    all_cosine_dists = dict()
+    for each in dof_range:
+        combos = itertools.combinations(df.columns, each)
+        # TODO: calculate cosine distance
+        cosine_dist = dict()
+        for combo in combos:
+            cosine_dist[combo] = spatial.distance.cosine(df[combo[0]], df[combo[1]])
+        all_cosine_dists[each] = sorted(cosine_dist, key=operator.itemgetter(1))
+    return all_cosine_dists[2][:4]
 
 def factor_analyze(df, target=None, model_type ='pca', **kwargs):
     #from sklearn.decomposition import FactorAnalysis
@@ -244,22 +265,9 @@ def silhouette_analyze(dataframe, cluster_type='KMeans', n_clusters=None):
     cluster_scores_df = pd.DataFrame(columns=['cluster_size', 'silhouette_score'])
     # Silhouette analysis --
     #       http://scikit-learn.org/stable/auto_examples/cluster/plot_kmeans_silhouette_analysis.html
-    #TODO: Add more clustering methods/types like say dbscan and others
-
+    plots = list()
     for j, cluster in enumerate(n_clusters):
         clusterer = utils.get_model_obj(cluster_type, n_clusters=cluster)
-        # Create a subplot with 1 row and 2 columns
-        fig, (ax1, ax2) = plt.subplots(1, 2)
-        fig.set_size_inches(18, 7)
-
-        # The 1st subplot is the silhouette plot
-        # The silhouette coefficient can range from -1, 1 but in this example all
-        # lie within [-0.1, 1]
-        ax1.set_xlim([-0.1, 1])
-        # The (n_clusters+1)*10 is for inserting blank space between silhouette
-        # plots of individual clusters, to demarcate them clearly.
-
-        #ax1.set_ylim([0, len(dataframe) + (n_clusters + 1) * 10])
 
         # Initialize the clusterer with n_clusters value and a random generator
         cluster_labels = clusterer.fit_predict(dataframe)
@@ -275,8 +283,8 @@ def silhouette_analyze(dataframe, cluster_type='KMeans', n_clusters=None):
 
             # Compute the silhouette scores for each sample
             sample_silhouette_values = silhouette_samples(dataframe, cluster_labels)
-
             y_lower = 10
+            colors = plotter.genColors(cluster)
             for i in range(cluster):
                 # Aggregate the silhouette scores for samples belonging to
                 # cluster i, and sort them
@@ -288,52 +296,45 @@ def silhouette_analyze(dataframe, cluster_type='KMeans', n_clusters=None):
                 size_cluster_i = ith_cluster_silhouette_values.shape[0]
                 y_upper = y_lower + size_cluster_i
 
-                color = cm.spectral(float(i) / len(n_clusters))
-                ax1.fill_betweenx(np.arange(y_lower, y_upper),
-                                    0, ith_cluster_silhouette_values,
-                                    facecolor=color, edgecolor=color, alpha=0.7)
+                #color = cm.spectral(float(i) / len(n_clusters))
+                band_x = ith_cluster_silhouette_values
+                band_y = np.range(y_lower, y_upper)
+                band_plot = plotter.plot_patches(band_x, band_y,
+                                                 color=colors[i],
+                                                 title="Silhouette plot for various clusters",
+                                                 xlabel="Silhouette Coefficient Values",
+                                                 ylabel="Cluster label")
 
                 # Label the silhouette plots with their cluster numbers at the middle
-                ax1.text(-0.05, y_lower + 0.5 * size_cluster_i, str(i))
-
+                plotter.mtext(band_plot, -0.05, y_lower + 0.5*size_cluster_i, str(i))
                 # Compute the new y_lower for next plot
                 y_lower = y_upper + 10  # 10 for the 0 samples
         else:
             print("No cluster found with cluster no:%d and algo type: %s"%(cluster, cluster_type))
             continue
-        ax1.set_title("The silhouette plot for the various clusters.")
-        ax1.set_xlabel("The silhouette coefficient values")
-        ax1.set_ylabel("Cluster label")
-
-        # The vertical line for average silhoutte score of all the values
-        ax1.axvline(x=silhouette_avg, color="red", linestyle="--")
-
-        ax1.set_yticks([])  # Clear the yaxis labels / ticks
-        ax1.set_xticks([-0.1, 0, 0.2, 0.4, 0.6, 0.8, 1])
 
         # 2nd Plot showing the actual clusters formed
-        colors = cm.spectral(cluster_labels.astype(float) / cluster)
-        ax2.scatter(dataframe[:, 0], dataframe[:, 1], marker='.', s=30, lw=0, alpha=0.7,
-                    c=colors)
+        import pdb; pdb.set_trace()
+        cols = list(dataframe.columns)
+        s_plot = plotter.scatterplot(dataframe,
+                                     cols[0], cols[1],
+                                     xlabel="Feature space for 1st feature",
+                                     ylabel="Feature space for 2nd feature",
+                                     title="Visualization of the clustered data")
 
         if hasattr(clusterer, 'cluster_centers_'):
             # Labeling the clusters
-            centers = clusterer.cluster_centers_
+            centers = pd.DataFrame(clusterer.cluster_centers_)
             # Draw white circles at cluster centers
-            ax2.scatter(centers[:, 0], centers[:, 1],
-                        marker='o', c="white", alpha=1, s=200)
+            plotter.mtext(s_plot, c[0], c[1], "diamond")
 
             for i, c in enumerate(centers):
-                ax2.scatter(c[0], c[1], marker='$%d$' % i, alpha=1, s=50)
-
-        ax2.set_title("The visualization of the clustered data.")
-        ax2.set_xlabel("Feature space for the 1st feature")
-        ax2.set_ylabel("Feature space for the 2nd feature")
+                s_plot.circle(centers, 0, 1)
 
         plt.suptitle(("Silhouette analysis for %s clustering on sample data "
                         "with clusters = %d" % (cluster_type, cluster)),
                         fontsize=14, fontweight='bold')
-        plt.show()
+        plotter.show()
 
     plotter.lineplot(cluster_scores_df, xcol='cluster_size', ycol='silhouette_score')
 

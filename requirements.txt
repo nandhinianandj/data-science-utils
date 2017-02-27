@@ -7,6 +7,7 @@ matplotlib
 #Meta learning
 auto-sklearn
 optunity
+
 # Vision
 scikit-image
 
@@ -69,3 +70,7 @@ gpod
 
 #dagpype
 #luigi
+
+# String fuzzy(lev. distance based) matching
+fuzzywuzzy
+

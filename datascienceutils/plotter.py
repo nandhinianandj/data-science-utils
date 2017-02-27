@@ -1,5 +1,6 @@
 # Standard and External lib imports
 from bokeh.mpl import to_bokeh
+from bokeh.plotting import figure
 from bokeh.layouts import gridplot
 from bokeh.plotting import figure, show, output_file, output_notebook, ColumnDataSource
 from bokeh.resources import CDN
@@ -51,14 +52,13 @@ def genColors(n, ptype='magma'):
     else:
         return viridis(n)
 
-def show_image(image):
-    from bokeh.plotting import figure
-
+def plot_patches(bandx, bandy):
     p = figure(x_range=(0, 10), y_range=(0, 10))
-    #if image.ndim > 2:
-    #    if image.shape[2] == 3:
-    #        img = np.dstack([image, np.ones(img.shape[:2], np.uint8) * 255])
-    #    img = np.squeeze(img.view(np.uint32))
+    p.patch(bandx, bandy, color=color)
+    return p
+
+def show_image(image):
+    p = figure(x_range=(0, 10), y_range=(0, 10))
     p.image(image=[image], x=0, y=0, dw=10, dh=10, palette='Spectral11')
     return p
 
@@ -198,15 +198,6 @@ def plot_twin_y_axis_scatter(conn, query1=None, query2=None,
     plot.add_tools(PanTool(), WheelZoomTool())
     return plot
 
-
-def roundup(x):
-    """
-    :param x:
-    :return: round up the value
-    """
-    return int(ceil(x / 10.0))*2
-
-
 class BokehTwinLinePlot(object):
     """
     Class for creating basic bokeh structure of two y axis and one x axis
@@ -251,9 +242,9 @@ class BokehTwinLinePlot(object):
         min_x_range, max_x_range = self.get_x_ranges()
         min_y_range, max_y_range = self.get_y_ranges(self.plot_data1)
         min_y2_range, max_y2_range = self.get_y_ranges(self.plot_data2)
-        x_interval = roundup(max_x_range)
-        y_interval = roundup(max_y_range)
-        y2_interval = roundup(max_y2_range)
+        x_interval = utils.roundup(max_x_range)
+        y_interval = utils.roundup(max_y_range)
+        y2_interval = utils.roundup(max_y2_range)
         xaxis = LinearAxis(SingleIntervalTicker(interval=x_interval), axis_label=self.xlabel, **AXIS_FORMATS)
         yaxis = LinearAxis(SingleIntervalTicker(interval=y_interval), axis_label=self.ylabel, **AXIS_FORMATS)
         yaxis2 = LinearAxis(SingleIntervalTicker(interval=y2_interval), y_range_name="y_range2", axis_label=self.ylabel2, **AXIS_FORMATS)
@@ -376,13 +367,8 @@ def pieChart(df, column, **kwargs):
                 color=wedge['color'], legend=wedge['name'])
     return p
 
-def doNutChart(df, col1, col2):
-    # TODO
-    pass
-
 def mscatter(p, x, y, typestr="o"):
     p.scatter(x, y, marker=typestr, alpha=0.5)
-
 
 def mtext(p, x, y, textstr):
     p.text(x, y, text=[textstr],
@@ -408,10 +394,6 @@ def boxplot(xrange, yrange, boxSource, xlabel='x', ylabel='y', colors=list()):
     p.axis.major_label_standoff = 0
     p.xaxis.major_label_orientation = np.pi/3
 
-    #hover = p.select(dict(type=HoverTool))
-    #hover.tooltips = OrderedDict([
-    #    ('parties', '<a href='https://github.com/parties' class='user-mention'>@parties</a>'),
-    #])
     return p
 
 def sb_boxplot(dataframe, quant_field, cat_fields=None, facetCol=None ):
@@ -459,23 +441,6 @@ def sb_violinplot(series, dataframe=None, groupCol = None, **kwargs):
         assert isinstance(series, str)
         return to_bokeh(sns.violinplot(x=groupCol, y=series, data=dataframe, **kwargs).figure)
 
-#def sb_violinplot(df, groupByCol):
-#    import seaborn as sns
-#
-#    # Compute the correlation matrix and average over networks
-#    corr_df = df.corr().groupby(level=groupByCol).mean()
-#    corr_df.index = corr_df.index.astype(int)
-#    corr_df = corr_df.sort_index().T
-#
-#
-#    # Draw a violinplot with a narrower bandwidth than the default
-#    sns.violinplot(data=corr_df, palette="Set3", bw=.2, cut=1, linewidth=1)
-#
-#    # Finalize the figure
-#    ax.set(ylim=(-.7, 1.05))
-#    sns.despine(left=True, bottom=True)
-
-
 def sb_jointplot(series1, series2):
     import numpy as np
     import seaborn as sns
@@ -492,91 +457,3 @@ def sb_jointplot(series1, series2):
     # Show the joint distribution using kernel density estimation
     return sns.jointplot(series1, series2, kind="kde", size=7, space=0)
 
-def cross_validate():
-    for i, (train, test) in enumerate(cv):
-        score = classifier.fit(dataframe[train], target[train]).decision_function(dataframe[test])
-        # Compute ROC curve and area the curve
-        fpr, tpr, thresholds = roc_curve(target[test], probas_[:, 1])
-        mean_tpr += interp(mean_fpr, fpr, tpr)
-        mean_tpr[0] = 0.0
-        roc_auc = auc(fpr, tpr)
-        plt.plot(fpr, tpr, lw=1, label='ROC fold %d (area = %0.2f)' % (i, roc_auc))
-
-def roc_plot(dataframe, target, score, cls_list=[],multi_class=True):
-    import numpy as np
-    import pandas as pd
-    #import matplotlib.pyplot as plt
-    from sklearn.cross_validation import StratifiedKFold
-    from sklearn.metrics import roc_curve, auc
-    from sklearn.preprocessing import label_binarize
-    from scipy import interp
-    assert isinstance(target, (np.ndarray, pd.Series))
-    # Not sure what this means some sort of initialization but are these right numbers?
-    mean_tpr = 0.0
-    mean_fpr = np.linspace(0, 1, 100)
-    all_tpr = []
-
-    num_classes = target.shape[1] or 1
-    target = label_binarize(target, classes=cls_list)
-    # Compute ROC curve and ROC area for each class
-    fpr = dict()
-    tpr = dict()
-    roc_auc = dict()
-    for i in range(num_classes):
-        fpr[i], tpr[i], _ = roc_curve(target[:, i], score[:, i])
-        roc_auc[i] = auc(fpr[i], tpr[i])
-    # Compute micro-average ROC curve and ROC area
-    fpr["micro"], tpr["micro"], _ = roc_curve(target.ravel(), score.ravel())
-    roc_auc["micro"] = auc(fpr["micro"], tpr["micro"])
-    if not multi_class:
-        #assert target.shape[1] == 1, "Please pass a nx1 array"
-        #assert target.nunique() == 1, "Please pass a nx1 array"
-        # Plot of a ROC curve for a specific class
-        plt.figure()
-        plt.plot(fpr[2], tpr[2], label='ROC curve (area = %0.2f)' % roc_auc[2])
-        plt.plot([0, 1], [0, 1], 'k--')
-        plt.xlim([0.0, 1.0])
-        plt.ylim([0.0, 1.05])
-        plt.xlabel('False Positive Rate')
-        plt.ylabel('True Positive Rate')
-        plt.title('Receiver operating characteristic example')
-        plt.legend(loc="lower right")
-        plt.show()
-        return plt
-    else:
-        # First aggregate all false positive rates
-        all_fpr = np.unique(np.concatenate([fpr[i] for i in range(num_classes)]))
-
-        # Then interpolate all ROC curves at this points
-        mean_tpr = np.zeros_like(all_fpr)
-        for i in range(num_classes):
-            mean_tpr += interp(all_fpr, fpr[i], tpr[i])
-        # Finally average it and compute AUC
-        mean_tpr /= num_classes
-        fpr["macro"] = all_fpr
-        tpr["macro"] = mean_tpr
-        roc_auc["macro"] = auc(fpr["macro"], tpr["macro"])
-        # Plot all ROC curves
-        plt.figure()
-        plt.plot(fpr["micro"], tpr["micro"],
-                 label='micro-average ROC curve (area = {0:0.2f})'
-                 ''.format(roc_auc["micro"]),
-                 linewidth=2)
-        plt.plot(fpr["macro"], tpr["macro"],
-                 label='macro-average ROC curve (area = {0:0.2f})'
-                 ''.format(roc_auc["macro"]),
-                 linewidth=2)
-
-        for i in range(num_classes):
-            plt.plot(fpr[i], tpr[i], label='ROC curve of class {0} (area = {1:0.2f})'
-                     ''.format(i, roc_auc[i]))
-
-        plt.plot([0, 1], [0, 1], 'k--')
-        plt.xlim([0.0, 1.0])
-        plt.ylim([0.0, 1.05])
-        plt.xlabel('False Positive Rate')
-        plt.ylabel('True Positive Rate')
-        plt.title('Some extension of Receiver operating characteristic to multi-class')
-        plt.legend(loc="lower right")
-        plt.show()
-        return plt

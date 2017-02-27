@@ -18,6 +18,7 @@
 		* - Most significant dimensions(w.r.t predicted/target variable)
 		* - Also add interpretation of factor_analyze.(the transformations pca/lda acts on
 		                  the dataset)
+	* Sensitivity analysis
 
 	* Add 3D heatmaps and may be 3D + 1D(time) visualizations/Animations(like the gapminder
 	  bubble chart for ex:)
