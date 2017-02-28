@@ -52,9 +52,11 @@ def genColors(n, ptype='magma'):
     else:
         return viridis(n)
 
-def plot_patches(bandx, bandy):
-    p = figure(x_range=(0, 10), y_range=(0, 10))
-    p.patch(bandx, bandy, color=color)
+def plot_patches(bandx, bandy, **kwargs):
+    p = figure(x_range=(0, 10), y_range=(0, 10), title=kwargs.pop('title'))
+    p.xaxis.axis_label=kwargs.pop('xlabel')
+    p.yaxis.axis_label=kwargs.pop('ylabel')
+    p.patch(bandx, bandy, **kwargs)
     return p
 
 def show_image(image):
@@ -371,7 +373,7 @@ def mscatter(p, x, y, typestr="o"):
     p.scatter(x, y, marker=typestr, alpha=0.5)
 
 def mtext(p, x, y, textstr):
-    p.text(x, y, text=[textstr],
+   p.text(x, y, text=[textstr],
          text_color="#449944", text_align="center", text_font_size="10pt")
 
 def boxplot(xrange, yrange, boxSource, xlabel='x', ylabel='y', colors=list()):

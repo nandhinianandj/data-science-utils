@@ -298,7 +298,7 @@ def silhouette_analyze(dataframe, cluster_type='KMeans', n_clusters=None):
 
                 #color = cm.spectral(float(i) / len(n_clusters))
                 band_x = ith_cluster_silhouette_values
-                band_y = np.range(y_lower, y_upper)
+                band_y = np.arange(y_lower, y_upper)
                 band_plot = plotter.plot_patches(band_x, band_y,
                                                  color=colors[i],
                                                  title="Silhouette plot for various clusters",
@@ -315,6 +315,7 @@ def silhouette_analyze(dataframe, cluster_type='KMeans', n_clusters=None):
 
         # 2nd Plot showing the actual clusters formed
         import pdb; pdb.set_trace()
+        dataframe = pd.DataFrame(dataframe)
         cols = list(dataframe.columns)
         s_plot = plotter.scatterplot(dataframe,
                                      cols[0], cols[1],
@@ -330,11 +331,11 @@ def silhouette_analyze(dataframe, cluster_type='KMeans', n_clusters=None):
 
             for i, c in enumerate(centers):
                 s_plot.circle(centers, 0, 1)
-
-        plt.suptitle(("Silhouette analysis for %s clustering on sample data "
-                        "with clusters = %d" % (cluster_type, cluster)),
-                        fontsize=14, fontweight='bold')
-        plotter.show()
+        grid = gridplot([band_plot, s_plot])
+        #plt.suptitle(("Silhouette analysis for %s clustering on sample data "
+        #                "with clusters = %d" % (cluster_type, cluster)),
+        #                fontsize=14, fontweight='bold')
+        plotter.show(grid)
 
     plotter.lineplot(cluster_scores_df, xcol='cluster_size', ycol='silhouette_score')
 
