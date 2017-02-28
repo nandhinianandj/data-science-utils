@@ -280,62 +280,28 @@ def silhouette_analyze(dataframe, cluster_type='KMeans', n_clusters=None):
             cluster_scores_df.loc[j] = [cluster, silhouette_avg]
             print("For clusters =", cluster,
                     "The average silhouette_score is :", silhouette_avg)
-
-            # Compute the silhouette scores for each sample
-            sample_silhouette_values = silhouette_samples(dataframe, cluster_labels)
-            y_lower = 10
-            colors = plotter.genColors(cluster)
-            for i in range(cluster):
-                # Aggregate the silhouette scores for samples belonging to
-                # cluster i, and sort them
-                ith_cluster_silhouette_values = \
-                    sample_silhouette_values[cluster_labels == i]
-
-                ith_cluster_silhouette_values.sort()
-
-                size_cluster_i = ith_cluster_silhouette_values.shape[0]
-                y_upper = y_lower + size_cluster_i
-
-                #color = cm.spectral(float(i) / len(n_clusters))
-                band_x = ith_cluster_silhouette_values
-                band_y = np.arange(y_lower, y_upper)
-                band_plot = plotter.plot_patches(band_x, band_y,
-                                                 color=colors[i],
-                                                 title="Silhouette plot for various clusters",
-                                                 xlabel="Silhouette Coefficient Values",
-                                                 ylabel="Cluster label")
-
-                # Label the silhouette plots with their cluster numbers at the middle
-                plotter.mtext(band_plot, -0.05, y_lower + 0.5*size_cluster_i, str(i))
-                # Compute the new y_lower for next plot
-                y_lower = y_upper + 10  # 10 for the 0 samples
         else:
             print("No cluster found with cluster no:%d and algo type: %s"%(cluster, cluster_type))
             continue
 
         # 2nd Plot showing the actual clusters formed
-        import pdb; pdb.set_trace()
         dataframe = pd.DataFrame(dataframe)
         cols = list(dataframe.columns)
         s_plot = plotter.scatterplot(dataframe,
                                      cols[0], cols[1],
                                      xlabel="Feature space for 1st feature",
                                      ylabel="Feature space for 2nd feature",
-                                     title="Visualization of the clustered data")
+                                     plttitle="Visualization of the clustered data")
 
         if hasattr(clusterer, 'cluster_centers_'):
             # Labeling the clusters
             centers = pd.DataFrame(clusterer.cluster_centers_)
-            # Draw white circles at cluster centers
-            plotter.mtext(s_plot, c[0], c[1], "diamond")
 
-            for i, c in enumerate(centers):
-                s_plot.circle(centers, 0, 1)
-        grid = gridplot([band_plot, s_plot])
-        #plt.suptitle(("Silhouette analysis for %s clustering on sample data "
-        #                "with clusters = %d" % (cluster_type, cluster)),
-        #                fontsize=14, fontweight='bold')
-        plotter.show(grid)
+            for i, c in enumerate(clusterer.cluster_centers_):
+                # Draw white circles at cluster centers
+                plotter.mtext(s_plot, c[0], c[1], "%s"%str(i), text_color="red")
+        #grid = gridplot([[band_plot, s_plot]])
+        plotter.show(s_plot)
 
     plotter.lineplot(cluster_scores_df, xcol='cluster_size', ycol='silhouette_score')
 

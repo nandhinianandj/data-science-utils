@@ -325,9 +325,14 @@ def heatmap(heatMapDF,xlabel, ylabel, value_label,
                         title=title, height=height, width=width, palette=palette, **kwargs)
     return hm
 
-def scatterplot(scatterDF, xcol, ycol, width=300, height=300,
-                xlabel=None, ylabel=None, group=None, plttitle=None, **kwargs):
-    p = figure(width=width, height=height, title=plttitle)
+def scatterplot(scatterDF, xcol, ycol,
+                xlabel=None, ylabel=None,
+                group=None, plttitle=None, **kwargs):
+    fig_kwargs = kwargs.get('figure')
+    if fig_kwargs:
+        p = figure(title=plttitle, **fig_kwargs)
+    else:
+        p = figure(title=plttitle)
     from bokeh.charts import Scatter
 
     if not xlabel:
@@ -369,12 +374,16 @@ def pieChart(df, column, **kwargs):
                 color=wedge['color'], legend=wedge['name'])
     return p
 
+def mcircle(p, x, y, **kwargs):
+    p.circle(x, y, **kwargs)
+
 def mscatter(p, x, y, typestr="o"):
     p.scatter(x, y, marker=typestr, alpha=0.5)
 
-def mtext(p, x, y, textstr):
+def mtext(p, x, y, textstr, **kwargs):
    p.text(x, y, text=[textstr],
-         text_color="#449944", text_align="center", text_font_size="10pt")
+         text_color=kwargs.get('text_color'), 
+         text_align="center", text_font_size="10pt")
 
 def boxplot(xrange, yrange, boxSource, xlabel='x', ylabel='y', colors=list()):
     p=figure(
