@@ -1,5 +1,6 @@
 # Standard and external libraries
 from bokeh.layouts import gridplot
+from statsmodels.stats import diagnostic
 
 import itertools
 import functools
@@ -10,12 +11,16 @@ import pandas as pd
 from . import plotter
 from . import utils
 
-def dist_analyze(df, column=None, categories=[]):
+def dist_analyze(df, column=None, categories=[], is_normal=True):
     #TODO: add is_normal, and other basic distribution similarity checks
-    #TODO: add check  for heteroskedasticity
     if not column:
         plots=[]
         numericalColumns = df.select_dtypes(include=[np.number]).columns
+        if is_normal:
+            for column in numericalColumns:
+                print("%s Anderson-Darling normality test "%column)
+                print("Statistic: %d \n p-value: %d\n"%diagnostic.normal_ad(df[column]))
+
         for column in numericalColumns:
             print("Variance of %s"%column)
             print(df[column].var())
@@ -46,6 +51,9 @@ def dist_analyze(df, column=None, categories=[]):
         print(df[column].var())
         print("Skewness of %s"%column)
         print(df[column].skew())
+        if is_normal:
+            print("%s Anderson-Darling normality test "%column)
+            print("Statistic: %d \n p-value: %d\n"%diagnostic.normal_ad(df[column]))
         plotter.show(plotter.sb_violinplot(df[column], inner='box'))
 
 def correlation_analyze(df, exclude_columns = [], categories=[],
@@ -147,7 +155,8 @@ def factor_analyze(df, target=None, model_type ='pca', **kwargs):
     trans_df = pd.DataFrame(model.transform(df))
     correlation_analyze(trans_df)
 
-def regression_analyze(df, col1, col2, trainsize=0.8, non_linear=False):
+def regression_analyze(df, col1, col2, trainsize=0.8,
+                        non_linear=False, test_heteroskedasticity=False):
     """
     Plot regressed data vs original data for the passed columns.
     @params:
@@ -156,6 +165,8 @@ def regression_analyze(df, col1, col2, trainsize=0.8, non_linear=False):
         non_linear: Use the python ace module to calculate non-linear correlations too.(Warning can
         be very slow)
     """
+    # TODO: add check  for heteroskedasticity
+    # TODO: non-linearity tests
     from . import predictiveModels as pm
 
 
@@ -197,6 +208,9 @@ def regression_analyze(df, col1, col2, trainsize=0.8, non_linear=False):
         plots.append(scatter)
         print("Regression Score: %s"%(model.__repr__()))
         print(model.score(source, new_df[col2].as_matrix().reshape(-1,1)))
+        if test_heteroskedasticity:
+            print("Hetero-Skedasticity test(Breush-Pagan)")
+            print(diagnostic.het_breushpagan(model.residues_))
     grid = gridplot(list(utils.chunks(plots, size=2)))
     plotter.show(grid)
 
