@@ -1,8 +1,5 @@
 ## TODO
 
-	* Add a dask/airflow/luigi/pinball support for training models with different samples on
-	  distributed systems.
-
 
 	* Add support for feature filtering..(tsfresh module and also others) in features.py
 
@@ -10,6 +7,7 @@
 	* Add dendrogram style visuals for cluster analyze
 	* Add support for https://github.com/ANNetGPGPU/ANNetGPGPU in the cluster analyze logic
 
+	* Show off that bayesian binning in dist_analyze plots
 	* Add a dimensional analysis function/option.
 		* - No. of independent(aka orthogonal) dimensions(aka degrees of freedom of the
 		                  system)
@@ -21,6 +19,9 @@
 
 	* Add 3D heatmaps and may be 3D + 1D(time) visualizations/Animations(like the gapminder
 	  bubble chart for ex:)
+
+	* Add a dask/airflow/luigi/pinball support for training models with different samples on
+	  distributed systems.
 
     	* dist_analyze TODO: May be add a way to plot joint distributions of two variables?
 
@@ -37,13 +38,12 @@
 
 	* Implement the trellis plots for correlation analyze (when there's categories)
 
-
-	* Add support for [RANSAC](https://en.wikipedia.org/wiki/Random_sample_consensus)
-
 	* Setup python sphinx and add proper documentation for all classes and functions
 
 	* Create a function to take dataframe, run tree/randomforest, pick out best tree, create a
 	  neural network based on the tree, and return it.. (The user can then train it).
+
+	* ~~ Add support for [RANSAC](https://en.wikipedia.org/wiki/Random_sample_consensus) ~~
 
 	* ~~Cleanup/refactor the plotter.py to remove obsolete/unused plots~~
 

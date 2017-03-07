@@ -2,8 +2,9 @@
 from bokeh.layouts import gridplot
 from statsmodels.stats import diagnostic
 
-import itertools
 import functools
+import itertools
+import random
 import numpy as np
 import pandas as pd
 
@@ -142,21 +143,40 @@ def degrees_freedom(df, dof_range = None):
         for combo in combos:
             cosine_dist[combo] = spatial.distance.cosine(df[combo[0]], df[combo[1]])
         all_cosine_dists[each] = sorted(cosine_dist, key=operator.itemgetter(1))
-    return all_cosine_dists[2][:4]
+    return all_cosine_dists
 
 def factor_analyze(df, target=None, model_type ='pca', **kwargs):
     #from sklearn.decomposition import FactorAnalysis
     model = utils.get_model_obj(model_type, **kwargs)
-    if model_type == 'lda':
-        assert target is not None, "Target class/category necessary for LDA factor analysis"
-        model.fit(df, target)
+    numericalColumns = df.select_dtypes(include=[np.number]).columns
+    print("Numerical Colums")
+    print(numericalColumns)
+    print("Model being used is :%s "%model_type)
+    if model_type == 'linear_da':
+        assert target is not None, "Target class/category necessary for Linear DA factor analysis"
+        model.fit(df[numericalColumns], target)
+        print("Coefficients")
+        print(model.coef_)
+        print("Covariance")
+        print(model.covariance_)
+    elif model_type == 'latent_da':
+        print("Components")
+        print(model.components_)
     else:
-        model.fit(df)
+        model.fit(df[numericalColumns])
+        print("No. of Components")
+        print(model.n_components)
+        print("Components")
+        print(model.components_)
+        print("Explained variance")
+        print(model.explained_variance_)
     trans_df = pd.DataFrame(model.transform(df))
+
+    print("Correlation of transformed")
     correlation_analyze(trans_df)
 
-def regression_analyze(df, col1, col2, trainsize=0.8,
-                        non_linear=False, test_heteroskedasticity=False):
+def regression_analyze(df, col1, col2, trainsize=0.8, non_linear=False,
+                       test_heteroskedasticity=False, **kwargs):
     """
     Plot regressed data vs original data for the passed columns.
     @params:
@@ -209,8 +229,12 @@ def regression_analyze(df, col1, col2, trainsize=0.8,
         print("Regression Score: %s"%(model.__repr__()))
         print(model.score(source, new_df[col2].as_matrix().reshape(-1,1)))
         if test_heteroskedasticity:
+            if not kwargs.get('exog', None):
+                other_cols = list(set(df.columns) - set([col1, col2]))
+                kwargs['exog'] = random.choice(other_cols)
+            exog = df[kwargs.get('exog')].as_matrix().reshape(-1,1)
             print("Hetero-Skedasticity test(Breush-Pagan)")
-            print(diagnostic.het_breushpagan(model.residues_))
+            print(diagnostic.het_breushpagan(model.residues_, exog_het=exog))
     grid = gridplot(list(utils.chunks(plots, size=2)))
     plotter.show(grid)
 
