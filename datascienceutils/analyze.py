@@ -12,12 +12,12 @@ import pandas as pd
 from . import plotter
 from . import utils
 
-def dist_analyze(df, column=None, categories=[], is_normal=True):
-    #TODO: add is_normal, and other basic distribution similarity checks
+def dist_analyze(df, column=None, categories=[], check_normality=True):
+    #TODO: add check_normality, and other basic distribution similarity checks
     if not column:
         plots=[]
         numericalColumns = df.select_dtypes(include=[np.number]).columns
-        if is_normal:
+        if check_normality:
             for column in numericalColumns:
                 print("%s Anderson-Darling normality test "%column)
                 print("Statistic: %d \n p-value: %d\n"%diagnostic.normal_ad(df[column]))
@@ -52,13 +52,13 @@ def dist_analyze(df, column=None, categories=[], is_normal=True):
         print(df[column].var())
         print("Skewness of %s"%column)
         print(df[column].skew())
-        if is_normal:
+        if check_normality:
             print("%s Anderson-Darling normality test "%column)
             print("Statistic: %d \n p-value: %d\n"%diagnostic.normal_ad(df[column]))
         plotter.show(plotter.sb_violinplot(df[column], inner='box'))
 
 def correlation_analyze(df, exclude_columns = [], categories=[],
-                        measures=None, trellis=False):
+                        measures=None, check_linearity=False, trellis=False):
     """
     Plot scatter plots of all combinations of numerical columns.
     If categories and measures are passed, plot heatmap of combination of categories by measure.
@@ -85,6 +85,16 @@ def correlation_analyze(df, exclude_columns = [], categories=[],
     for combo in combos:
         u,v = combo
         plots.append(plotter.scatterplot(df, u, v))
+        if check_linearity:
+            u_2diff = np.gradient(df[u], 2)
+            v_2diff = np.gradient(df[v], 2)
+            print("Linearity btw %s and %s"%(combo[0], combo[1]))
+            print("No. of 2nd differences: %d"%len(u_2diff))
+            linearity_2nd_diff = np.divide(u_2diff, v_2diff)
+            # Drop inf and na values
+            linearity_2nd_diff = linearity_2nd_diff[~np.isnan(linearity_2nd_diff)]
+            linearity_2nd_diff = linearity_2nd_diff[~np.isinf(linearity_2nd_diff)]
+            print(np.mean(linearity_2nd_diff))
 
     print("# Correlation btw Numerical Columns")
     grid = gridplot(list(utils.chunks(plots, size=2)))
