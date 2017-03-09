@@ -1,6 +1,6 @@
 ## TODO
 
-
+    * Add test of independence support for categorical variables
 	* Add support for feature filtering..(tsfresh module and also others) in features.py
 
 	* Add Gini Coefficient-like measure visual for the cluster analyze
