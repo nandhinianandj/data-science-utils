@@ -2,14 +2,19 @@
 
 	* Add test of independence support for categorical variables(use that P(A & B) = P(A) * P(B)
 	  as a test
+
 	* Add a wrapper for geo-plot in plotter.py(for plotting on the world map)
+
 	* Add support for feature filtering..(tsfresh module and also others) in features.py
 
 	* Add Gini Coefficient-like measure visual for the cluster analyze
+
 	* Add dendrogram style visuals for cluster analyze
+
 	* Add support for https://github.com/ANNetGPGPU/ANNetGPGPU in the cluster analyze logic
 
 	* Show off that bayesian binning in dist_analyze plots
+
 	* Add a dimensional analysis function/option.
 		* - No. of independent(aka orthogonal) dimensions(aka degrees of freedom of the
 		                  system)
@@ -17,7 +22,10 @@
 		* - Most significant dimensions(w.r.t predicted/target variable)
 		* - Also add interpretation of factor_analyze.(the transformations pca/lda acts on
 		                  the dataset)
+
 	* Sensitivity analysis
+
+	* Interaction Analysis
 
 	* Add 3D heatmaps and may be 3D + 1D(time) visualizations/Animations(like the gapminder
 	  bubble chart for ex:)
@@ -25,7 +33,6 @@
 	* Add a dask/airflow/luigi/pinball support for training models with different samples on
 	  distributed systems.
 
-    	* dist_analyze TODO: May be add a way to plot joint distributions of two variables?
 
 	* Add a separate grid search function to grid search a data set with the given
 	  model.(wrapper around sklearn model_selection's grid search)
@@ -46,6 +53,8 @@
 	  neural network based on the tree, and return it.. (The user can then train it).
 
 	* ~~ Add support for [RANSAC](https://en.wikipedia.org/wiki/Random_sample_consensus) ~~
+
+	* ~~ dist_analyze TODO: May be add a way to plot joint distributions of two variables? ~~
 
 	* ~~Cleanup/refactor the plotter.py to remove obsolete/unused plots~~
 

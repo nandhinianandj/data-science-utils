@@ -12,8 +12,9 @@ import pandas as pd
 from . import plotter
 from . import utils
 
-def dist_analyze(df, column=None, categories=[], check_normality=True):
-    #TODO: add check_normality, and other basic distribution similarity checks
+def dist_analyze(df, column=[], categories=[], check_normality=True):
+    # TODO: other basic distribution similarity checks(say chi-squared, or binomial may be just wrap
+    # around statsmodels
     if not column:
         plots=[]
         numericalColumns = df.select_dtypes(include=[np.number]).columns
@@ -48,14 +49,27 @@ def dist_analyze(df, column=None, categories=[], check_normality=True):
             grid = gridplot(list(utils.chunks(barplots, size=2)))
             plotter.show(grid)
     else:
-        print("Variance of %s"%column)
-        print(df[column].var())
-        print("Skewness of %s"%column)
-        print(df[column].skew())
-        if check_normality:
-            print("%s Anderson-Darling normality test "%column)
-            print("Statistic: %d \n p-value: %d\n"%diagnostic.normal_ad(df[column]))
-        plotter.show(plotter.sb_violinplot(df[column], inner='box'))
+        if len(column) == 1:
+            print("Variance of %s"%column)
+            print(df[column].var())
+            print("Skewness of %s"%column)
+            print(df[column].skew())
+            if check_normality:
+                print("%s Anderson-Darling normality test "%column)
+                print("Statistic: %d \n p-value: %d\n"%diagnostic.normal_ad(df[column]))
+            plotter.show(plotter.sb_violinplot(df[column[0]], inner='box'))
+        else:
+            assert len(column) == 2, "only two columns"
+            for col in column:
+                print("Variance of %s"%col)
+                print(df[col].var())
+                print("Skewness of %s"%col)
+                print(df[col].skew())
+                if check_normality:
+                    print("%s Anderson-Darling normality test "%col)
+                    print("Statistic: %d \n p-value: %d\n"%diagnostic.normal_ad(df[col]))
+                plotter.show(plotter.sb_violinplot(df[col], inner='box'))
+            plotter.sb_jointplot(df[column[0]], df[column[1]])
 
 def correlation_analyze(df, exclude_columns = [], categories=[],
                         measures=None, check_linearity=False, trellis=False):
@@ -195,14 +209,13 @@ def regression_analyze(df, col1, col2, trainsize=0.8, non_linear=False,
         non_linear: Use the python ace module to calculate non-linear correlations too.(Warning can
         be very slow)
     """
-    # TODO: add check  for heteroskedasticity
     # TODO: non-linearity tests
     from . import predictiveModels as pm
 
 
     # this is the quantitative/hard version of teh above
-    #TODO: Simple  line plots of column variables, but for the y-axis, # Fit on
-    #         a, linear function(aka line)
+    #TODO: Simple  line plots of column variables, but for the y-axis,
+    # Fit on
     #         b, logarithmic/exponetial function
     #         c, logistic function
     #         d, parabolic function??
@@ -263,10 +276,10 @@ def time_series_analysis(df, timeCol='date', valueCol=None, timeInterval='30min'
     else:
         ts = tsu.create_timeseries_df(df, timeCol=timeCol, timeInterval=timeInterval)
     # TODO;
-    # 1. Do, ADF(Dickey-Fuller's ) stationarity test
     # 2. Seasonal decomposition of the time series and plot it
     # 3. ARIMA model of the times
     # 4. And other time-serie models like AR, etc..
+    # 5. Wrappers around fbprophet
     if 'stationarity' in kwargs:
         plot = tsu.test_stationarity(ts, timeCol=timeCol, valueCol=valueCol,
                 title=plot_title,
@@ -351,7 +364,7 @@ def silhouette_analyze(dataframe, cluster_type='KMeans', n_clusters=None):
         #grid = gridplot([[band_plot, s_plot]])
         plotter.show(s_plot)
 
-    plotter.lineplot(cluster_scores_df, xcol='cluster_size', ycol='silhouette_score')
+    plotter.show(plotter.lineplot(cluster_scores_df, xcol='cluster_size', ycol='silhouette_score'))
 
 def som_analyze(dataframe, mapsize, algo_type='som'):
     import sompy

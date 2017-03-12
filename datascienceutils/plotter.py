@@ -382,7 +382,7 @@ def mscatter(p, x, y, typestr="o"):
 
 def mtext(p, x, y, textstr, **kwargs):
    p.text(x, y, text=[textstr],
-         text_color=kwargs.get('text_color'), 
+         text_color=kwargs.get('text_color'),
          text_align="center", text_font_size="10pt")
 
 def boxplot(xrange, yrange, boxSource, xlabel='x', ylabel='y', colors=list()):
@@ -466,5 +466,31 @@ def sb_jointplot(series1, series2):
     #x2 = pd.Series(x2, name="$X_2$")
 
     # Show the joint distribution using kernel density estimation
-    return sns.jointplot(series1, series2, kind="kde", size=7, space=0)
+    sns.jointplot(series1, series2, kind="kde", size=7, space=0)
+
+def gp_pointplot(geo_dataframe, geo_locations, scale_column):
+    import geoplot.crs as gcrs
+    import geoplot as gplt
+
+    proj = gcrs.AlbersEqualArea()# central_longitude=-98, central_latitude=39.5)
+
+    ax = gplt.polyplot(geo_locations,
+                       projection=proj,
+                       zorder=-1,
+                       linewidth=0.5,
+                        legend_kwargs={'frameon': False, 'loc': 'lower right'},
+                       **kwargs
+                       )
+    gplt.pointplot(geo_dataframe,
+                   scale=scale_column,
+                   ax=ax,
+                   projection=proj,
+                   **kwargs
+                   )
+    pass
+
+def gp_polyplot(geo_dataframe):
+    import geoplot as gplt
+
+
 
