@@ -45,21 +45,15 @@ def feature_standardize(dataframe, col_names):
     from sklearn.preprocessing import scale
     return scale(dataframe[col_names])
 
-def binarize_labels(dataframe, column):
+def encode_labels(dataframe, column):
     if dataframe[column].nunique() == 2:
         enc = LabelBinarizer()
-        binarized_labels = enc.fit_transform([dataframe[column].tolist(), (dataframe[column].nunique(),)])
+        encoded_labels = enc.fit_transform([dataframe[column].tolist(), (dataframe[column].nunique(),)])
     else:
         # Ugh.. I just can't understand how this class is helpful.Rolling my own
-        labeled_samples = pd.factorize(dataframe[column])
-        #enc = MultiLabelBinarizer()
-        binarized_labels = list()
-        for each in labeled_samples[0]:
-            tmp = [0 for i in range(dataframe[column].nunique())]
-            tmp[each] = each
-            binarized_labels.append(tmp)
-        binarized_labels = np.asarray(binarized_labels)
-    return binarized_labels
+        le = LabelEncoder()
+        encoded_labels = le.fit_transform(dataframe[column])
+    return encoded_labels
 
 def dump_model(model, filename, model_params):
     """

@@ -9,6 +9,7 @@ import numpy as np
 import pandas as pd
 
 # Custom libraries
+from . import sklearnUtils
 from . import plotter
 from . import utils
 
@@ -173,12 +174,13 @@ def factor_analyze(df, target=None, model_type ='pca', **kwargs):
     #from sklearn.decomposition import FactorAnalysis
     model = utils.get_model_obj(model_type, **kwargs)
     numericalColumns = df.select_dtypes(include=[np.number]).columns
-    print("Numerical Colums")
-    print(numericalColumns)
+    catColumns = set(df.columns).difference(set(numericalColumns))
+    for col in catColumns:
+        df[col] = sklearnUtils.encode_labels(df, col)
     print("Model being used is :%s "%model_type)
     if model_type == 'linear_da':
         assert target is not None, "Target class/category necessary for Linear DA factor analysis"
-        model.fit(df[numericalColumns], target)
+        model.fit(df, target)
         print("Coefficients")
         print(model.coef_)
         print("Covariance")
