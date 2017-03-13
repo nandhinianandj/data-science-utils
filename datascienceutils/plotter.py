@@ -293,14 +293,23 @@ class BokehTwinLinePlot(object):
         return min_y_range, max_y_range
 
 
-def histogram(histDF,values, bayesian_bin=False,**kwargs):
-    if not bayesian_bin:
+def histogram(histDF,values, bayesian_bins=False,**kwargs):
+    if not bayesian_bins:
         from bokeh.charts import Histogram
         return Histogram(histDF[values], **kwargs)
     else:
-        from . import bayesian_bins
-        bins = bayesian_bins(histDF[values])
-        pass
+        from .bayesian_bins import bayesian_blocks
+        import numpy as np
+        bins = bayesian_blocks(histDF[values])
+        p1 = figure(title=kwargs.pop('title', 'Histogram of %s'%values),
+                    tools="save", background_fill_color="#E8DDCB")
+        hist,edges = np.histogram(histDF[values], bins=bins)
+        p1.quad(top=hist, bottom=0, left=edges[:-1], right=edges[1:],
+                fill_color="#036564", line_color="#033649")
+        p1.legend.location = "top_left"
+        p1.xaxis.axis_label = 'x'
+        p1.yaxis.axis_label = 'Frequency'
+        return p1
 
 
 def barplot(barDF, xlabel, ylabel, title="Bar Plot",

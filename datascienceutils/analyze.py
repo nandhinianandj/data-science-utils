@@ -13,7 +13,7 @@ from . import sklearnUtils
 from . import plotter
 from . import utils
 
-def dist_analyze(df, column=[], categories=[], check_normality=True):
+def dist_analyze(df, column=[], categories=[], check_normality=True, bayesian_bins=False):
     # TODO: other basic distribution similarity checks(say chi-squared, or binomial may be just wrap
     # around statsmodels
     if not column:
@@ -30,6 +30,8 @@ def dist_analyze(df, column=[], categories=[], check_normality=True):
             print("Skewness of %s"%column)
             print(df[column].skew())
             plots.append(plotter.sb_violinplot(df[column], inner='box'))
+            if bayesian_bins:
+                plots.append(plotter.histogram(df, column, bayesian_bins=True))
         catColumns = set(df.columns).difference(set(numericalColumns))
         for column in catColumns:
             if df[column].nunique() < 7:
@@ -58,7 +60,10 @@ def dist_analyze(df, column=[], categories=[], check_normality=True):
             if check_normality:
                 print("%s Anderson-Darling normality test "%column)
                 print("Statistic: %d \n p-value: %d\n"%diagnostic.normal_ad(df[column]))
+
             plotter.show(plotter.sb_violinplot(df[column[0]], inner='box'))
+            if bayesian_bins:
+                plotter.show(plotter.histogram(df, column[0], bayesian_bins=True))
         else:
             assert len(column) == 2, "only two columns"
             for col in column:
@@ -70,6 +75,8 @@ def dist_analyze(df, column=[], categories=[], check_normality=True):
                     print("%s Anderson-Darling normality test "%col)
                     print("Statistic: %d \n p-value: %d\n"%diagnostic.normal_ad(df[col]))
                 plotter.show(plotter.sb_violinplot(df[col], inner='box'))
+                if bayesian_bins:
+                    plotter.show(plotter.histogram(df, col, bayesian_bins=True))
             plotter.sb_jointplot(df[column[0]], df[column[1]])
 
 def correlation_analyze(df, exclude_columns = [], categories=[],

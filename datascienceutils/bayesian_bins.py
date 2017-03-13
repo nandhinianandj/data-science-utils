@@ -88,8 +88,8 @@ def bayesian_blocks(t):
     return edges[change_points]
 
 # plot a standard histogram in the background, with alpha transparency
-H1 = hist(x, bins=200, histtype='stepfilled',
-          alpha=0.2, normed=True)
-# plot an adaptive-width histogram on top
-H2 = hist(x, bins=bayesian_blocks(x), color='black',
-          histtype='step', normed=True)
+#H1 = hist(x, bins=200, histtype='stepfilled',
+#          alpha=0.2, normed=True)
+## plot an adaptive-width histogram on top
+#H2 = hist(x, bins=bayesian_blocks(x), color='black',
+#          histtype='step', normed=True)

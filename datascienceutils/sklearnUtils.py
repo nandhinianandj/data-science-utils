@@ -48,7 +48,7 @@ def feature_standardize(dataframe, col_names):
 def encode_labels(dataframe, column):
     if dataframe[column].nunique() == 2:
         enc = LabelBinarizer()
-        encoded_labels = enc.fit_transform([dataframe[column].tolist(), (dataframe[column].nunique(),)])
+        encoded_labels = enc.fit_transform(dataframe[column].tolist())
     else:
         # Ugh.. I just can't understand how this class is helpful.Rolling my own
         le = LabelEncoder()
