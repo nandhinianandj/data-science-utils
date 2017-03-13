@@ -298,9 +298,8 @@ def histogram(histDF,values, bayesian_bins=False,**kwargs):
         from bokeh.charts import Histogram
         return Histogram(histDF[values], **kwargs)
     else:
-        from .bayesian_bins import bayesian_blocks
         import numpy as np
-        bins = bayesian_blocks(histDF[values])
+        bins = utils.bayesian_blocks(histDF[values])
         p1 = figure(title=kwargs.pop('title', 'Histogram of %s'%values),
                     tools="save", background_fill_color="#E8DDCB")
         hist,edges = np.histogram(histDF[values], bins=bins)
