@@ -449,6 +449,15 @@ def sb_heatmap(df, label):
 def sb_piechart(df,column):
     pass
 
+def sb_distplot(df, column):
+    row = kwargs.get( 'row' , None )
+    col = kwargs.get( 'col' , None )
+    facet = sns.FacetGrid( df , hue=target , aspect=4 , row = row , col = col )
+    facet.map( sns.kdeplot , column , shade= True )
+    facet.set( xlim=( df[column] , df[column].max() ) )
+    facet.add_legend()
+    return to_bokeh(facet)
+
 def sb_violinplot(series, dataframe=None, groupCol = None, **kwargs):
     import pandas as pd
     import seaborn as sns

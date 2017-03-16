@@ -4,7 +4,6 @@
 ##################################################################
 import numpy as np
 
-
 def getOutliers(data, m = 2.):
     """
     data -- is a pandas data frame

@@ -13,7 +13,6 @@
 
 	* Add support for https://github.com/ANNetGPGPU/ANNetGPGPU in the cluster analyze logic
 
-	* Show off that bayesian binning in dist_analyze plots
 
 	* Add a dimensional analysis function/option.
 		* - No. of independent(aka orthogonal) dimensions(aka degrees of freedom of the
@@ -22,6 +21,8 @@
 		* - Most significant dimensions(w.r.t predicted/target variable)
 		* - Also add interpretation of factor_analyze.(the transformations pca/lda acts on
 		                  the dataset)
+		* - http://www.kdnuggets.com/2015/05/7-methods-data-dimensionality-reduction.html
+		* - https://www.analyticsvidhya.com/blog/2015/07/dimension-reduction-methods/
 
 	* Sensitivity analysis
 
@@ -51,6 +52,8 @@
 
 	* Create a function to take dataframe, run tree/randomforest, pick out best tree, create a
 	  neural network based on the tree, and return it.. (The user can then train it).
+
+	* ~~Show off that bayesian binning in dist_analyze plots~~
 
 	* ~~ Add support for [RANSAC](https://en.wikipedia.org/wiki/Random_sample_consensus) ~~
 

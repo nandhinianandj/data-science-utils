@@ -5,7 +5,7 @@ import os
 import numpy as np
 
 from sklearn.cluster import KMeans, SpectralClustering, DBSCAN, MeanShift,\
-                            Birch, AffinityPropagation, AgglomerativeClustering
+                            Birch, AffinityPropagation, AgglomerativeClustering, MiniBatchKMeans
 
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.naive_bayes import *
@@ -15,13 +15,15 @@ from sklearn import tree
 from sklearn.svm import *
 # For regression models
 from sklearn.linear_model import *
+from sklearn.isotonic import IsotonicRegression
 # Dimensionality reduction/ factor analysis models
-# PCA
-from sklearn.decomposition import PCA
+from sklearn.decomposition import PCA, NMF, FastICA, MiniBatchSparsePCA,\
+                                    MiniBatchDictionaryLearning, FactorAnalysis
 # LDA
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 # tsne
 from sklearn.manifold import TSNE
+
 # kernel density estimators
 from sklearn.neighbors.kde import KernelDensity
 # TIME SERIES MODELS
@@ -65,7 +67,14 @@ models_dict = { 'knn': KNeighborsClassifier,
                 'ElasticNetRegression': ElasticNet,
                 'LogisticRegression': LogisticRegression,
                 'RANSACRegression': RANSACRegressor,
+                'IsotonicRegression': IsotonicRegression,
                 'pca': PCA,
+                'nmf': NMF,
+                'FastICA': FastICA,
+                'MiniBatchSparsePCA': MiniBatchSparsePCA,
+                'MiniBatchDictionaryLearning': MiniBatchDictionaryLearning,
+                'MiniBatchKMeans': MiniBatchKMeans,
+                'FactorAnalysis': FactorAnalysis,
                 'lda': LinearDiscriminantAnalysis,
                 'tsne': TSNE,
                 'kde': KernelDensity,

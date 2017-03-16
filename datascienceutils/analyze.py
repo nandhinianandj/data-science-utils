@@ -2,6 +2,7 @@
 from bokeh.layouts import gridplot
 from statsmodels.stats import diagnostic
 
+import operator
 import functools
 import itertools
 import random
@@ -12,6 +13,9 @@ import pandas as pd
 from . import sklearnUtils
 from . import plotter
 from . import utils
+
+def prob_analyze(df, column):
+    pass
 
 def dist_analyze(df, column=[], categories=[], check_normality=True, bayesian_bins=False):
     # TODO: other basic distribution similarity checks(say chi-squared, or binomial may be just wrap
@@ -158,12 +162,38 @@ def correlation_analyze(df, exclude_columns = [], categories=[],
     print("# Pandas co-variance coefficients matrix")
     print(df.cov())
 
-def degrees_freedom(df, dof_range = None):
+def is_independent(series1, series2):
+    pass
+
+def test_independence(series1, series2):
+    from scipy.stats import chi2_contingency
+
+def degrees_freedom(df, dof_range = [], categoricalCol=[]):
     """
     Find what are the maximum orthogonal dimensions in the data
-
     """
-    assert hasattr(dof_range, __iter__)
+    if categoricalCol:
+        assert len(categoricalCol)==2, "Only two categories supported"
+        probabilities = dict()
+        for col in categoricalCol:
+            values = df[categoricalCol].unique()
+            grouped_df = df.groupby(categoricalCol).count()
+            for val in values:
+                probabilities[(col,val)] = grouped_df[val]/df[categoricalCol].count()
+        print(probabilities)
+    else:
+        print("Chi-square test of independence()")
+        from scipy.stats import chi2_contingency
+        result = chi2_contingency(df.as_matrix())
+        print("Statistical degrees of freedom")
+        print(result[2])
+        print("Chi-square value")
+        print(result[0])
+        print("p-value")
+        print(result[1])
+
+def cosine_distance():
+    assert hasattr(dof_range, '__iter__')
     # TODO: Extend/generalise this to more than 2-norm (aka 2-D plane)
     from scipy import spatial
     dof_range = [2]
@@ -174,11 +204,11 @@ def degrees_freedom(df, dof_range = None):
         cosine_dist = dict()
         for combo in combos:
             cosine_dist[combo] = spatial.distance.cosine(df[combo[0]], df[combo[1]])
-        all_cosine_dists[each] = sorted(cosine_dist, key=operator.itemgetter(1))
+        all_cosine_dists[each] = sorted(cosine_dist.items(), key=operator.itemgetter(1))
+    print("Cosine Distance Method")
     return all_cosine_dists
 
 def factor_analyze(df, target=None, model_type ='pca', **kwargs):
-    #from sklearn.decomposition import FactorAnalysis
     model = utils.get_model_obj(model_type, **kwargs)
     numericalColumns = df.select_dtypes(include=[np.number]).columns
     catColumns = set(df.columns).difference(set(numericalColumns))
@@ -247,6 +277,7 @@ def regression_analyze(df, col1, col2, trainsize=0.8, non_linear=False,
             pm.train(new_df, target, column=col1, modelType='RidgeRegressionCV'),
             pm.train(new_df, target, column=col1, modelType='LassoRegression'),
             pm.train(new_df, target, column=col1, modelType='ElasticNetRegression'),
+            pm.train(new_df, target, column=col1, modelType='IsotonicRegression'),
             #pm.train(new_df, target, column=col1, modelType='logarithmicRegression'),
             ]
     plots = list()
