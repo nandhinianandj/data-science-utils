@@ -14,113 +14,92 @@ from . import sklearnUtils
 from . import plotter
 from . import utils
 
-def prob_analyze(df, column):
-    pass
+#TODO: only the non-parametric ones used, check the rest andfigure out how to choose
+# parameters(think kde estimator from sklearn)
+CHECK_DISTS = ['norm']#, 'zipf', 'geom', 'hypergeom', 'poisson', 'randint',
+        #'multivariate_normal', 'weibull_min', 'weibull_max', 'logistic', 'chi', 'chi2', 'cosine',
+        #'cauchy','alpha', 'beta', ] #'bernoulli','binom',
 
-def dist_analyze(df, column=[], categories=[], check_normality=True, bayesian_bins=False):
-    # TODO: other basic distribution similarity checks(say chi-squared, or binomial may be just wrap
-    # around statsmodels
-    if not column:
-        plots=[]
-        numericalColumns = df.select_dtypes(include=[np.number]).columns
-        if check_normality:
-            for column in numericalColumns:
-                print("%s Anderson-Darling normality test "%column)
-                print("Statistic: %d \n p-value: %d\n"%diagnostic.normal_ad(df[column]))
-
-        for column in numericalColumns:
-            print("Variance of %s"%column)
-            print(df[column].var())
-            print("Skewness of %s"%column)
-            print(df[column].skew())
-            plots.append(plotter.sb_violinplot(df[column], inner='box'))
-            if bayesian_bins:
-                plots.append(plotter.histogram(df, column, bayesian_bins=True))
-        catColumns = set(df.columns).difference(set(numericalColumns))
-        for column in catColumns:
-            if df[column].nunique() < 7:
-                plots.append(plotter.pieChart(df, column, title='Distribution of %s'%column))
-            else:
-                print("Too many categorise for col: %s can't plot pie-chart"%column)
-
-
-        grid = gridplot(list(utils.chunks(plots, size=2)))
-        plotter.show(grid)
-        if categories:
-            # Plot Barplots of combination of category and numerical columns
-            catNumCombos = set(itertools.product(numericalColumns, categories))
-            barplots = []
-            for each in catNumCombos:
-                barplots.append(plotter.barplot(df, each[1], each[0]))
-            print("# Joint Distribution of Numerical vs Categorical Columns")
-            grid = gridplot(list(utils.chunks(barplots, size=2)))
-            plotter.show(grid)
-    else:
-        if len(column) == 1:
-            print("Variance of %s"%column)
-            print(df[column].var())
-            print("Skewness of %s"%column)
-            print(df[column].skew())
-            if check_normality:
-                print("%s Anderson-Darling normality test "%column)
-                print("Statistic: %d \n p-value: %d\n"%diagnostic.normal_ad(df[column]))
-
-            plotter.show(plotter.sb_violinplot(df[column[0]], inner='box'))
-            if bayesian_bins:
-                plotter.show(plotter.histogram(df, column[0], bayesian_bins=True))
+def distribution_tests(df, column, test_type='ks'):
+    from scipy import stats
+    for distribution in CHECK_DISTS:
+        if test_type=='ks':
+            print("Kolmogrov - Smirnov test with distribution %s"%distribution)
+            print(stats.kstest(df[column].tolist(), distribution))
+        #elif test_type =='wald':
+        #    print("Wald test with distribution %s"%distribution)
+        #    print(lm.wald_test(df[column], distribution))
         else:
-            assert len(column) == 2, "only two columns"
-            for col in column:
-                print("Variance of %s"%col)
-                print(df[col].var())
-                print("Skewness of %s"%col)
-                print(df[col].skew())
-                if check_normality:
-                    print("%s Anderson-Darling normality test "%col)
-                    print("Statistic: %d \n p-value: %d\n"%diagnostic.normal_ad(df[col]))
-                plotter.show(plotter.sb_violinplot(df[col], inner='box'))
-                if bayesian_bins:
-                    plotter.show(plotter.histogram(df, col, bayesian_bins=True))
-            plotter.sb_jointplot(df[column[0]], df[column[1]])
+            raise "Unknow distribution similarity test type"
 
-def correlation_analyze(df, exclude_columns = [], categories=[],
-                        measures=None, check_linearity=False, trellis=False):
+def check_normality(series, name):
+    print("Anderson-Darling normality test on %s "%name)
+    print("Statistic: %d \n p-value: %d\n"%diagnostic.normal_ad(series))
+
+def dist_analyze(df, column='', category='', is_normal=True, bayesian_hist=False):
+    plots = []
+    if (np.issubdtype(df[column].dtype, np.number)):
+        print("Variance of %s"%column)
+        print(df[column].var())
+        print("Skewness of %s"%column)
+        print(df[column].skew())
+        distribution_tests(df, column)
+        if is_normal:
+            check_normality(df[column], column)
+        plots.append(plotter.sb_violinplot(df[column], inner='box'))
+        if bayesian_hist:
+            plots.append(plotter.histogram(df, column, bayesian_bins=True))
+    else:
+        if df[column].nunique() < 7:
+            plots.append(plotter.pieChart(df, column, title='Distribution of %s'%column))
+        else:
+            print("Too many categories for col: %s can't plot pie-chart"%column)
+
+    if category:
+        # Plot Barplots of combination of category and numerical columns
+        plots.append(plotter.barplot(df, column, category))
+        print("# Joint Distribution of Numerical vs Categorical Columns")
+    grid = gridplot(list(utils.chunks(plots, size=2)))
+    return grid
+
+
+def correlation_analyze(df, col1, col2, categories=[], measures=[],
+                        check_linearity=False, trellis=False):
     """
     Plot scatter plots of all combinations of numerical columns.
     If categories and measures are passed, plot heatmap of combination of categories by measure.
 
     @params:
         df: Dataframe table data.
-        exclude_columns: Columns to be excluded/ignored
         categories: list of categorical variable names
         measures: List of measures to plot heatmap of categories
         trellis: Plot trellis type plots for the categories only valid if categories is passed
     """
+    for meas in measures:
+        assert meas in list(df.columns)
+    for catg in categories:
+        assert catg in list(df.columns)
+
     #TODO: add check for multi-collinearity
-    columns = set(filter(lambda x: x not in exclude_columns, df.columns))
-    assert len(columns) > 1, "Too few columns"
-    if not measures:
+    if categories and not measures:
         measures = ['count']
 
     # Plot scatter plot of combination of numerical columns
-    numericalColumns = set(df.select_dtypes(include=[np.number]).columns).intersection(columns)
-    combos = list(itertools.combinations(numericalColumns, 2))
     plots = []
 
-
-    for combo in combos:
-        u,v = combo
-        plots.append(plotter.scatterplot(df, u, v))
-        if check_linearity:
-            u_2diff = np.gradient(df[u], 2)
-            v_2diff = np.gradient(df[v], 2)
-            print("Linearity btw %s and %s"%(combo[0], combo[1]))
-            print("No. of 2nd differences: %d"%len(u_2diff))
-            linearity_2nd_diff = np.divide(u_2diff, v_2diff)
-            # Drop inf and na values
-            linearity_2nd_diff = linearity_2nd_diff[~np.isnan(linearity_2nd_diff)]
-            linearity_2nd_diff = linearity_2nd_diff[~np.isinf(linearity_2nd_diff)]
-            print(np.mean(linearity_2nd_diff))
+    u,v = col1, col2
+    plots.append(plotter.scatterplot(df, u, v))
+    plots.append(plotter.sb_jointplot(df[u], df[v]))
+    if check_linearity:
+        u_2diff = np.gradient(df[u], 2)
+        v_2diff = np.gradient(df[v], 2)
+        print("Linearity btw %s and %s"%(u, v))
+        print("No. of 2nd differences: %d"%len(u_2diff))
+        linearity_2nd_diff = np.divide(u_2diff, v_2diff)
+        # Drop inf and na values
+        linearity_2nd_diff = linearity_2nd_diff[~np.isnan(linearity_2nd_diff)]
+        linearity_2nd_diff = linearity_2nd_diff[~np.isinf(linearity_2nd_diff)]
+        print(np.mean(linearity_2nd_diff))
 
     print("# Correlation btw Numerical Columns")
     grid = gridplot(list(utils.chunks(plots, size=2)))
@@ -155,18 +134,18 @@ def correlation_analyze(df, exclude_columns = [], categories=[],
         plotter.show(hmGrid)
         if trellis:
             trellisPlots = list()
-            #TODO implement this
     print("# Pandas correlation coefficients matrix")
     print(df.corr())
-    # Add co-variance matrix http://scikit-learn.org/stable/modules/covariance.html#covariance
     print("# Pandas co-variance coefficients matrix")
     print(df.cov())
 
 def is_independent(series1, series2):
     pass
 
-def test_independence(series1, series2):
-    from scipy.stats import chi2_contingency
+def is_similar_distribution(origin_dist, target_dist):
+    import permutation_test as p
+    p_value = p.permutation_test(data, ref_data)
+    print(p_value)
 
 def degrees_freedom(df, dof_range = [], categoricalCol=[]):
     """
@@ -236,17 +215,20 @@ def factor_analyze(df, target=None, model_type ='pca', **kwargs):
     trans_df = pd.DataFrame(model.transform(df))
 
     print("Correlation of transformed")
-    correlation_analyze(trans_df)
+    correlation_analyze(trans_df, 0, 1)
 
 def regression_analyze(df, col1, col2, trainsize=0.8, non_linear=False,
-                       test_heteroskedasticity=False, **kwargs):
+                       test_heteroskedasticity=False, check_dist_similarity=False, **kwargs):
     """
     Plot regressed data vs original data for the passed columns.
     @params:
         col1: x column,
         col2: y column
+
+    @optional:
         non_linear: Use the python ace module to calculate non-linear correlations too.(Warning can
         be very slow)
+        test_heteroskedasticity: self-evident
     """
     # TODO: non-linearity tests
     from . import predictiveModels as pm
@@ -269,6 +251,10 @@ def regression_analyze(df, col1, col2, trainsize=0.8, non_linear=False,
         print(" # Ace Models btw numerical cols")
         plot = plotter.lineplot(df[[col1, col2]], col1, col2)
         plotter.show(plot)
+
+    if check_dist_similarity:
+        is_similar_distribution(df[col1], df[col2])
+
     new_df = df[[col1, col2]].copy(deep=True)
     target = new_df[col2]
     models = [
@@ -277,7 +263,7 @@ def regression_analyze(df, col1, col2, trainsize=0.8, non_linear=False,
             pm.train(new_df, target, column=col1, modelType='RidgeRegressionCV'),
             pm.train(new_df, target, column=col1, modelType='LassoRegression'),
             pm.train(new_df, target, column=col1, modelType='ElasticNetRegression'),
-            pm.train(new_df, target, column=col1, modelType='IsotonicRegression'),
+            #pm.train(new_df, target, column=col1, modelType='IsotonicRegression'),
             #pm.train(new_df, target, column=col1, modelType='logarithmicRegression'),
             ]
     plots = list()

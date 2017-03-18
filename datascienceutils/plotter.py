@@ -52,6 +52,10 @@ def genColors(n, ptype='magma'):
     else:
         return viridis(n)
 
+def grid_plot(plots, chunks=2):
+    grid = gridplot(list(utils.chunks(plots, size=2)))
+    show(grid)
+
 def plot_patches(bandx, bandy, **kwargs):
     p = figure(x_range=(0, 10), y_range=(0, 10), title=kwargs.pop('title'))
     p.xaxis.axis_label=kwargs.pop('xlabel')

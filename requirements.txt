@@ -20,7 +20,7 @@ statsmodels
 # Feature selector for timeseries
 tsfresh
 #Forecasting for timeseries
-fbprophet
+#fbprophet
 
 # Genetic algo based feature selection
 # Tools for tpot
@@ -51,7 +51,7 @@ xgboost
 rasterio
 
 #Light GBM
--e git+https://github.com/Microsoft/LightGBM.git#egg=lightgbm
+#-e git+https://github.com/Microsoft/LightGBM.git#egg=lightgbm
 -e git+https://github.com/ArdalanM/pyLightGBM.git#egg=pylightgbm
 
 
@@ -62,7 +62,7 @@ geos
 gym
 keras
 mxnet
--e git+https://github.com:greytip/SOMPY.git#egg=sompy
+-e git+https://github.com/sevamoo/SOMPY#egg=sompy
 
 # Vision packages
 #object detections
