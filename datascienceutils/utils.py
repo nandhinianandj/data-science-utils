@@ -100,53 +100,31 @@ models_dict = { 'knn': KNeighborsClassifier,
 
 
 # Type checkers taken from here. http://stackoverflow.com/questions/25039626/find-numeric-columns-in-pandas-python
-def is_type(df, baseType):
+def is_type(df, baseType, column=None, **kwargs):
     import numpy as np
     import pandas as pd
-    test = [issubclass(np.dtype(d).type, baseType) for d in df.dtypes]
-    return pd.DataFrame(data = test, index = df.columns, columns = ["test"])
+    if not column:
+        test = [issubclass(np.dtype(d).type, baseType) for d in df.dtypes]
+        return pd.DataFrame(data = test, index = df.columns, columns = ["test"])
+    else:
+        return issubclass(np.dtype(df[column]).type, baseType)
 
-def calculate_anova(df, targetCol, sourceCol):
-    from statsmodels.formula.api import ols
-    from statsmodels.stats.anova import anova_lm
-    lm = ols('%s ~ C(%s, Sum) + c'% (targetCol, sourceCol),
-            data=df).fit()
-    table = anova_lm(lm, typ=2)
-    return table
-
-def average(x):
-    assert len(x) > 0
-    return float(sum(x)) / len(x)
-
-def pearson_def(x, y):
-    assert len(x) == len(y)
-    n = len(x)
-    assert n > 0
-    avg_x = average(x)
-    avg_y = average(y)
-    diffprod = 0
-    xdiff2 = 0
-    ydiff2 = 0
-    for idx in range(n):
-        xdiff = x[idx] - avg_x
-        ydiff = y[idx] - avg_y
-        diffprod += xdiff * ydiff
-        xdiff2 += xdiff * xdiff
-        ydiff2 += ydiff * ydiff
-
-    return diffprod / math.sqrt(xdiff2 * ydiff2)
-
-def is_float(df):
+def is_float(df, **kwargs):
     import numpy as np
-    return is_type(df, np.float)
+    return is_type(df, np.float, **kwargs)
 
-def is_number(df):
+def is_number(df, **kwargs):
     import numpy as np
-    return is_type(df, np.number)
+    return is_type(df, np.number, **kwargs)
 
-def is_integer(df):
+def is_integer(df, **kwargs):
     import numpy as np
-    return is_type(df, np.integer)
+    return is_type(df, np.integer, **kwargs)
+
+def is_numeric(series, **kwargs):
+    if (is_number(series, **kwargs) or is_integer(series, **kwargs) or is_float(series,**kwargs)):
+        return True 
+    return False
 
 def chunks(combos, size=9):
     for i in range(0, len(combos), size):

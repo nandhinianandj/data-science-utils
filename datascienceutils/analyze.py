@@ -38,7 +38,7 @@ def check_normality(series, name):
 
 def dist_analyze(df, column='', category='', is_normal=True, bayesian_hist=False):
     plots = []
-    if (np.issubdtype(df[column].dtype, np.number)):
+    if (utils.is_numeric(df, column=column)):
         print("Variance of %s"%column)
         print(df[column].var())
         print("Skewness of %s"%column)

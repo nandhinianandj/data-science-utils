@@ -63,8 +63,8 @@ def plot_patches(bandx, bandy, **kwargs):
     p.patch(bandx, bandy, **kwargs)
     return p
 
-def show_image(image):
-    p = figure(x_range=(0, 10), y_range=(0, 10))
+def show_image(image, **kwargs):
+    p = figure(x_range=(0, 10), y_range=(0, 10), **kwargs)
     p.image(image=[image], x=0, y=0, dw=10, dh=10, palette='Spectral11')
     return p
 
@@ -477,14 +477,6 @@ def sb_jointplot(series1, series2):
     import numpy as np
     import seaborn as sns
     sns.set(style="white")
-
-    # Generate a random correlated bivariate dataset
-    #rs = np.random.RandomState(5)
-    #mean = [0, 0]
-    #cov = [(1, .5), (.5, 1)]
-    #x1, x2 = rs.multivariate_normal(mean, cov, 500).T
-    #x1 = pd.Series(x1, name="$X_1$")
-    #x2 = pd.Series(x2, name="$X_2$")
 
     # Show the joint distribution using kernel density estimation
     sns.jointplot(series1, series2, kind="kde", size=7, space=0)
