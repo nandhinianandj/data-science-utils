@@ -76,13 +76,12 @@ def dump_model(model, filename, model_params):
     model_params.update({'filename': filename,
                          'id': str(uuid.uuid4())})
 
-    with open(os.path.join(settings.MODELS_BASE_PATH,
-                            model_params['id'] + '_params_' + filename + '.json'),
+    with open(utils.get_full_path(settings.MODELS_BASE_PATH, filename, 
+                            model_params, extn='.json', params_file=True),
                       'w') as params_file:
         json.dump(model_params, params_file)
 
-    joblib.dump(model, os.path.join(settings.MODELS_BASE_PATH,
-                                    model_params['id'] + '_' + filename + '.pkl'), compress=('lzma', 3))
+    joblib.dump(model, utils.get_full_path(settings.MODELS_BASE_PATH, filename, '.pkl'), compress=('lzma', 3))
 
 def load_model(filename, model_type=None):
     """
@@ -106,7 +105,7 @@ def load_model(filename, model_type=None):
     else:
         model = joblib.load(os.path.join(foldername, filename))
         names = filename.split('_')
-    names.insert(1, 'params')
+    names.append('params')
     with open(os.path.join(foldername, '_'.join(names)) + '.json', 'r') as fd:
         params = json.load(fd)
     return model, params

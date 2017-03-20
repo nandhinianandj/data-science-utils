@@ -50,6 +50,10 @@ xgboost
 #Rasterio reads and writes geospatial raster datasets
 rasterio
 
+# NLP stuff
+gensim
+glove
+
 #Light GBM
 #-e git+https://github.com/Microsoft/LightGBM.git#egg=lightgbm
 -e git+https://github.com/ArdalanM/pyLightGBM.git#egg=pylightgbm

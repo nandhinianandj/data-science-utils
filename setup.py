@@ -42,7 +42,7 @@ Operating System :: MacOS
 
 MAJOR = 1
 MINOR = 2
-MICRO = 2
+MICRO = 3
 ISRELEASED = True
 VERSION = '%d.%d.%d' % (MAJOR, MINOR, MICRO)
 
@@ -166,7 +166,7 @@ def setup_package():
     metadata = dict(
             name='datascienceutils',
             version=get_version_info()[0],
-            packages=['datascienceutils'],
+            packages=['datascienceutils', 'datascienceutils/features'],
         maintainer="Software Mechanic",
         maintainer_email="softwaremechanic32@gmail.com",
         description=DOCLINES[0],

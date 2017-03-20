@@ -26,3 +26,7 @@ def word_cloud(train_qs):
     from wordcloud import WordCloud
     cloud = WordCloud(width=1440, height=1080).generate(" ".join(train_qs.astype(str)))
     plotter.show_image(cloud, figsize=(20,15))
+
+def word_similarity(word1, word2):
+    from nltk.corpus import wordnet as wn
+    return wn.synset(word1).path_similarity(wn.synset(word2))

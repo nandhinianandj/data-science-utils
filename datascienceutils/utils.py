@@ -306,3 +306,8 @@ def bayesian_blocks(t):
 
     return edges[change_points]
 
+def get_full_path(base_path, filename, model_params, extn=extn, params_file=False):
+    if params_file:
+        return os.path.join(base_path, model_params['id'] + '_' + filename + 'params'+ extn)
+    else:    
+        return os.path.join(base_path, model_params['id'] + '_' + filename + extn)

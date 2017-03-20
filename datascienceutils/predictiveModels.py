@@ -6,6 +6,7 @@ from sklearn import model_selection, metrics
 
 # Custom utils
 from .utils import get_model_obj
+from . import settings
 
 def cross_val_train(dataframe, target, modelType, **kwargs):
     cv = kwargs.pop('cv',None)
@@ -39,6 +40,15 @@ def grid_search(dataframe, target, modelType, **kwargs):
     clf = model_selection.GridSearchCV(model, scoring=scorer, cv=2)
     clf.fit(dataframe, target)
     return clf
+
+def dump_results(results_df, filename, model_params, kaggle=True):
+    assert kaggle, 'only supporting kaggle format'
+
+    results_df.to_csv(utils.get_full_path(settings.RESULTS_BASE_PATH,
+                                          filename,model_params))
+    utils.call_7z(filename, model_params)
+
+
 
 def featureSelect(dataframe):
     from sklearn.feature_selection import VarianceThreshold
