@@ -30,3 +30,6 @@ def word_cloud(train_qs):
 def word_similarity(word1, word2):
     from nltk.corpus import wordnet as wn
     return wn.synset(word1).path_similarity(wn.synset(word2))
+
+def tf_idf_model():
+    pass

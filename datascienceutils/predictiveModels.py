@@ -5,12 +5,12 @@ from collections import defaultdict
 from sklearn import model_selection, metrics
 
 # Custom utils
-from .utils import get_model_obj
+from . import utils
 from . import settings
 
 def cross_val_train(dataframe, target, modelType, **kwargs):
     cv = kwargs.pop('cv',None)
-    model = get_model_obj(modelType, **kwargs)
+    model = utils.get_model_obj(modelType, **kwargs)
     scores = cross_val_score(model, dataframe, target, cv=cv)
     return scores
 
@@ -26,7 +26,7 @@ def train(dataframe, target, modelType, column=None, **kwargs):
     @return:
         Model object
     """
-    model = get_model_obj(modelType, **kwargs)
+    model = utils.get_model_obj(modelType, **kwargs)
     if column:
         source = dataframe[column].reshape((len(target), 1)).tolist()
         model.fit(source, target)
@@ -35,7 +35,7 @@ def train(dataframe, target, modelType, column=None, **kwargs):
     return model
 
 def grid_search(dataframe, target, modelType, **kwargs):
-    model = get_model_obj(modelType, **kwargs)
+    model = utils.get_model_obj(modelType, **kwargs)
     scorer = metrics.make_scorer(metrics.accuracy_score, greater_is_better=True)
     clf = model_selection.GridSearchCV(model, scoring=scorer, cv=2)
     clf.fit(dataframe, target)
@@ -44,9 +44,9 @@ def grid_search(dataframe, target, modelType, **kwargs):
 def dump_results(results_df, filename, model_params, kaggle=True):
     assert kaggle, 'only supporting kaggle format'
     final_fnam = utils.get_full_path(settings.RESULTS_BASE_PATH,
-                                          filename,model_params))
-    results_df.to_csv(final_fnam)
-    utils.call_7z(filename, model_params)
+                                          filename, model_params, extn='.csv')
+    results_df.to_csv(final_fnam, index=False)
+    utils.call_7z(final_fnam)
 
 def featureSelect(dataframe):
     from sklearn.feature_selection import VarianceThreshold

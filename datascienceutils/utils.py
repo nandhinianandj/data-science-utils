@@ -306,7 +306,7 @@ def bayesian_blocks(t):
 
     return edges[change_points]
 
-def get_full_path(base_path, filename, model_params, extn=extn, params_file=False):
+def get_full_path(base_path, filename, model_params, extn='.pkl', params_file=False):
     if params_file:
         return os.path.join(base_path, model_params['id'] + '_' + filename + 'params'+ extn)
     else:
@@ -314,8 +314,9 @@ def get_full_path(base_path, filename, model_params, extn=extn, params_file=Fals
 
 def call_7z(filename):
     import subprocess
-    fname = filename.split('.')[0]
-    cmd = ['7z', 'a', fname + '.7z', filename, '-mx9']
+    fname = os.path.basename(filename).split('.')[0]
+    base_path = os.path.dirname(filename)
+    cmd = ['7z', 'a', os.path.join(base_path, fname + '.7z'), os.path.join(base_path, filename), '-mx9']
     sp = subprocess.Popen(cmd, stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
 
 
