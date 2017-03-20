@@ -123,7 +123,7 @@ def is_integer(df, **kwargs):
 
 def is_numeric(series, **kwargs):
     if (is_number(series, **kwargs) or is_integer(series, **kwargs) or is_float(series,**kwargs)):
-        return True 
+        return True
     return False
 
 def chunks(combos, size=9):
@@ -309,5 +309,13 @@ def bayesian_blocks(t):
 def get_full_path(base_path, filename, model_params, extn=extn, params_file=False):
     if params_file:
         return os.path.join(base_path, model_params['id'] + '_' + filename + 'params'+ extn)
-    else:    
+    else:
         return os.path.join(base_path, model_params['id'] + '_' + filename + extn)
+
+def call_7z(filename):
+    import subprocess
+    fname = filename.split('.')[0]
+    cmd = ['7z', 'a', fname + '.7z', filename, '-mx9']
+    sp = subprocess.Popen(cmd, stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
+
+

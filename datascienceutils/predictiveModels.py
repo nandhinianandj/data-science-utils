@@ -43,17 +43,13 @@ def grid_search(dataframe, target, modelType, **kwargs):
 
 def dump_results(results_df, filename, model_params, kaggle=True):
     assert kaggle, 'only supporting kaggle format'
-
-    results_df.to_csv(utils.get_full_path(settings.RESULTS_BASE_PATH,
+    final_fnam = utils.get_full_path(settings.RESULTS_BASE_PATH,
                                           filename,model_params))
+    results_df.to_csv(final_fnam)
     utils.call_7z(filename, model_params)
-
-
 
 def featureSelect(dataframe):
     from sklearn.feature_selection import VarianceThreshold
     sel = VarianceThreshold(threshold=(.8 * (1 - .8)))
     return sel.fit_transform(dataframe)
 
-if __name__ == '__main__':
-    pass
