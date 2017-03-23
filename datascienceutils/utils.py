@@ -95,6 +95,7 @@ models_dict = { 'knn': KNeighborsClassifier,
                 'meanShift': MeanShift,
                 'gmm': GaussianMixture,
                 'bgmm': BayesianGaussianMixture,
+                #'pymc':
 
         }
 

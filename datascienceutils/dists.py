@@ -4,8 +4,7 @@ from itertools import tee
 import numpy as np
 import random
 import scipy
-
-from sqlalchemy import create_engine, MetaData, Table
+from scipy.stats import beta, norm
 
 
 class ProbDist(dict):
@@ -89,6 +88,24 @@ def values_dist(vals, binsize=10):
     #cdf = (1 + erf((x-mu)/np.sqrt(2*sigma**2)))/2
     return hist, xedges, pdf, cdf
 
+
+def dirichlet_sample_approximation(base_measure, alpha, tol=0.01):
+    betas = []
+    pis = []
+    betas.append(beta(1, alpha).rvs())
+    pis.append(betas[0])
+    while sum(pis) < (1.-tol):
+        s = np.sum([np.log(1 - b) for b in betas])
+        new_beta = beta(1, alpha).rvs()
+        betas.append(new_beta)
+        pis.append(new_beta * np.exp(s))
+    pis = np.array(pis)
+    thetas = np.array([base_measure() for _ in pis])
+    return pis, thetas
+
+def dirichlet(scale_factor, categories, sample_size=10000):
+    from scipy.stats import dirichlet
+    return dirichlet(alpha=scale_factor * categories).rvs(sample_size)
 
 class DirichletProcessSample():
     """

@@ -1,3 +1,13 @@
+def filter_letters_only(text):
+    import re
+    # Use regular expressions to do a find-and-replace
+    return re.sub("[^a-zA-Z]", " ", text).lower()
+
+def filter_stop_words(text, lang='english'):
+    from nltk.corpus import stopwords
+    stops = set(stopwords.words(lang))
+    return set(text) -set(stops)
+
 def word_match_share(row, lang='english'):
     from nltk.corpus import stopwords
     stops = set(stopwords.words(lang))
@@ -17,9 +27,11 @@ def word_match_share(row, lang='english'):
     R = (len(shared_words_in_q1) + len(shared_words_in_q2))/(len(q1words) + len(q2words))
     return R
 
-def word_2_vector(sentences, size=200):
+def word_2_vector(sentences, size=200, **kwargs):
     from gensim.models import word2vec
-    model = word2vec.Word2Vec(sentences, size=size)
+    model = word2vec.Word2Vec(size=size, **kwargs)
+    model.build_vocab(sentences)
+    model.train(sentences)
     return model
 
 def word_cloud(train_qs):
@@ -31,5 +43,11 @@ def word_similarity(word1, word2):
     from nltk.corpus import wordnet as wn
     return wn.synset(word1).path_similarity(wn.synset(word2))
 
-def tf_idf_model():
-    pass
+def tfidf_model(corpus, gensim=False):
+    if gensim:
+        from gensim.models import tfidfmodel
+        model = tfidfmodel.TfidfModel(corpus)
+    else:
+        from sklearn.feature_extraction.text import TfidfVectorizer
+        model = TfidfVectorizer()
+    return model
