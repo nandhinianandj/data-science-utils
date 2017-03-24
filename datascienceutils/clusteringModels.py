@@ -73,23 +73,24 @@ def cluster_analyze(dataframe):
         algorithm.fit(X)
         t1 = time.time()
         if hasattr(algorithm, 'labels_'):
+            print("According to %s there are %d clusters"%(name, len(set(algorithm.labels_))))
             y_pred = algorithm.labels_.astype(np.int)
         else:
             y_pred = algorithm.predict(X)
 
         # plot
-        new_df = pd.DataFrame(X)
-        s_plot = plotter.scatterplot(new_df, 0, 1, plttitle='%s'%name)
+        plot_data = np.c_[X, y_pred]
+        columns = list(dataframe.columns) + ['classes']
+        new_df = pd.DataFrame(data=plot_data, columns=columns)
+        s_plot = plotter.scatterplot(new_df, columns[0], columns[1], plttitle='%s'%name, group='classes')
         plots.append(s_plot)
 
         if hasattr(algorithm, 'cluster_centers_'):
+            print("According to %s there are %d clusters"%(name, len(algorithm.cluster_centers_)))
             centers = pd.DataFrame(algorithm.cluster_centers_)
             for i, c in enumerate(algorithm.cluster_centers_):
                 # Draw white circles at cluster centers
                 plotter.mtext(s_plot, c[0], c[1], "%s"%str(i), text_color="red")
-        if hasattr(algorithm, 'cluster_center_indices_'):
-            print(algorithm.cluster_center_indices_)
-            #centers = pd.DataFrame(algorithm.cluster_centers_)
 
     grid = gridplot(list(utils.chunks(plots,size=2)))
     plotter.show(grid)

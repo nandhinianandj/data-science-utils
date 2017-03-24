@@ -355,11 +355,11 @@ def scatterplot(scatterDF, xcol, ycol,
     if not group:
         p.circle(scatterDF[xcol], scatterDF[ycol], size=5, **kwargs)
     else:
-        groups = list(scatterDf[group].unique())
+        groups = list(scatterDF[group].unique())
         colors = genColors(len(groups))
         for group in groups:
             color = colors.pop()
-            p.circle(scatterDf[xcol], scatterDf[ycol], size=5, color=color )
+            p.circle(scatterDF[xcol], scatterDF[ycol], size=5, color=color )
     p.xaxis.axis_label = str(xcol)
     p.yaxis.axis_label = str(ycol)
     return p
