@@ -8,6 +8,19 @@ def filter_stop_words(text, lang='english'):
     stops = set(stopwords.words(lang))
     return set(text) -set(stops)
 
+def bag_of_words(text):
+    from sklearn.feature_extraction.text import CountVectorizer
+
+    # Initialize the "CountVectorizer" object, which is scikit-learn's
+    # bag of words tool.
+    vectorizer = CountVectorizer(analyzer = "word",   \
+                             tokenizer = None,    \
+                             preprocessor = None, \
+                             stop_words = None,   \
+                             max_features = 5000)
+    vectorizer.fit_transform(text)
+    return vectorizer
+
 def word_match_share(row, lang='english'):
     from nltk.corpus import stopwords
     stops = set(stopwords.words(lang))
@@ -28,11 +41,67 @@ def word_match_share(row, lang='english'):
     return R
 
 def word_2_vector(sentences, size=200, **kwargs):
+    # Set values for various parameters
+    num_features = 300    # Word vector dimensionality
+    min_word_count = 40   # Minimum word count
+    num_workers = 4       # Number of threads to run in parallel
+    context = 10          # Context window size
+    downsampling = 1e-3   # Downsample setting for frequent words
     from gensim.models import word2vec
     model = word2vec.Word2Vec(size=size, **kwargs)
     model.build_vocab(sentences)
     model.train(sentences)
     return model
+
+def makeFeatureVec(words, model, num_features):
+    # Function to average all of the word vectors in a given
+    # paragraph
+    #
+    # Pre-initialize an empty numpy array (for speed)
+    featureVec = np.zeros((num_features,),dtype="float32")
+    #
+    nwords = 0.
+    #
+    # Index2word is a list that contains the names of the words in
+    # the model's vocabulary. Convert it to a set, for speed
+    index2word_set = set(model.index2word)
+    #
+    # Loop over each word in the review and, if it is in the model's
+    # vocaublary, add its feature vector to the total
+    for word in words:
+        if word in index2word_set:
+            nwords = nwords + 1.
+            featureVec = np.add(featureVec,model[word])
+    #
+    # Divide the result by the number of words to get the average
+    featureVec = np.divide(featureVec,nwords)
+    return featureVec
+
+
+def getAvgFeatureVecs(text, model, num_features):
+    # Given a set of text (each one a list of words), calculate
+    # the average feature vector for each one and return a 2D numpy array
+    #
+    # Initialize a counter
+    counter = 0.
+    #
+    # Preallocate a 2D numpy array, for speed
+    reviewFeatureVecs = np.zeros((len(text),num_features),dtype="float32")
+    #
+    # Loop through the text
+    for review in text:
+       #
+       # Print a status message every 1000th review
+       if counter%1000. == 0.:
+           print("Review %d of %d" % (counter, len(text)))
+       #
+       # Call the function (defined above) that makes average feature vectors
+       reviewFeatureVecs[counter] = makeFeatureVec(review, model, \
+           num_features)
+       #
+       # Increment the counter
+       counter = counter + 1.
+    return reviewFeatureVecs
 
 def word_cloud(train_qs):
     from wordcloud import WordCloud
