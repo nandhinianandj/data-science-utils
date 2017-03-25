@@ -29,9 +29,6 @@ def cluster_analyze(dataframe):
     'MiniBatchKMeans', 'AffinityPropagation', 'MeanShift',
     'SpectralClustering', 'Ward', 'AgglomerativeClustering',
     'DBSCAN', 'Birch']
-    colors = np.array([x for x in 'bgrcmykbgrcmykbgrcmykbgrcmyk'])
-    colors = np.hstack([colors] * 20)
-
 
     plot_num = 1
 
@@ -82,7 +79,7 @@ def cluster_analyze(dataframe):
         plot_data = np.c_[X, y_pred]
         columns = list(dataframe.columns) + ['classes']
         new_df = pd.DataFrame(data=plot_data, columns=columns)
-        s_plot = plotter.scatterplot(new_df, columns[0], columns[1], plttitle='%s'%name, group='classes')
+        s_plot = plotter.scatterplot(new_df, columns[0], columns[1], plttitle='%s'%name, groupCol='classes')
         plots.append(s_plot)
 
         if hasattr(algorithm, 'cluster_centers_'):
@@ -120,7 +117,6 @@ def silhouette_analyze(dataframe, cluster_type='KMeans', n_clusters=None):
 
         # Initialize the clusterer with n_clusters value and a random generator
         cluster_labels = clusterer.fit_predict(dataframe)
-
         # The silhouette_score gives the average value for all the samples.
         # This gives a perspective into the density and separation of the formed
         # clusters
@@ -136,8 +132,10 @@ def silhouette_analyze(dataframe, cluster_type='KMeans', n_clusters=None):
         # 2nd Plot showing the actual clusters formed
         dataframe = pd.DataFrame(dataframe)
         cols = list(dataframe.columns)
+        dataframe['predictions'] = pd.Series(cluster_labels)
         s_plot = plotter.scatterplot(dataframe,
                                      cols[0], cols[1],
+                                     groupCol='predictions',
                                      xlabel="Feature space for 1st feature",
                                      ylabel="Feature space for 2nd feature",
                                      plttitle="Visualization of the clustered data")

@@ -9,11 +9,12 @@ from bokeh.models import ( Text, PanTool, WheelZoomTool, LinearAxis,
                            SingleIntervalTicker, Range1d,  Plot,
                            Text, Circle, HoverTool, Triangle)
 from math import ceil
-from numpy import pi as PI
 
+import itertools
+import numpy as np
 import operator
 import os
-import itertools
+import random
 
 #TODO: Ugh.. this file/module needs a cleanup
 # Custom imports
@@ -39,7 +40,7 @@ AXIS_FORMATS = dict(
 
 BOKEH_TOOLS = "resize,crosshair,pan,wheel_zoom,box_zoom,reset,tap,previewsave,box_select,poly_select,lasso_select"
 
-def genColors(n, ptype='magma'):
+def genColors(n, ptype=None):
     """
     """
     from bokeh.palettes import magma, inferno, plasma, viridis
@@ -339,7 +340,7 @@ def heatmap(heatMapDF,xlabel, ylabel, value_label,
 
 def scatterplot(scatterDF, xcol, ycol,
                 xlabel=None, ylabel=None,
-                group=None, plttitle=None, **kwargs):
+                groupCol=None, plttitle=None, **kwargs):
     fig_kwargs = kwargs.get('figure')
     if fig_kwargs:
         p = figure(title=plttitle, **fig_kwargs)
@@ -352,14 +353,18 @@ def scatterplot(scatterDF, xcol, ycol,
     if not ylabel:
         ylabel = ycol
 
-    if not group:
+    if not groupCol:
+        kwargs.pop('groupCol', None)
         p.circle(scatterDF[xcol], scatterDF[ycol], size=5, **kwargs)
     else:
-        groups = list(scatterDF[group].unique())
+        groups = list(scatterDF[groupCol].unique())
         colors = genColors(len(groups))
+        colors = list(np.hstack([colors] * 20))
         for group in groups:
-            color = colors.pop()
-            p.circle(scatterDF[xcol], scatterDF[ycol], size=5, color=color )
+            color = colors.pop(random.randrange(len(colors)))
+            p.circle(scatterDF[scatterDF[groupCol]==group][xcol],
+                     scatterDF[scatterDF[groupCol]==group][ycol],
+                        size=5, color=color )
     p.xaxis.axis_label = str(xcol)
     p.yaxis.axis_label = str(ycol)
     return p
@@ -369,13 +374,13 @@ def pieChart(df, column, **kwargs):
     wedges = []
     wedge_sum = 0
     total = len(df)
-    colors = genColors(df[column].nunique())
+    colors = genColors(df[column].nunique(), ptype='magma')
     for i, (key, val) in enumerate(df.groupby(column).size().iteritems()):
         wedge = dict()
         pct = val/float(total)
-        wedge['start'] = 2 * PI * wedge_sum
+        wedge['start'] = 2 * np.pi * wedge_sum
         wedge_sum = (val/float(total)) + wedge_sum
-        wedge['end'] = 2 * PI * wedge_sum
+        wedge['end'] = 2 * np.pi * wedge_sum
         wedge['name'] = '{}-{:.2f} %'.format(key, pct)
         wedge['color'] = colors.pop()
         wedges.append(wedge)

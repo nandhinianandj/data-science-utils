@@ -3,6 +3,7 @@
 	* Add test of independence support for categorical variables(use that P(A & B) = P(A) * P(B)
 	  as a test
 
+	* Add pymc based linear regression(https://github.com/pymc-devs/pymc/wiki/StraightLineFit)
 	* Add a wrapper for geo-plot in plotter.py(for plotting on a map)
 
 	* Add support for feature filtering..(tsfresh module and also others) in features.py
@@ -13,6 +14,7 @@
 
 	* Add support for https://github.com/ANNetGPGPU/ANNetGPGPU in the cluster analyze logic
 
+	* Add [Permute](https://github.com/statlab/permute) tests
 
 	* Add a dimensional analysis function/option.
 		* - No. of independent(aka orthogonal) dimensions(aka degrees of freedom of the
