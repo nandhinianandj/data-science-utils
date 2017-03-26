@@ -4,6 +4,8 @@
 	  as a test
 
 	* Add pymc based linear regression(https://github.com/pymc-devs/pymc/wiki/StraightLineFit)
+	  and this (http://pymc-devs.github.io/pymc/tutorial.html#an-example-statistical-model) and
+	  pystan (https://pystan.readthedocs.io/en/latest/)
 	* Add a wrapper for geo-plot in plotter.py(for plotting on a map)
 
 	* Add support for feature filtering..(tsfresh module and also others) in features.py
@@ -15,6 +17,8 @@
 	* Add support for https://github.com/ANNetGPGPU/ANNetGPGPU in the cluster analyze logic
 
 	* Add [Permute](https://github.com/statlab/permute) tests
+
+	* Finish off that kernel density estimation for 1-d data clustering(http://scikit-learn.org/stable/auto_examples/neighbors/plot_kde_1d.html) and (http://bokeh.pydata.org/en/0.9.3/docs/reference/charts.html).
 
 	* Add a dimensional analysis function/option.
 		* - No. of independent(aka orthogonal) dimensions(aka degrees of freedom of the

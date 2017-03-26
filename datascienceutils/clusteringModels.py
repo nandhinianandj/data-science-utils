@@ -1,6 +1,6 @@
 from bokeh.layouts import gridplot
 from sklearn import cluster
-from sklearn.neighbors import kneighbors_graph
+from sklearn.neighbors import kneighbors_graph, KernelDensity
 import numpy as np
 import pandas as pd
 import time
@@ -24,70 +24,76 @@ def is_cluster(dataframe, model_type='dbscan', batch_size=2):
     return model_obj.cluster_centers_
 
 def cluster_analyze(dataframe):
-
-    clustering_names = [
-    'MiniBatchKMeans', 'AffinityPropagation', 'MeanShift',
-    'SpectralClustering', 'Ward', 'AgglomerativeClustering',
-    'DBSCAN', 'Birch']
-
-    plot_num = 1
-
-    # normalize dataset for easier parameter selection
-    X = sku.feature_scale_or_normalize(dataframe, dataframe.columns)
-    # estimate bandwidth for mean shift
-    bandwidth = cluster.estimate_bandwidth(X, quantile=0.3)
-
-    # connectivity matrix for structured Ward
-    connectivity = kneighbors_graph(X, n_neighbors=10, include_self=False)
-    # make connectivity symmetric
-    connectivity = 0.5 * (connectivity + connectivity.T)
-
-    # create clustering estimators
-    ms = cluster.MeanShift(bandwidth=bandwidth, bin_seeding=True)
-    two_means = cluster.MiniBatchKMeans(n_clusters=2)
-    ward = cluster.AgglomerativeClustering(n_clusters=2, linkage='ward',
-                                           connectivity=connectivity)
-    spectral = cluster.SpectralClustering(n_clusters=2,
-                                          eigen_solver='arpack',
-                                          affinity="nearest_neighbors")
-    dbscan = cluster.DBSCAN(eps=.2)
-    affinity_propagation = cluster.AffinityPropagation(damping=.9,
-                                                       preference=-200)
-
-    average_linkage = cluster.AgglomerativeClustering(
-        linkage="average", affinity="cityblock", n_clusters=2,
-        connectivity=connectivity)
-
-
-    birch = cluster.Birch(n_clusters=2)
-    clustering_algorithms = [
-        two_means, affinity_propagation, ms, spectral, ward, average_linkage,
-        dbscan, birch]
     plots = list()
-    for name, algorithm in zip(clustering_names, clustering_algorithms):
-        # predict cluster memberships
-        t0 = time.time()
-        algorithm.fit(X)
-        t1 = time.time()
-        if hasattr(algorithm, 'labels_'):
-            print("According to %s there are %d clusters"%(name, len(set(algorithm.labels_))))
-            y_pred = algorithm.labels_.astype(np.int)
-        else:
-            y_pred = algorithm.predict(X)
+    if len(dataframe.columns) > 1:
+        clustering_names = [
+        'MiniBatchKMeans', 'AffinityPropagation', 'MeanShift',
+        'SpectralClustering', 'Ward', 'AgglomerativeClustering',
+        'DBSCAN', 'Birch']
+        # normalize dataset for easier parameter selection
+        X = sku.feature_scale_or_normalize(dataframe, dataframe.columns)
+        # estimate bandwidth for mean shift
+        bandwidth = cluster.estimate_bandwidth(X, quantile=0.3)
 
-        # plot
-        plot_data = np.c_[X, y_pred]
-        columns = list(dataframe.columns) + ['classes']
-        new_df = pd.DataFrame(data=plot_data, columns=columns)
-        s_plot = plotter.scatterplot(new_df, columns[0], columns[1], plttitle='%s'%name, groupCol='classes')
-        plots.append(s_plot)
+        # connectivity matrix for structured Ward
+        connectivity = kneighbors_graph(X, n_neighbors=10, include_self=False)
+        # make connectivity symmetric
+        connectivity = 0.5 * (connectivity + connectivity.T)
 
-        if hasattr(algorithm, 'cluster_centers_'):
-            print("According to %s there are %d clusters"%(name, len(algorithm.cluster_centers_)))
-            centers = pd.DataFrame(algorithm.cluster_centers_)
-            for i, c in enumerate(algorithm.cluster_centers_):
-                # Draw white circles at cluster centers
-                plotter.mtext(s_plot, c[0], c[1], "%s"%str(i), text_color="red")
+        # create clustering estimators
+        ms = cluster.MeanShift(bandwidth=bandwidth, bin_seeding=True)
+        two_means = cluster.MiniBatchKMeans(n_clusters=2)
+        ward = cluster.AgglomerativeClustering(n_clusters=2, linkage='ward',
+                                               connectivity=connectivity)
+        spectral = cluster.SpectralClustering(n_clusters=2,
+                                              eigen_solver='arpack',
+                                              affinity="nearest_neighbors")
+        dbscan = cluster.DBSCAN(eps=.2)
+        affinity_propagation = cluster.AffinityPropagation(damping=.9,
+                                                           preference=-200)
+
+        average_linkage = cluster.AgglomerativeClustering(
+            linkage="average", affinity="cityblock", n_clusters=2,
+            connectivity=connectivity)
+
+
+        birch = cluster.Birch(n_clusters=2)
+        clustering_algorithms = [
+            two_means, affinity_propagation, ms, spectral, ward, average_linkage,
+            dbscan, birch]
+    	for name, algorithm in zip(clustering_names, clustering_algorithms):
+    	    # predict cluster memberships
+    	    t0 = time.time()
+    	    algorithm.fit(X)
+    	    t1 = time.time()
+    	    if hasattr(algorithm, 'labels_'):
+    	        print("According to %s there are %d clusters"%(name, len(set(algorithm.labels_))))
+    	        y_pred = algorithm.labels_.astype(np.int)
+    	    else:
+    	        y_pred = algorithm.predict(X)
+
+    	    # plot
+    	    plot_data = np.c_[X, y_pred]
+    	    columns = list(dataframe.columns) + ['classes']
+    	    new_df = pd.DataFrame(data=plot_data, columns=columns)
+    	    s_plot = plotter.scatterplot(new_df, columns[0], columns[1], plttitle='%s'%name, groupCol='classes')
+    	    plots.append(s_plot)
+
+    	    if hasattr(algorithm, 'cluster_centers_'):
+    	        print("According to %s there are %d clusters"%(name, len(algorithm.cluster_centers_)))
+    	        centers = pd.DataFrame(algorithm.cluster_centers_)
+    	        for i, c in enumerate(algorithm.cluster_centers_):
+    	            # Draw white circles at cluster centers
+    	            plotter.mtext(s_plot, c[0], c[1], "%s"%str(i), text_color="red")
+
+    else:
+        X = sku.feature_scale_or_normalize(dataframe, dataframe.columns)
+	for kernel in ['gaussian', 'tophat', 'epanechnikov']:
+	    kde = KernelDensity(kernel=kernel, bandwidth=0.5).fit(X)
+	    log_dens = kde.score_samples(X_plot)
+            hz = Horizon(xyvalues, index='Date', title="Horizon Example", ylabel='Sample Data', xlabel='')
+	    ax.plot(X[:, 0], np.exp(log_dens), '-',
+	            label="kernel = '{0}'".format(kernel))
 
     grid = gridplot(list(utils.chunks(plots,size=2)))
     plotter.show(grid)
