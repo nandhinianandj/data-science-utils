@@ -69,6 +69,16 @@ def show_image(image, **kwargs):
     p.image(image=[image], x=0, y=0, dw=10, dh=10, palette='Spectral11')
     return p
 
+def show_var_imp(model, X,y):
+    imp = pd.DataFrame(
+        model.feature_importances_  ,
+        columns = [ 'Importance' ] ,
+        index = X.columns
+        )
+    imp = imp.sort_values( [ 'Importance' ] , ascending = True )
+    imp[ : 10 ].plot( kind = 'barh' )
+    print (model.score( X , y ))
+
 def show_tree_model(model, model_type='tree'):
     assert model_type in ['tree', 'randomforest', 'xgboost']
     from sklearn import tree

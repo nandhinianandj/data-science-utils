@@ -4,6 +4,10 @@ seaborn
 matplotlib
 
 #pygal
+
+# Modular data processing
+mdp
+
 #Meta learning
 auto-sklearn
 optunity

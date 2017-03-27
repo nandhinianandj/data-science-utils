@@ -56,12 +56,10 @@ def cluster_analyze(dataframe):
             linkage="average", affinity="cityblock", n_clusters=2,
             connectivity=connectivity)
 
-
         birch = cluster.Birch(n_clusters=2)
-        clustering_algorithms = [
-            two_means, affinity_propagation, ms, spectral, ward, average_linkage,
-            dbscan, birch]
-    	for name, algorithm in zip(clustering_names, clustering_algorithms):
+        clustering_algorithms = [ two_means, affinity_propagation, ms, spectral, ward,
+                                  average_linkage, dbscan, birch]
+        for name, algorithm in zip(clustering_names, clustering_algorithms):
     	    # predict cluster memberships
     	    t0 = time.time()
     	    algorithm.fit(X)
@@ -85,16 +83,16 @@ def cluster_analyze(dataframe):
     	        for i, c in enumerate(algorithm.cluster_centers_):
     	            # Draw white circles at cluster centers
     	            plotter.mtext(s_plot, c[0], c[1], "%s"%str(i), text_color="red")
-
     else:
-        X = sku.feature_scale_or_normalize(dataframe, dataframe.columns)
-	for kernel in ['gaussian', 'tophat', 'epanechnikov']:
-	    kde = KernelDensity(kernel=kernel, bandwidth=0.5).fit(X)
-	    log_dens = kde.score_samples(X_plot)
-            hz = Horizon(xyvalues, index='Date', title="Horizon Example", ylabel='Sample Data', xlabel='')
-	    ax.plot(X[:, 0], np.exp(log_dens), '-',
-	            label="kernel = '{0}'".format(kernel))
-
+        from . import analyze
+        analyze.dist_analyze(dataframe, dataframe.columns[0], bayesian_hist=True)
+        #X = sku.feature_scale_or_normalize(dataframe, dataframe.columns)
+        #for kernel in ['gaussian', 'tophat', 'epanechnikov']:
+        #    kde = KernelDensity(kernel=kernel, bandwidth=0.5).fit(X)
+        #    log_dens = kde.score_samples(X_plot)
+        #    hz = Horizon(xyvalues, index='Date', title="Horizon Example", ylabel='Sample Data', xlabel='')
+        #    ax.plot(X[:, 0], np.exp(log_dens), '-',
+        #            label="kernel = '{0}'".format(kernel))
     grid = gridplot(list(utils.chunks(plots,size=2)))
     plotter.show(grid)
 

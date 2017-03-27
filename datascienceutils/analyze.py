@@ -75,6 +75,8 @@ def correlation_analyze(df, col1, col2, categories=[], measures=[],
         measures: List of measures to plot heatmap of categories
         trellis: Plot trellis type plots for the categories only valid if categories is passed
     """
+    if summary_only:
+        plotter.heatmap(df.corr())
     for meas in measures:
         assert meas in list(df.columns)
     for catg in categories:
@@ -134,10 +136,10 @@ def correlation_analyze(df, col1, col2, categories=[], measures=[],
         plotter.show(hmGrid)
         if trellis:
             trellisPlots = list()
-    print("# Pandas correlation coefficients matrix")
-    print(df.corr())
-    print("# Pandas co-variance coefficients matrix")
-    print(df.cov())
+    #print("# Pandas correlation coefficients matrix")
+    #print(df.corr())
+    #print("# Pandas co-variance coefficients matrix")
+    #print(df.cov())
 
 def is_independent(series1, series2):
     pass
