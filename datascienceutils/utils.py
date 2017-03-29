@@ -145,6 +145,17 @@ def get_model_obj(modelType, n_clusters=None, **kwargs):
     else:
         raise 'Unknown model type: see utils.py for available'
 
+def train_pymc_linear_reg(df, target, column1):
+    from pymc3 import Model, glm, NUTS, find_MAP
+    with Model() as model:
+        # specify glm and pass in data. The resulting linear model, its likelihood and
+        # and all its parameters are automatically added to our model.
+        glm.glm('y ~ x', data)
+        start = find_MAP()
+        step = NUTS(scaling=start) # Instantiate MCMC sampling algorithm
+        trace = sample(2000, step, progressbar=False) # draw 2000 posterior samples using NUTS sampling
+
+    pass
 
 def cross_validate():
     for i, (train, test) in enumerate(cv):
@@ -235,6 +246,7 @@ def roc_plot(dataframe, target, score, cls_list=[],multi_class=True):
         plt.show()
         return plt
 
+
 def bayesian_blocks(t):
     """Bayesian Blocks Implementation
 
@@ -320,4 +332,44 @@ def call_7z(filename):
     cmd = ['7z', 'a', os.path.join(base_path, fname + '.7z'), os.path.join(base_path, filename), '-mx9']
     sp = subprocess.Popen(cmd, stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
 
+
+def count_boxes( data, box_size, M ):
+    #data = Series( data )
+    N = np.int( np.floor( M / box_size ) )
+    counts = list()
+    for i in range( N ):
+        condition = ( data >= i*box_size )&( data < (i+1)*box_size )
+        subset = data[ condition ]
+        counts.append( subset.count() )
+    counts = [ i for i in counts if i != 0 ]
+    return len( counts )
+
+def fractaldim(pointlist, boxlevel):
+    """Returns the approximate fractal dimension of pointlist,
+    via the box-counting algorithm.  The elements of pointset
+    should be three-element sequences of numbers between 0.0
+    and 1.0.  The boxlevel is the number of divisions made on
+    each dimension, and should be greater than 1."""
+    # From here https://mail.python.org/pipermail/python-list/2000-September/025263.html
+
+    if boxlevel <= 1.0: return -1
+
+    pointdict = {}
+
+    def mapfunction(val, level=boxlevel):
+            return int(val * level)
+
+    for point in pointlist:
+            box = (int(point[0] * boxlevel),
+                    int(point[1] * boxlevel),
+                    int(point[2] * boxlevel))
+            #box = tuple(map(mapfunction, point))
+            if not pointdict.has_key(box):
+                    pointdict[box] = 1
+
+    num = len(pointdict.keys())
+
+    if num == 0: return -1
+
+    return math.log(num) / math.log(boxlevel)
 

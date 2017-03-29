@@ -1,11 +1,15 @@
 ## TODO
 
+	* Add [Fractal Analysis](https://en.wikipedia.org/wiki/Fractal_analysis) R-equivalent
+	  package[fdim](http://cran.r-project.org/src/contrib/Archive/fdim/)
+
 	* Add test of independence support for categorical variables(use that P(A & B) = P(A) * P(B)
 	  as a test
 
 	* Add pymc based linear regression(https://github.com/pymc-devs/pymc/wiki/StraightLineFit)
 	  and this (http://pymc-devs.github.io/pymc/tutorial.html#an-example-statistical-model) and
 	  pystan (https://pystan.readthedocs.io/en/latest/)
+
 	* Add a wrapper for geo-plot in plotter.py(for plotting on a map)
 
 	* Add support for feature filtering..(tsfresh module and also others) in features.py

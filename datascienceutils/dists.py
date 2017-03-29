@@ -12,7 +12,7 @@ class ProbDist(dict):
 			Taken from norvig: http://nbviewer.jupyter.org/url/norvig.com/ipython/Probability.ipynb
 			input: A dict of {<event_id_or_name>: <frequency>}
 			return: A Probability Distribution; an {outcome: probability} mapping.
-	"""
+    """
     def __init__(self, mapping=(), **kwargs):
         self.update(mapping, **kwargs)
         # Make probabilities sum to 1.0; assert no negative probabilities
@@ -88,6 +88,31 @@ def values_dist(vals, binsize=10):
     #cdf = (1 + erf((x-mu)/np.sqrt(2*sigma**2)))/2
     return hist, xedges, pdf, cdf
 
+####################################################################################
+# Different types of distributions
+####################################################################################
+
+def uniform(min_, max_, dims):
+    """Return a random number between min_ and max_ ."""
+    return mdp.numx_rand.random(dims)*(max_-min_)+min_
+def circumference_distr(center, radius, n):
+    """Return n random points uniformly distributed on a circumference."""
+    phi = uniform(0, 2*mdp.numx.pi, (n,1))
+    x = radius*mdp.numx.cos(phi)+center[0]
+    y = radius*mdp.numx.sin(phi)+center[1]
+    return mdp.numx.concatenate((x,y), axis=1)
+def circle_distr(center, radius, n):
+    """Return n random points uniformly distributed on a circle."""
+    phi = uniform(0, 2*mdp.numx.pi, (n,1))
+    sqrt_r = mdp.numx.sqrt(uniform(0, radius*radius, (n,1)))
+    x = sqrt_r*mdp.numx.cos(phi)+center[0]
+    y = sqrt_r*mdp.numx.sin(phi)+center[1]
+    return mdp.numx.concatenate((x,y), axis=1)
+def rectangle_distr(center, w, h, n):
+    """Return n random points uniformly distributed on a rectangle."""
+    x = uniform(-w/2., w/2., (n,1))+center[0]
+    y = uniform(-h/2., h/2., (n,1))+center[1]
+    return mdp.numx.concatenate((x,y), axis=1)
 
 def dirichlet_sample_approximation(base_measure, alpha, tol=0.01):
     betas = []

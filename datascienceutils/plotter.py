@@ -123,17 +123,19 @@ def show_model_interpretation(model, model_type='randomforest'):
     import lime
     pass
 
-def lineplot(df, xcol, ycol, fig=None, label=None, color=None, title=None, **kwargs):
+def lineplot(df, xcol, ycol, fig=None, legend=None, color=None, title=None, **kwargs):
     if not title:
         title = "%s Vs %s" %(xcol, ycol)
-    if label:
-        label = label + ycol
+    if legend:
+        leg_label = legend + ycol
     else:
-        label = ycol
+        leg_label = ycol
     if not fig:
         fig = figure(title=title)
     if not color:
         color=(100,100,255, 1)
+    fig.xaxis.axis_label = xcol
+    fig.yaxis.axis_label = ycol
     fig.line(df[xcol], df[ycol], color=color, legend=label)
     fig.legend.location = "top_left"
     return fig

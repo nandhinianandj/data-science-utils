@@ -49,6 +49,8 @@ def dist_analyze(df, column='', category='', is_normal=True, bayesian_hist=False
         plots.append(plotter.sb_violinplot(df[column], inner='box'))
         if bayesian_hist:
             plots.append(plotter.histogram(df, column, bayesian_bins=True))
+        else:
+            plots.append(plotter.histogram(df, column))
     else:
         if df[column].nunique() < 7:
             plots.append(plotter.pieChart(df, column, title='Distribution of %s'%column))
@@ -64,7 +66,7 @@ def dist_analyze(df, column='', category='', is_normal=True, bayesian_hist=False
 
 
 def correlation_analyze(df, col1, col2, categories=[], measures=[],
-                        check_linearity=False, trellis=False):
+                        summary_only=False, check_linearity=False, trellis=False):
     """
     Plot scatter plots of all combinations of numerical columns.
     If categories and measures are passed, plot heatmap of combination of categories by measure.
@@ -118,7 +120,7 @@ def correlation_analyze(df, col1, col2, categories=[], measures=[],
             for combo in combos:
                 print("# Correlation btw Columns %s & %s by count" % (combo[0], combo[1]))
                 group0 = df.groupby(list(combo)).size().reset_index()
-                group0.rename(columns={0: 'counts'}, inplace=True)
+                group0.rename(columns={col1: 'counts'}, inplace=True)
                 heatmaps.append(plotter.heatmap(group0, combo[0], combo[1], 'counts'))
 
         for meas in measures:
@@ -128,7 +130,7 @@ def correlation_analyze(df, col1, col2, categories=[], measures=[],
                     combo[1],
                     meas))
                 group0 = df.groupby(list(combo)).sum().reset_index()
-                group0.rename(columns={0: 'sum_%s'%meas}, inplace=True)
+                group0.rename(columns={meas: 'sum_%s'%meas}, inplace=True)
                 heatmaps.append(plotter.heatmap(group0, combo[0], combo[1], 'sum_%s'%meas,
                                                 title="%s vs %s %s heatmap"%(combo[0], combo[1], meas)
                                                 ))
@@ -267,6 +269,7 @@ def regression_analyze(df, col1, col2, trainsize=0.8, non_linear=False,
             pm.train(new_df, target, column=col1, modelType='ElasticNetRegression'),
             #pm.train(new_df, target, column=col1, modelType='IsotonicRegression'),
             #pm.train(new_df, target, column=col1, modelType='logarithmicRegression'),
+            #utils.train_pymc_linear_reg(new_df, target, column=col1)
             ]
     plots = list()
     for model in models:
@@ -333,6 +336,24 @@ def time_series_analysis(df, timeCol='date', valueCol=None, timeInterval='30min'
             tsu.seasonal_decompose(ts, **seasonal_args)
         else:
             tsu.seasonal_decompose(ts)
+
+def fractal_analyze(dataframe,column, L=None):
+    if not L: L = dataframe[column].max()
+    r = np.array([ L/(2.0**i) for i in range(12,0,-1) ])
+    N = [ utils.count_boxes( dataframe[column], ri, L ) for ri in r ]
+    def f( x, A, Df ):
+        '''
+        User defined function for scipy.optimize.curve_fit(),
+        which will find optimal values for A and Df.
+        '''
+        return Df * x + A
+    import scipy
+    popt, pcov = scipy.optimize.curve_fit( f, np.log( 1./r ), np.log( N ) )
+    A, Df = popt
+    new_df = pd.DataFrame(columns=['Box Size(1/r)', 'No. of Boxes'])
+    new_df['Box Size(1/r)'] = 1/r
+    new_df['No. of Boxes'] = N
+    return plotter.lineplot(new_df, 'Box Size(1/r)', 'No. of Boxes')
 
 def chaid_tree(dataframe, targetCol):
     import CHAID as ch
