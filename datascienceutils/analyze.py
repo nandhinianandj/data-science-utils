@@ -337,7 +337,11 @@ def time_series_analysis(df, timeCol='date', valueCol=None, timeInterval='30min'
         else:
             tsu.seasonal_decompose(ts)
 
-def fractal_analyze(dataframe,column, L=None):
+def fractal_analyze(dataframe,column, L=None, dim_type='box'):
+    if dim_type == 'box':
+        _box_dimensions(dataframe, column, L=L)
+
+def _box_dimensions(dataframe,column, L=None):
     if not L: L = dataframe[column].max()
     r = np.array([ L/(2.0**i) for i in range(12,0,-1) ])
     N = [ utils.count_boxes( dataframe[column], ri, L ) for ri in r ]
@@ -354,6 +358,68 @@ def fractal_analyze(dataframe,column, L=None):
     new_df['Box Size(1/r)'] = 1/r
     new_df['No. of Boxes'] = N
     return plotter.lineplot(new_df, 'Box Size(1/r)', 'No. of Boxes')
+
+def _hausdorff_dimension(pixels):
+
+    # computing the fractal dimension
+    #considering only scales in a logarithmic list
+    scales=np.logspace(1, 8, num=20, endpoint=False, base=2)
+    Ns=[]
+    # looping over several scales
+    for scale in scales:
+        print &amp;quot;======= Scale :&amp;quot;,scale
+        # computing the histogram
+        H, edges=np.histogramdd(pixels, bins=(np.arange(0,Lx,scale),np.arange(0,Ly,scale)))
+        Ns.append(np.sum(H&amp;gt;0))
+
+    plot_df = pd.DataFrame(columns=['log(scales)', 'log(Ns)'])
+    plot_df['Log(scales)'] = np.log(scales)
+    plot_df['Log(Ns)'] = np.log(Ns)
+    # linear fit, polynomial of degree 1
+    coeffs=np.polyfit(np.log(scales), np.log(Ns), 1)
+    plotter.lineplot(plot_df, 'Log(scales)', 'Log(Ns)')
+
+
+def fractal_dimension(image, threshold=0.9):
+
+    import scipy.misc
+    import numpy as np
+    # Only for 2d image
+    assert(len(image.shape) == 2)
+
+    # From https://github.com/rougier/numpy-100 (#87)
+    def boxcount(image, k):
+        S = np.add.reduceat(
+            np.add.reduceat(image, np.arange(0, image.shape[0], k), axis=0),
+                               np.arange(0, image.shape[1], k), axis=1)
+
+        # We count non-empty (0) and non-full boxes (k*k)
+        return len(np.where((S > 0) & (S < k*k))[0])
+
+
+    # Transform Z into a binary array
+    image = (image < threshold)
+
+    # Minimal dimension of image
+    p = min(image.shape)
+
+    # Greatest power of 2 less than or equal to p
+    n = 2**np.floor(np.log(p)/np.log(2))
+
+    # Extract the exponent
+    n = int(np.log(n)/np.log(2))
+
+    # Build successive box sizes (from 2**n down to 2**1)
+    sizes = 2**np.arange(n, 1, -1)
+
+    # Actual box counting with decreasing size
+    counts = []
+    for size in sizes:
+        counts.append(boxcount(image, size))
+
+    # Fit the successive log(sizes) with log (counts)
+    coeffs = np.polyfit(np.log(sizes), np.log(counts), 1)
+    return -coeffs[0]
 
 def chaid_tree(dataframe, targetCol):
     import CHAID as ch

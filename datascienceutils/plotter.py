@@ -136,7 +136,7 @@ def lineplot(df, xcol, ycol, fig=None, legend=None, color=None, title=None, **kw
         color=(100,100,255, 1)
     fig.xaxis.axis_label = xcol
     fig.yaxis.axis_label = ycol
-    fig.line(df[xcol], df[ycol], color=color, legend=label)
+    fig.line(df[xcol], df[ycol], color=color, legend=legend)
     fig.legend.location = "top_left"
     return fig
 
