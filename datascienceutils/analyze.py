@@ -367,10 +367,10 @@ def _hausdorff_dimension(pixels):
     Ns=[]
     # looping over several scales
     for scale in scales:
-        print &amp;quot;======= Scale :&amp;quot;,scale
+        print("Scale ",scale)
         # computing the histogram
         H, edges=np.histogramdd(pixels, bins=(np.arange(0,Lx,scale),np.arange(0,Ly,scale)))
-        Ns.append(np.sum(H&amp;gt;0))
+        Ns.append(np.sum(H>0))
 
     plot_df = pd.DataFrame(columns=['log(scales)', 'log(Ns)'])
     plot_df['Log(scales)'] = np.log(scales)
