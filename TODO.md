@@ -6,6 +6,10 @@
 	* Add test of independence support for categorical variables(use that P(A & B) = P(A) * P(B)
 	  as a test
 
+	* Add a framework for defining the model's limits and trigger alerts, when it is
+	  violated.(use pymc/pystan for creating conditions about probability distributions of data
+	  sources.)
+
 	* Add pymc based linear regression(https://github.com/pymc-devs/pymc/wiki/StraightLineFit)
 	  and this (http://pymc-devs.github.io/pymc/tutorial.html#an-example-statistical-model) and
 	  pystan (https://pystan.readthedocs.io/en/latest/)
