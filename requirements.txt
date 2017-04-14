@@ -2,7 +2,7 @@
 bokeh
 seaborn
 matplotlib
-shapely
+# shapely
 
 #pygal
 

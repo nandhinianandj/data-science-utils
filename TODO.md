@@ -1,5 +1,6 @@
 ## TODO
-
+    * Add a contour plot
+	
 	* Add [Fractal Analysis](https://en.wikipedia.org/wiki/Fractal_analysis) R-equivalent
 	  package[fdim](http://cran.r-project.org/src/contrib/Archive/fdim/)
 
