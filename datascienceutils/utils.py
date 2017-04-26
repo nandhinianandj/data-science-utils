@@ -35,6 +35,8 @@ import xgboost as xgb
 from pylightgbm.models import *
 # Sigh lightgbm insist this is the only way
 os.environ['LIGHTGBM_EXEC'] = os.path.join(os.getenv("HOME"), 'bin', 'lightgbm')
+os.environ['DATAROBOT_CONFIG_FILE'] = os.path.join(os.getenv("HOME"), '.config', 'datarobot',
+        'drconfig.yaml')
 
 # (Gaussian) Mixture models
 from sklearn.mixture import *
