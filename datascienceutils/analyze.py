@@ -1,6 +1,7 @@
 # Standard and external libraries
 from bokeh.layouts import gridplot
 from statsmodels.stats import diagnostic
+from statsmodels.stats import outliers_influence
 
 import operator
 import functools
@@ -221,8 +222,8 @@ def factor_analyze(df, target=None, model_type ='pca', **kwargs):
     print("Correlation of transformed")
     correlation_analyze(trans_df, 0, 1)
 
-def regression_analyze(df, col1, col2, trainsize=0.8, non_linear=False,
-                       test_heteroskedasticity=False, check_dist_similarity=False, **kwargs):
+def regression_analyze(df, col1, col2, trainsize=0.8, non_linear=False, check_heteroskedasticity=True,
+                               check_vif=True, check_dist_similarity=True, **kwargs):
     """
     Plot regressed data vs original data for the passed columns.
     @params:
@@ -232,7 +233,7 @@ def regression_analyze(df, col1, col2, trainsize=0.8, non_linear=False,
     @optional:
         non_linear: Use the python ace module to calculate non-linear correlations too.(Warning can
         be very slow)
-        test_heteroskedasticity: self-evident
+        check_heteroskedasticity: self-evident
     """
     # TODO: non-linearity tests
     from . import predictiveModels as pm
@@ -257,6 +258,7 @@ def regression_analyze(df, col1, col2, trainsize=0.8, non_linear=False,
         plotter.show(plot)
 
     if check_dist_similarity:
+        print("P-value for distribution similarity between %s and %s"%(col1, col2))
         is_similar_distribution(df[col1], df[col2])
 
     new_df = df[[col1, col2]].copy(deep=True)
@@ -282,7 +284,14 @@ def regression_analyze(df, col1, col2, trainsize=0.8, non_linear=False,
         plots.append(scatter)
         print("Regression Score: %s"%(model.__repr__()))
         print(model.score(source, new_df[col2].as_matrix().reshape(-1,1)))
-        if test_heteroskedasticity:
+        if check_vif:
+            exog = df.as_matrix().reshape(-1,1)
+            for col in [col1, col2]:
+                print("Variance Inflation Factors for %d"%col)
+                col_idx = list(df.columns).index(col)
+                print(outliers_influence.variance_inflation_factor(exog, col_idx))
+
+        if check_heteroskedasticity:
             if not kwargs.get('exog', None):
                 other_cols = list(set(df.columns) - set([col1, col2]))
                 kwargs['exog'] = random.choice(other_cols)

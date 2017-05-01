@@ -161,7 +161,7 @@ def setup_package():
         cmdclass = {}
 
     build_requires = ['scikit-learn', 'bokeh', 'seaborn', 'pandas',
-                      'matplotlib', 'xgboost']#, 'pyLightGBM']
+                      'scipy','matplotlib', 'xgboost', 'statsmodels']#, 'pyLightGBM']
 
     metadata = dict(
             name='datascienceutils',

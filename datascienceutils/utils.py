@@ -3,6 +3,7 @@ import math
 import os
 
 import numpy as np
+import pandas as pd
 
 from sklearn.cluster import KMeans, SpectralClustering, DBSCAN, MeanShift,\
                             Birch, AffinityPropagation, AgglomerativeClustering, MiniBatchKMeans
@@ -32,9 +33,9 @@ import statsmodels.api as sm
 # xgboost
 import xgboost as xgb
 # LightGBM models
-from pylightgbm.models import *
+#from pylightgbm.models import *
 # Sigh lightgbm insist this is the only way
-os.environ['LIGHTGBM_EXEC'] = os.path.join(os.getenv("HOME"), 'bin', 'lightgbm')
+#os.environ['LIGHTGBM_EXEC'] = os.path.join(os.getenv("HOME"), 'bin', 'lightgbm')
 os.environ['DATAROBOT_CONFIG_FILE'] = os.path.join(os.getenv("HOME"), '.config', 'datarobot',
         'drconfig.yaml')
 
@@ -86,8 +87,8 @@ models_dict = { 'knn': KNeighborsClassifier,
                 'perceptron': Perceptron,
                 'xgboost': xgb.XGBClassifier,
                 'baseNN': create_base_nn,
-                'lightGBMRegression': GBMRegressor,
-                'lightGBMBinaryClass': GBMClassifier,
+                #'lightGBMRegression': GBMRegressor,
+                #'lightGBMBinaryClass': GBMClassifier,
                 'KMeans':  KMeans,
                 'dbscan': DBSCAN,
                 'affinity_prop': AffinityPropagation,
@@ -102,10 +103,13 @@ models_dict = { 'knn': KNeighborsClassifier,
         }
 
 
+def na_pct(series):
+    assert isinstance(series, pd.Series)
+    return 1 - series.count()/len(series)
+
 # Type checkers taken from here. http://stackoverflow.com/questions/25039626/find-numeric-columns-in-pandas-python
 def is_type(df, baseType, column=None, **kwargs):
     import numpy as np
-    import pandas as pd
     if not column:
         test = [issubclass(np.dtype(d).type, baseType) for d in df.dtypes]
         return pd.DataFrame(data = test, index = df.columns, columns = ["test"])

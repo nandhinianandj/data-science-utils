@@ -11,6 +11,15 @@ from .nlp import *
 from .vision import *
 from .voice import *
 
+
+# def vif_filter(df):
+#
+#
+#
+#
+#
+#
+#
 #__all__ = ['word_match_share', 'word_2_vector', 'word_cloud']
 #TODO: https://www.analyticsvidhya.com/blog/2016/12/introduction-to-feature-selection-methods-with-an-example-or-how-to-select-the-right-variables/?utm_source=feedburner&utm_medium=email&utm_campaign=Feed%3A+AnalyticsVidhya+%28Analytics+Vidhya%29
 #TODO: filter of categorical features by how much of the dataset they divide the records into.
