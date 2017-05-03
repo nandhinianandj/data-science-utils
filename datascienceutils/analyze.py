@@ -17,9 +17,9 @@ from . import utils
 
 #TODO: only the non-parametric ones used, check the rest andfigure out how to choose
 # parameters(think kde estimator from sklearn)
-CHECK_DISTS = ['norm']#, 'zipf', 'geom', 'hypergeom', 'poisson', 'randint',
+CHECK_DISTS = ['norm']#, 'exponweib','zipf', 'geom', 'hypergeom', 'poisson', 'randint',
         #'multivariate_normal', 'weibull_min', 'weibull_max', 'logistic', 'chi', 'chi2', 'cosine',
-        #'cauchy','alpha', 'beta', ] #'bernoulli','binom',
+        #'cauchy','alpha', 'beta', 'bernoulli','binom',
 
 def distribution_tests(df, column, test_type='ks'):
     from scipy import stats
@@ -31,7 +31,7 @@ def distribution_tests(df, column, test_type='ks'):
         #    print("Wald test with distribution %s"%distribution)
         #    print(lm.wald_test(df[column], distribution))
         else:
-            raise "Unknow distribution similarity test type"
+            raise "Unknown distribution similarity test type"
 
 def check_normality(series, name):
     print("Anderson-Darling normality test on %s "%name)
@@ -147,10 +147,15 @@ def correlation_analyze(df, col1, col2, categories=[], measures=[],
 def is_independent(series1, series2):
     pass
 
-def is_similar_distribution(origin_dist, target_dist):
-    import permutation_test as p
-    p_value = p.permutation_test(data, ref_data)
-    print(p_value)
+def is_similar_distribution(origin_dist, target_dist, test_type='permutation'):
+    if test_type=='permutation':
+        import permutation_test as p
+        p_value = p.permutation_test(data, ref_data)
+        print(p_value)
+    elif test_type=='chi_sq':
+    else:
+        raise "Unknown distribution similarity test type"
+
 
 def degrees_freedom(df, dof_range = [], categoricalCol=[]):
     """
