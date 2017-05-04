@@ -29,7 +29,7 @@ def cluster_analyze(dataframe):
         clustering_names = [
         'MiniBatchKMeans', 'AffinityPropagation', 'MeanShift',
         'SpectralClustering', 'Ward', 'AgglomerativeClustering',
-        'DBSCAN', 'Birch']
+        'DBSCAN', 'Birch', 'bgmm']
         # normalize dataset for easier parameter selection
         X = sku.feature_scale_or_normalize(dataframe, dataframe.columns)
         # estimate bandwidth for mean shift
@@ -57,8 +57,14 @@ def cluster_analyze(dataframe):
             connectivity=connectivity)
 
         birch = cluster.Birch(n_clusters=2)
+        bgmm_args = {'weight_concentration_prior_type':"dirichlet_process",
+                    'n_components':5 , 'reg_covar':0, 'init_params':'random',
+                    'max_iter':1500, 'mean_precision_prior':.8}
+
+        bgmm = utils.get_model_obj('bgmm', **bgmm_args)
         clustering_algorithms = [ two_means, affinity_propagation, ms, spectral, ward,
-                                  average_linkage, dbscan, birch]
+                                  average_linkage, dbscan, birch, bgmm]
+
         for name, algorithm in zip(clustering_names, clustering_algorithms):
     	    # predict cluster memberships
     	    t0 = time.time()
@@ -117,10 +123,19 @@ def silhouette_analyze(dataframe, cluster_type='KMeans', n_clusters=None):
     dataframe = dataframe.as_matrix()
     cluster_scores_df = pd.DataFrame(columns=['cluster_size', 'silhouette_score'])
     for j, cluster in enumerate(n_clusters):
-        clusterer = utils.get_model_obj(cluster_type, n_clusters=cluster)
-
-        # Initialize the clusterer with n_clusters value and a random generator
-        cluster_labels = clusterer.fit_predict(dataframe)
+        if cluster_type != 'bgmm':
+            clusterer = utils.get_model_obj(cluster_type, n_clusters=cluster)
+        else:
+            # We're passing max clusters/components, the Bayesian GMM will figure out appropriate
+            # num.
+            clusterer = utils.get_model_obj(cluster_type, n_components=2*cluster)
+        if cluster_type not in ['KMeans', 'spectral', 'bgmm', 'birch', 'dbscan' ]:
+            cluster_labels = clusterer.fit(dataframe)
+        elif cluster_type == 'bgmm':
+            clusterer.fit(dataframe)
+            cluster_labels = set(clusterer.predict(dataframe))
+        else:
+            cluster_labels = clusterer.fit_predict(dataframe)
         # The silhouette_score gives the average value for all the samples.
         # This gives a perspective into the density and separation of the formed
         # clusters

@@ -99,9 +99,7 @@ models_dict = { 'knn': KNeighborsClassifier,
                 'gmm': GaussianMixture,
                 'bgmm': BayesianGaussianMixture,
                 #'pymc':
-
         }
-
 
 def na_pct(series):
     assert isinstance(series, pd.Series)

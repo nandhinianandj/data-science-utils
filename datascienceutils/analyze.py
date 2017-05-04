@@ -153,6 +153,7 @@ def is_similar_distribution(origin_dist, target_dist, test_type='permutation'):
         p_value = p.permutation_test(data, ref_data)
         print(p_value)
     elif test_type=='chi_sq':
+        pass
     else:
         raise "Unknown distribution similarity test type"
 
