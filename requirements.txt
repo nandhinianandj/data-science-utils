@@ -3,6 +3,7 @@ bokeh
 seaborn
 matplotlib
 # shapely
+hypertools # For multi-dimensional data
 
 #pygal
 

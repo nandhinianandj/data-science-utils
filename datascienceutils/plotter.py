@@ -327,7 +327,6 @@ def histogram(histDF,values, bayesian_bins=False,**kwargs):
         p1.yaxis.axis_label = 'Frequency'
         return p1
 
-
 def barplot(barDF, xlabel, ylabel, title="Bar Plot",
                             agg='sum', **kwargs):
     from bokeh.charts import Bar
@@ -497,6 +496,10 @@ def sb_jointplot(series1, series2):
 
     # Show the joint distribution using kernel density estimation
     sns.jointplot(series1, series2, kind="kde", size=7, space=0)
+
+def hyper_plot(dataframe, **kwargs):
+    import hypertools as hyp
+    hyp.plot(dataframe, 'o', **kwargs)
 
 def gp_pointplot(geo_dataframe, geo_locations, scale_column):
     import geoplot.crs as gcrs

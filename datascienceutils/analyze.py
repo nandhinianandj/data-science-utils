@@ -149,8 +149,9 @@ def is_independent(series1, series2):
 
 def is_similar_distribution(origin_dist, target_dist, test_type='permutation'):
     if test_type=='permutation':
-        import permutation_test as p
-        p_value = p.permutation_test(data, ref_data)
+        import permute as p
+        kwargs = {'stat':'t','alternative':'two-sided','seed':20}
+        p_value = p.core.two_sample(data, ref_data)
         print(p_value)
     elif test_type=='chi_sq':
         pass
@@ -223,8 +224,11 @@ def factor_analyze(df, target=None, model_type ='pca', **kwargs):
         print(model.components_)
         print("Explained variance")
         print(model.explained_variance_)
-    trans_df = pd.DataFrame(model.transform(df))
+        exp_var_df = pd.DataFrame(columns=['Principal Components', 'Explained variance'])
+        plotter.show(plotter.barplot(exp_var_df, alpha=0.5, align='center',
+            label='individual explained variance'))
 
+    trans_df = pd.DataFrame(model.transform(df))
     print("Correlation of transformed")
     correlation_analyze(trans_df, 0, 1)
 
@@ -354,9 +358,11 @@ def time_series_analysis(df, timeCol='date', valueCol=None, timeInterval='30min'
 
 def fractal_analyze(dataframe,column, L=None, dim_type='box'):
     if dim_type == 'box':
-        _box_dimensions(dataframe, column, L=L)
+        plotter.show(_box_dimension(dataframe, column, L=L))
+    else:
+        plotter.show(_hausdorff_dimension(dataframe[column], L=L))
 
-def _box_dimensions(dataframe,column, L=None):
+def _box_dimension(dataframe,column, L=None):
     if not L: L = dataframe[column].max()
     r = np.array([ L/(2.0**i) for i in range(12,0,-1) ])
     N = [ utils.count_boxes( dataframe[column], ri, L ) for ri in r ]
@@ -435,6 +441,16 @@ def fractal_dimension(image, threshold=0.9):
     # Fit the successive log(sizes) with log (counts)
     coeffs = np.polyfit(np.log(sizes), np.log(counts), 1)
     return -coeffs[0]
+
+def dimension_analyze(dataframe, group=None, **kwargs):
+    if not group:
+        plotter.hyper_plot(dataframe, **kwargs)
+    else:
+        groupVals = dataframe[group]
+        groupLabels = dataframe[group].unique()
+        dataframe.drop(group, 1, inplace=True)
+        plotter.hyper_plot(dataframe, group=groupVals, legend=groupLabels)
+    pass
 
 def chaid_tree(dataframe, targetCol):
     import CHAID as ch
