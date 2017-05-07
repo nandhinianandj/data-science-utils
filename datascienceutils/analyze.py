@@ -147,11 +147,11 @@ def correlation_analyze(df, col1, col2, categories=[], measures=[],
 def is_independent(series1, series2):
     pass
 
-def is_similar_distribution(origin_dist, target_dist, test_type='permutation'):
+def is_similar_distribution(original_dist, target_dist, test_type='permutation'):
     if test_type=='permutation':
-        import permute as p
+        from permute.core import two_sample
         kwargs = {'stat':'t','alternative':'two-sided','seed':20}
-        p_value = p.core.two_sample(data, ref_data)
+        p_value = two_sample(original_dist, target_dist)
         print(p_value)
     elif test_type=='chi_sq':
         pass
@@ -268,7 +268,7 @@ def regression_analyze(df, col1, col2, trainsize=0.8, non_linear=False, check_he
         plotter.show(plot)
 
     if check_dist_similarity:
-        print("P-value for distribution similarity between %s and %s"%(col1, col2))
+        print("P-value and test statistic for distribution similarity between %s and %s"%(col1, col2))
         is_similar_distribution(df[col1], df[col2])
 
     new_df = df[[col1, col2]].copy(deep=True)
@@ -297,7 +297,7 @@ def regression_analyze(df, col1, col2, trainsize=0.8, non_linear=False, check_he
         if check_vif:
             exog = df.as_matrix().reshape(-1,1)
             for col in [col1, col2]:
-                print("Variance Inflation Factors for %d"%col)
+                print("Variance Inflation Factors for %s"%col)
                 col_idx = list(df.columns).index(col)
                 print(outliers_influence.variance_inflation_factor(exog, col_idx))
 
