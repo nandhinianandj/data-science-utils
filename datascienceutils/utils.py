@@ -42,6 +42,8 @@ os.environ['DATAROBOT_CONFIG_FILE'] = os.path.join(os.getenv("HOME"), '.config',
 # (Gaussian) Mixture models
 from sklearn.mixture import *
 
+# Scipy distance measures
+from scipy.spatial.distance import cosine, cityblock, jaccard, canberra, euclidean, minkowski, braycurtis
 def create_base_nn(**kwargs):
     from keras.models import Sequential
     from keras.layers import Dense
