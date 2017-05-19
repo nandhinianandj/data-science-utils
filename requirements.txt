@@ -88,3 +88,7 @@ fuzzywuzzy
 
 datarobot
 pynasa
+
+# For graphical models
+pystruct
+seqlearn

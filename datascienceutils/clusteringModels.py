@@ -10,6 +10,9 @@ from . import sklearnUtils as sku
 from . import plotter
 from . import utils
 
+class StarKMeans(cluster.KMeans):
+    pass
+
 #TODO: add a way of weakening the discovered cluster structure and running again
 # http://scilogs.spektrum.de/hlf/sometimes-noise-signals/
 def is_cluster(dataframe, model_type='dbscan', batch_size=2):
