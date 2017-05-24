@@ -3,7 +3,7 @@
 short_version = '1.2.11'
 version = '1.2.11'
 full_version = '1.2.11'
-git_revision = '388abca7567e51b46fc249b43f2a9801c98d42af'
+git_revision = 'ebf284dcc3cff5037a922f3602763d46873935e4'
 release = True
 
 if not release:
