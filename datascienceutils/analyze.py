@@ -443,6 +443,7 @@ def fractal_dimension(image, threshold=0.9):
     return -coeffs[0]
 
 def dimension_analyze(dataframe, group=None, **kwargs):
+    # Add pca, svd, linear discriminant analysis, tsne
     if not group:
         plotter.hyper_plot(dataframe, **kwargs)
     else:

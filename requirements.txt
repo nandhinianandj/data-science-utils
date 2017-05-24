@@ -92,3 +92,6 @@ pynasa
 # For graphical models
 pystruct
 seqlearn
+
+# For recommendation engines
+scikit-surprise
