@@ -1,8 +1,7 @@
 ## TODO
-    * Add a contour plot
-	
-	* Add [Fractal Analysis](https://en.wikipedia.org/wiki/Fractal_analysis) R-equivalent
-	  package[fdim](http://cran.r-project.org/src/contrib/Archive/fdim/)
+        * Add a contour plot
+
+
 
 	* Add test of independence support for categorical variables(use that P(A & B) = P(A) * P(B)
 	  as a test
@@ -29,6 +28,11 @@
 
 	* Finish off that kernel density estimation for 1-d data clustering(http://scikit-learn.org/stable/auto_examples/neighbors/plot_kde_1d.html) and (http://bokeh.pydata.org/en/0.9.3/docs/reference/charts.html).
 
+	* Add [Fractal Analysis](https://en.wikipedia.org/wiki/Fractal_analysis) R-equivalent
+	  package[fdim](http://cran.r-project.org/src/contrib/Archive/fdim/)
+	
+	* Add [Renormalization group analysis](https://medium.com/incerto/the-most-intolerant-wins-the-dictatorship-of-the-small-minority-3f1f83ce4e15)
+
 	* Add a dimensional analysis function/option.
 		* - No. of independent(aka orthogonal) dimensions(aka degrees of freedom of the
 		                  system)
@@ -39,6 +43,9 @@
 		* - http://www.kdnuggets.com/2015/05/7-methods-data-dimensionality-reduction.html
 		* - https://www.analyticsvidhya.com/blog/2015/07/dimension-reduction-methods/
 
+	* Add [Correspondence
+	  Analysis](http://www.mathematica-journal.com/2010/09/an-introduction-to-correspondence-analysis/)
+
 	* Sensitivity analysis
 
 	* Interaction Analysis
@@ -48,7 +55,6 @@
 
 	* Add a dask/airflow/luigi/pinball support for training models with different samples on
 	  distributed systems.
-
 
 	* Add a separate grid search function to grid search a data set with the given
 	  model.(wrapper around sklearn model_selection's grid search)
@@ -68,6 +74,8 @@
 	* Create a function to take dataframe, run tree/randomforest, pick out best tree, create a
 	  neural network based on the tree, and return it.. (The user can then train it).
 
+	*[Agglomerative Hierarchical clustering](https://www.xlstat.com/en/solutions/features/agglomerative-hierarchical-clustering-ahc)
+
 	* ~~Show off that bayesian binning in dist_analyze plots~~
 
 	* ~~ Add support for [RANSAC](https://en.wikipedia.org/wiki/Random_sample_consensus) ~~
@@ -85,3 +93,5 @@
 
 	* ~~ Show pie-charts for dist_analyze of categories only when there's < 5 categories. else use
 	  horizontal stacked bar charts. ~~
+
+

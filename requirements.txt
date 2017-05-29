@@ -95,3 +95,6 @@ seqlearn
 
 # For recommendation engines
 scikit-surprise
+
+# For understanding blackbox models
+skater
