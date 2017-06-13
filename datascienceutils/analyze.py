@@ -453,6 +453,17 @@ def dimension_analyze(dataframe, group=None, **kwargs):
         plotter.hyper_plot(dataframe, group=groupVals, legend=groupLabels)
     pass
 
+def recommend_nn(dataframe, **kwargs):
+    # Each layer of the NN can be considered one level of partial differentiation in a purely
+    # feed-forward network and standard sigmoid activation function
+    # CHeck distribution of columns if multimodal, split input into two and train two networks
+    # If columns are all orthogonal, then feed forward network is sufficient, if not (ie:
+    # multi-collinearity ) add a convolution layer
+    # If some columns exhibit iterative function systems behaviour, aka fractal dimensions add
+    # feed-backward propagation(it adds markov state and some dependence on previous state)
+    #
+    pass
+
 def chaid_tree(dataframe, targetCol):
     import CHAID as ch
     columns = dataframe.columns

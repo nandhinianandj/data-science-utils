@@ -1,12 +1,18 @@
 # -*- coding: utf-8
+import numpy as np
+from sklearn.preprocessing import Imputer
+
+def impute_data(series, **kwargs):
+    Imp = Imputer(**kwargs)
+    return Imp.fit_transform(series)
+
 ################################################################
 #   UniVariate Outliers
 ##################################################################
-import numpy as np
 
 def getOutliers(data, m = 2.):
     """
-    data -- is a pandas data frame
+    data -- is a pandas series
     m --- is the number of sigma deviations
     return:
         Simple data points more than given value times the median
