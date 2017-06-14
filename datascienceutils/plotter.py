@@ -149,6 +149,20 @@ def timestamp(datetimeObj):
 def month_year_format(datetimeObj):
     return str(datetimeObj.strftime("%b-%Y"))
 
+def multi_line_plot(dataframe, idx=None):
+    if idx:
+        dataframe.set_index(idx)
+        dataframe.drop(idx, 1, inplace=True)
+    numlines = len(dataframe.columns)
+    mypalette= genColors(numlines) # Spectral11[0:numlines]
+    p = figure(width=500, height=300, x_axis_type='datetime')
+    p.multi_line(xs=[dataframe.index.values]*numlines,
+                 ys=[dataframe[name].values for name in dataframe],
+                 line_color=mypalette,
+                 line_width=5)
+    return p
+    #html = file_html(p, CDN, 'emotions plot')
+    #return html
 
 def plot_twin_y_axis_scatter(conn, query1=None, query2=None,
                              xy1={}, xy2={}):
