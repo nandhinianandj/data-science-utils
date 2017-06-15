@@ -145,7 +145,6 @@ def timestamp(datetimeObj):
     timestamp = (datetimeObj - datetime(1970, 1, 1)).total_seconds()
     return timestamp
 
-
 def month_year_format(datetimeObj):
     return str(datetimeObj.strftime("%b-%Y"))
 
@@ -161,8 +160,6 @@ def multi_line_plot(dataframe, idx=None):
                  line_color=mypalette,
                  line_width=5)
     return p
-    #html = file_html(p, CDN, 'emotions plot')
-    #return html
 
 def plot_twin_y_axis_scatter(conn, query1=None, query2=None,
                              xy1={}, xy2={}):
