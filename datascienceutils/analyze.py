@@ -35,7 +35,7 @@ def distribution_tests(df, column, test_type='ks'):
 
 def check_normality(series, name):
     print("Anderson-Darling normality test on %s "%name)
-    print("Statistic: %d \n p-value: %d\n"%diagnostic.normal_ad(series))
+    print("Statistic: %f \n p-value: %f\n"%diagnostic.normal_ad(series))
 
 def dist_analyze(df, column='', category='', is_normal=True, bayesian_hist=False):
     plots = []
