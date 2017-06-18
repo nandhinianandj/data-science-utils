@@ -264,7 +264,7 @@ def regression_analyze(df, col1, col2, trainsize=0.8, non_linear=False, check_he
         model.build_model_from_xy([df[col1].as_matrix()], [df[col2].as_matrix()])
 
         print(" # Ace Models btw numerical cols")
-        plot = plotter.lineplot(df[[col1, col2]], col1, col2)
+        plot = plotter.lineplot(df[[col1, col2]], title='%s Vs %s'%(col1, col2))
         plotter.show(plot)
 
     if check_dist_similarity:
@@ -356,7 +356,7 @@ def time_series_analysis(df, timeCol='date', valueCol=None, timeInterval='30min'
         else:
             tsu.seasonal_decompose(ts)
 
-def fractal_analyze(dataframe,column, L=None, dim_type='box'):
+def fractal_analyze(dataframe, column, L=None, dim_type='box'):
     if dim_type == 'box':
         plotter.show(_box_dimension(dataframe, column, L=L))
     else:
@@ -378,7 +378,7 @@ def _box_dimension(dataframe,column, L=None):
     new_df = pd.DataFrame(columns=['Box Size(1/r)', 'No. of Boxes'])
     new_df['Box Size(1/r)'] = 1/r
     new_df['No. of Boxes'] = N
-    return plotter.lineplot(new_df, 'Box Size(1/r)', 'No. of Boxes')
+    return plotter.lineplot(new_df, title='Box Size(1/r) Vs No. of Boxes')
 
 def _hausdorff_dimension(pixels):
 
@@ -398,7 +398,7 @@ def _hausdorff_dimension(pixels):
     plot_df['Log(Ns)'] = np.log(Ns)
     # linear fit, polynomial of degree 1
     coeffs=np.polyfit(np.log(scales), np.log(Ns), 1)
-    plotter.lineplot(plot_df, 'Log(scales)', 'Log(Ns)')
+    plotter.lineplot(plot_df, title='log(scales) Vs log(Ns)')
 
 
 def fractal_dimension(image, threshold=0.9):
@@ -416,7 +416,6 @@ def fractal_dimension(image, threshold=0.9):
 
         # We count non-empty (0) and non-full boxes (k*k)
         return len(np.where((S > 0) & (S < k*k))[0])
-
 
     # Transform Z into a binary array
     image = (image < threshold)

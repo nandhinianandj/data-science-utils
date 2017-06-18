@@ -1,4 +1,5 @@
 # Standard and External lib imports
+from pandas.api import types as ptypes
 from bokeh.mpl import to_bokeh
 from bokeh.plotting import figure
 from bokeh.layouts import gridplot
@@ -8,6 +9,7 @@ from bokeh.embed import components
 from bokeh.models import ( Text, PanTool, WheelZoomTool, LinearAxis,
                            SingleIntervalTicker, Range1d,  Plot,
                            Text, Circle, HoverTool, Triangle)
+from bokeh.charts import Chart, Line
 from math import ceil
 
 import itertools
@@ -123,23 +125,11 @@ def show_model_interpretation(model, model_type='randomforest'):
     import lime
     pass
 
-def lineplot(df, xcol, ycol, fig=None, legend=None, color=None, title=None, **kwargs):
+def lineplot(df, legend=None, title=None, **kwargs):
+    assert all([ptypes.is_numeric_dtype(df[col]) for col in df.columns]), "Only numeric datatypes"
     if not title:
         title = "%s Vs %s" %(xcol, ycol)
-    if legend:
-        leg_label = legend + ycol
-    else:
-        leg_label = ycol
-    if not fig:
-        fig = figure(title=title)
-    if not color:
-        color=(100,100,255, 1)
-    fig.xaxis.axis_label = xcol
-    fig.yaxis.axis_label = ycol
-    fig.line(df[xcol], df[ycol], color=color, legend=legend)
-    fig.legend.location = "top_left"
-    return fig
-
+    return Line(df, title=title,legend=True)
 
 def timestamp(datetimeObj):
     timestamp = (datetimeObj - datetime(1970, 1, 1)).total_seconds()
