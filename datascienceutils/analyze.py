@@ -312,14 +312,18 @@ def regression_analyze(df, col1, col2, trainsize=0.8, non_linear=False, check_he
     plotter.show(grid)
 
 def time_series_analysis(df, timeCol='date', valueCol=None, timeInterval='30min',
-        plot_title = 'timeseries',
-        skip_stationarity=False,
-        skip_autocorrelation=False,
-        skip_seasonal_decompose=False, **kwargs):
+                            plot_title = 'timeseries',
+                            skip_stationarity=False,
+                            skip_autocorrelation=False,
+                            skip_seasonal_decompose=False,
+                            psf_analyze=False,
+                            **kwargs):
     """
     Plot time series, rolling mean, rolling std , autocorrelation plot, partial autocorrelation plot
     and seasonal decompose
     """
+    #TODO: implement R-PSF forecasting interface
+    #TODO: integrate features from fbprophet
     from . import timeSeriesUtils as tsu
     if 'create' in kwargs:
         ts = tsu.create_timeseries_df(df, timeCol=timeCol, timeInterval=timeInterval, **kwargs.get('create'))
