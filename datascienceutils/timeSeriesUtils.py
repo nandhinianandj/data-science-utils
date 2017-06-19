@@ -9,14 +9,15 @@ def test_stationarity(timeseries, timeCol, valueCol, skip_stationarity=False, ti
     #Determing rolling statistics
     calcStatsDf['rollingMean'] = pd.rolling_mean(timeseries, window=12)[valueCol]
     calcStatsDf['rollingSTD']  = pd.rolling_std(timeseries, window=12)[valueCol]
-    timeseries = timeseries.reset_index()
-    calcStatsDf['time'] = timeseries[timeCol]
+    #timeseries = timeseries.reset_index()
+    #calcStatsDf['time'] = timeseries[timeCol]
 
     #Plot rolling statistics:
-    fig = figure(width=12, height=8)
-    orig = plotter.lineplot(timeseries, timeCol, valueCol, color='blue',label='Original')
-    mean = plotter.lineplot(calcStatsDf,'time', 'rollingMean', fig=fig, color='red', label='Rolling Mean')
-    std = plotter.lineplot(calcStatsDf, 'time', 'rollingSTD', fig=fig, color='black', label = 'Rolling Std')
+    timeseries.set_index(timeCol)
+    new_df = pd.concat(timeseries, calcStatsDf)
+    orig = plotter.lineplot(new_df, color='blue',label='Original')
+    #mean = plotter.lineplot(calcStatsDf, fig=fig, color='red', label='Rolling Mean')
+    #std = plotter.lineplot(calcStatsDf, 'time', 'rollingSTD', fig=fig, color='black', label = 'Rolling Std')
 
     if not skip_stationarity:
         #Perform Dickey-Fuller test:
@@ -26,7 +27,7 @@ def test_stationarity(timeseries, timeCol, valueCol, skip_stationarity=False, ti
         for key,value in dftest[4].items():
             dfoutput['Critical Value (%s)'%key] = value
         print(dfoutput)
-    return fig
+    return orig
 
 def plot_autocorrelation(timeseries_df, valueCol=None,
                          timeCol='timestamp', timeInterval='30min', partial=False):

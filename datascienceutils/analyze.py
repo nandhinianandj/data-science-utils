@@ -326,9 +326,8 @@ def time_series_analysis(df, timeCol='date', valueCol=None, timeInterval='30min'
     else:
         ts = tsu.create_timeseries_df(df, timeCol=timeCol, timeInterval=timeInterval)
     # TODO;
-    # 2. Seasonal decomposition of the time series and plot it
     # 3. ARIMA model of the times
-    # 4. And other time-serie models like AR, etc..
+    # 4. And other time-series models like AR, etc..
     # 5. Wrappers around fbprophet
     if 'stationarity' in kwargs:
         plot = tsu.test_stationarity(ts, timeCol=timeCol, valueCol=valueCol,
