@@ -37,7 +37,7 @@ def check_normality(series, name):
     print("Anderson-Darling normality test on %s "%name)
     print("Statistic: %f \n p-value: %f\n"%diagnostic.normal_ad(series))
 
-def dist_analyze(df, column='', category='', is_normal=True, bayesian_hist=False):
+def dist_analyze(df, column='', category='', is_normal=True, bayesian_hist=False, kdeplot=True):
     plots = []
     if (utils.is_numeric(df, column=column)):
         print("Variance of %s"%column)
@@ -57,6 +57,10 @@ def dist_analyze(df, column='', category='', is_normal=True, bayesian_hist=False
             plots.append(plotter.pieChart(df, column, title='Distribution of %s'%column))
         else:
             print("Too many categories for col: %s can't plot pie-chart"%column)
+
+    if kdeplot:
+        assert utils.is_numeric(df, column=column)
+        df[column].plot.kde(label=column, title='Kernel density estimate')
 
     if category:
         # Plot Barplots of combination of category and numerical columns

@@ -2,18 +2,15 @@ import pandas as pd
 from bokeh.plotting import figure, show
 
 from . import plotter
-def test_stationarity(timeseries, timeCol, valueCol, skip_stationarity=False, title='timeseries', **kwargs):
+def test_stationarity(timeseries, valueCol, skip_stationarity=False, title='timeseries', **kwargs):
 
     from statsmodels.tsa.stattools import adfuller
     calcStatsDf = pd.DataFrame()
     #Determing rolling statistics
     calcStatsDf['rollingMean'] = pd.rolling_mean(timeseries, window=12)[valueCol]
     calcStatsDf['rollingSTD']  = pd.rolling_std(timeseries, window=12)[valueCol]
-    #timeseries = timeseries.reset_index()
-    #calcStatsDf['time'] = timeseries[timeCol]
 
     #Plot rolling statistics:
-    timeseries.set_index(timeCol)
     new_df = pd.concat(timeseries, calcStatsDf)
     orig = plotter.lineplot(new_df, color='blue',label='Original')
     #mean = plotter.lineplot(calcStatsDf, fig=fig, color='red', label='Rolling Mean')
