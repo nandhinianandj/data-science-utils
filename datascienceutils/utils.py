@@ -13,7 +13,7 @@ from sklearn.naive_bayes import *
 from sklearn.ensemble import RandomForestClassifier
 from sklearn import tree
 # For svm models
-from sklearn.svm import *
+from sklearn.svm import SVC, SVR
 # For regression models
 from sklearn.linear_model import *
 from sklearn.isotonic import IsotonicRegression
@@ -73,6 +73,7 @@ models_dict = { 'knn': KNeighborsClassifier,
                 'LogisticRegression': LogisticRegression,
                 'RANSACRegression': RANSACRegressor,
                 'IsotonicRegression': IsotonicRegression,
+                'SVMRegression': SVR,
                 'pca': PCA,
                 'nmf': NMF,
                 'FastICA': FastICA,
@@ -252,6 +253,16 @@ def roc_plot(dataframe, target, score, cls_list=[],multi_class=True):
         plt.show()
         return plt
 
+
+def bins(df):
+    """
+    Thanks to guy from [here](https://stackoverflow.com/questions/16947336/binning-a-dataframe-in-pandas-in-python)
+    """
+    # Bin the data frame by index with 10 bins...
+    assert is_numeric(df.index)
+    bins = np.linspace(df.a.min(), df.a.max(), 10)
+    groups = df.groupby(pandas.cut(df.a, bins))
+    return groups
 
 def bayesian_blocks(t):
     """Bayesian Blocks Implementation

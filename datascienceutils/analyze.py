@@ -48,10 +48,7 @@ def dist_analyze(df, column='', category='', is_normal=True, bayesian_hist=False
         if is_normal:
             check_normality(df[column], column)
         plots.append(plotter.sb_violinplot(df[column], inner='box'))
-        if bayesian_hist:
-            plots.append(plotter.histogram(df, column, bayesian_bins=True))
-        else:
-            plots.append(plotter.histogram(df, column))
+        plots.append(plotter.histogram(df, column, bayesian_bins=bayesian_hist))
     else:
         if df[column].nunique() < 7:
             plots.append(plotter.pieChart(df, column, title='Distribution of %s'%column))
@@ -283,6 +280,7 @@ def regression_analyze(df, col1, col2, trainsize=0.8, non_linear=False, check_he
             pm.train(new_df, target, column=col1, modelType='RidgeRegressionCV'),
             pm.train(new_df, target, column=col1, modelType='LassoRegression'),
             pm.train(new_df, target, column=col1, modelType='ElasticNetRegression'),
+            pm.train(new_df, target, column=col1, modelType='SVMRegression'),
             #pm.train(new_df, target, column=col1, modelType='IsotonicRegression'),
             #pm.train(new_df, target, column=col1, modelType='logarithmicRegression'),
             #utils.train_pymc_linear_reg(new_df, target, column=col1)
