@@ -1,6 +1,7 @@
 ## TODO
         * Add a contour plot
 
+	* Yellow-fin algorithm(http://cs.stanford.edu/~zjian/project/YellowFin/)
 
 
 	* Add test of independence support for categorical variables(use that P(A & B) = P(A) * P(B)
@@ -30,7 +31,7 @@
 
 	* Add [Fractal Analysis](https://en.wikipedia.org/wiki/Fractal_analysis) R-equivalent
 	  package[fdim](http://cran.r-project.org/src/contrib/Archive/fdim/)
-	
+
 	* Add [Renormalization group analysis](https://medium.com/incerto/the-most-intolerant-wins-the-dictatorship-of-the-small-minority-3f1f83ce4e15)
 
 	* Add a dimensional analysis function/option.
