@@ -32,6 +32,10 @@ import statsmodels.api as sm
 # Online classifiers http://scikit-learn.org/stable/auto_examples/linear_model/plot_sgd_comparison.html
 # xgboost
 import xgboost as xgb
+
+# Dimensionality Reduction with umap
+from umap import UMAP
+
 # LightGBM models
 #from pylightgbm.models import *
 # Sigh lightgbm insist this is the only way
@@ -74,6 +78,7 @@ models_dict = { 'knn': KNeighborsClassifier,
                 'RANSACRegression': RANSACRegressor,
                 'IsotonicRegression': IsotonicRegression,
                 'SVMRegression': SVR,
+
                 'pca': PCA,
                 'nmf': NMF,
                 'FastICA': FastICA,
@@ -83,6 +88,8 @@ models_dict = { 'knn': KNeighborsClassifier,
                 'FactorAnalysis': FactorAnalysis,
                 'lda': LinearDiscriminantAnalysis,
                 'tsne': TSNE,
+                'umap': UMAP,
+
                 'kde': KernelDensity,
                 'AR': sm.tsa.AR,
                 'SARIMAX': sm.tsa.statespace.SARIMAX,
