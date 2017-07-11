@@ -64,6 +64,8 @@ glove
 #-e git+https://github.com/Microsoft/LightGBM.git#egg=lightgbm
 -e git+https://github.com/ArdalanM/pyLightGBM.git#egg=pylightgbm
 
+# Manifold learning
+-e git+https://github.com/lmcinnes/umap.git#egg=umap
 
 # Package for map projections
 geos
