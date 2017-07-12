@@ -37,7 +37,8 @@ def check_normality(series, name):
     print("Anderson-Darling normality test on %s "%name)
     print("Statistic: %f \n p-value: %f\n"%diagnostic.normal_ad(series))
 
-def dist_analyze(df, column='', category='', is_normal=True, bayesian_hist=False, kdeplot=True):
+def dist_analyze(df, column='', category='', is_normal=True, bayesian_hist=False,
+                    kdeplot=True, violinplot=False):
     plots = []
     if (utils.is_numeric(df, column=column)):
         print("Variance of %s"%column)
@@ -47,7 +48,9 @@ def dist_analyze(df, column='', category='', is_normal=True, bayesian_hist=False
         distribution_tests(df, column)
         if is_normal:
             check_normality(df[column], column)
-        plots.append(plotter.sb_violinplot(df[column], inner='box'))
+
+        if violinplot:
+            plots.append(plotter.sb_violinplot(df[column], inner='box'))
         plots.append(plotter.histogram(df, column, bayesian_bins=bayesian_hist))
     else:
         if df[column].nunique() < 7:
@@ -56,7 +59,7 @@ def dist_analyze(df, column='', category='', is_normal=True, bayesian_hist=False
             print("Too many categories for col: %s can't plot pie-chart"%column)
 
     if kdeplot:
-        assert utils.is_numeric(df, column=column)
+        assert utils.is_numeric(df, column=column), "KDE Plot Only available for numerical columns"
         df[column].plot.kde(label=column, title='Kernel density estimate')
 
     if category:
