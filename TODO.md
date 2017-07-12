@@ -1,8 +1,11 @@
 ## TODO
+	* Add model validation syntax and make it mandatory while dumping a model
+	* Also add some code that reads the validation parameters and generates test cases to test
+	  /validate the model(stats tests, input distributions, output distributions etc..)
+
         * Add a contour plot
 
 	* Yellow-fin algorithm(http://cs.stanford.edu/~zjian/project/YellowFin/)
-
 
 	* Add test of independence support for categorical variables(use that P(A & B) = P(A) * P(B)
 	  as a test
