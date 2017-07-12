@@ -1,10 +1,11 @@
+import sklearn.ensemble as ske
 #from sklearn.feature_selection import VarianceThreshold
 #import statsmodels.api as sm
 #from sklearn.pipeline import Pipeline, FeatureUnion
 #from sklearn.model_selection import GridSearchCV
 #from sklearn.svm import SVC
 #from sklearn.decomposition import PCA
-#from sklearn.feature_selection import SelectKBest
+from sklearn.feature_selection import SelectKBest, SelectFromModel
 
 # Local import
 from .nlp import *
@@ -24,6 +25,13 @@ from .voice import *
 #TODO: https://www.analyticsvidhya.com/blog/2016/12/introduction-to-feature-selection-methods-with-an-example-or-how-to-select-the-right-variables/?utm_source=feedburner&utm_medium=email&utm_campaign=Feed%3A+AnalyticsVidhya+%28Analytics+Vidhya%29
 #TODO: filter of categorical features by how much of the dataset they divide the records into.
 #TODO: filter of numerical features by variance of the features.
+def pick_features(df, targetCol):
+    y = df[targetCol]
+    df.drop(targetCol, inplace=True)
+    X = df
+    fsel = ske.ExtraTreesClassifier().fit(X, y)
+    model = SelectFromModel(fsel, prefit=True)
+    return model.transform(X)
 
 # def extractFeaturesTimeSeries(timeSeries, idCol, timeCol):
 #     from tsfresh import extract_relevant_features
