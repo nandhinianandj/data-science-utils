@@ -1,5 +1,6 @@
 ## TODO
-	* Add model validation syntax and make it mandatory while dumping a model
+	* Setup python sphinx and add proper documentation for all classes and functions
+
 	* Also add some code that reads the validation parameters and generates test cases to test
 	  /validate the model(stats tests, input distributions, output distributions etc..)
 
@@ -73,29 +74,9 @@
 
 	* Implement the trellis plots for correlation analyze (when there's categories)
 
-	* Setup python sphinx and add proper documentation for all classes and functions
 
 	* Create a function to take dataframe, run tree/randomforest, pick out best tree, create a
 	  neural network based on the tree, and return it.. (The user can then train it).
 
-	*[Agglomerative Hierarchical clustering](https://www.xlstat.com/en/solutions/features/agglomerative-hierarchical-clustering-ahc)
-
-	* ~~Show off that bayesian binning in dist_analyze plots~~
-
-	* ~~ Add support for [RANSAC](https://en.wikipedia.org/wiki/Random_sample_consensus) ~~
-
-	* ~~ dist_analyze TODO: May be add a way to plot joint distributions of two variables? ~~
-
-	* ~~Cleanup/refactor the plotter.py to remove obsolete/unused plots~~
-
-	* ~~Refactor out matplotlib dependencies present in clusteringModels and predictiveModels
-	  modules, replacing with calls to the plotter module(which wraps bokeh and seaborn)~~
-
-	* ~~dist_analyze TODO: add grouped violinplots by categorical variables too.~~
-
-	* ~~Add factor_analyze function to analyze.py(probably something like PCA or the likes)~~
-
-	* ~~ Show pie-charts for dist_analyze of categories only when there's < 5 categories. else use
-	  horizontal stacked bar charts. ~~
-
+	* [Agglomerative Hierarchical clustering](https://www.xlstat.com/en/solutions/features/agglomerative-hierarchical-clustering-ahc)
 
