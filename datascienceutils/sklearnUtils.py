@@ -72,11 +72,13 @@ def dump_model(model, filename, model_params):
     assert filename, "Filename Required"
     assert model_params, "model parameters (dict required)"
     assert model_params['model_type'], "model_type required in model_params"
+    assert model_params['output_type'], "output_type required in model_params"
+    assert model_params['input_metadata'], "input_metadata required in model_params"
 
     model_params.update({'filename': filename,
                          'id': str(uuid.uuid4())})
 
-    with open(utils.get_full_path(settings.MODELS_BASE_PATH, filename, 
+    with open(utils.get_full_path(settings.MODELS_BASE_PATH, filename,
                             model_params, extn='.json', params_file=True),
                       'w') as params_file:
         json.dump(model_params, params_file)
