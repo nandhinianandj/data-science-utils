@@ -26,7 +26,7 @@ def is_cluster(dataframe, model_type='dbscan', batch_size=2):
     model_obj.fit(X)
     return model_obj.cluster_centers_
 
-def cluster_analyze(dataframe):
+def cluster_analyze(dataframe, name='', **kwargs):
     plots = list()
     if len(dataframe.columns) > 1:
         clustering_names = [
@@ -68,7 +68,7 @@ def cluster_analyze(dataframe):
         clustering_algorithms = [ two_means, affinity_propagation, ms, spectral, ward,
                                   average_linkage, dbscan, birch, bgmm]
 
-        for name, algorithm in zip(clustering_names, clustering_algorithms):
+        for model_name, algorithm in zip(clustering_names, clustering_algorithms):
     	    # predict cluster memberships
     	    t0 = time.time()
     	    algorithm.fit(X)
@@ -83,7 +83,8 @@ def cluster_analyze(dataframe):
     	    plot_data = np.c_[X, y_pred]
     	    columns = list(dataframe.columns) + ['classes']
     	    new_df = pd.DataFrame(data=plot_data, columns=columns)
-    	    s_plot = plotter.scatterplot(new_df, columns[0], columns[1], plttitle='%s'%name, groupCol='classes')
+            s_plot = plotter.scatterplot(new_df, columns[0], columns[1],
+                                            plttitle='%s: %s'%(name, model_name), groupCol='classes')
     	    plots.append(s_plot)
 
     	    if hasattr(algorithm, 'cluster_centers_'):

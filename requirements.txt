@@ -71,9 +71,11 @@ glove
 geos
 
 # Neural network packages
+tensorflow
 gym
 keras
 mxnet
+tensorboard
 -e git+https://github.com/sevamoo/SOMPY#egg=sompy
 
 # Vision packages
@@ -100,3 +102,4 @@ scikit-surprise
 
 # For understanding blackbox models
 skater
+

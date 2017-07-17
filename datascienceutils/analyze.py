@@ -69,6 +69,41 @@ def dist_analyze(df, column='', category='', is_normal=True, bayesian_hist=False
     grid = gridplot(list(utils.chunks(plots, size=2)))
     return grid
 
+def outliers_analyze(df):
+
+    rng = np.random.RandomState(42)
+
+    # Example settings
+    n_samples = 200
+    outliers_fraction = 0.25
+    clusters_separation = [0, 1, 2]
+
+    # define two outlier detection tools to be compared
+    classifiers = {
+        "One-Class SVM": svm.OneClassSVM(nu=0.95 * outliers_fraction + 0.05,
+                                         kernel="rbf", gamma=0.1),
+        "Robust covariance": EllipticEnvelope(contamination=outliers_fraction),
+        "Isolation Forest": IsolationForest(max_samples=n_samples,
+                                            contamination=outliers_fraction,
+                                            random_state=rng)}
+    plots = list()
+    for i, (clf_name, clf) in enumerate(classifiers.items()):
+        # fit the data and tag outliers
+        clf.fit(X)
+        scores_pred = clf.decision_function(X)
+        threshold = stats.scoreatpercentile(scores_pred,
+                                            100 * outliers_fraction)
+        y_pred = clf.predict(X)
+        predictions[clf_name] = y_pred
+        n_errors = (y_pred != ground_truth).sum()
+        # plot the levels lines and the points
+        #Z = clf.decision_function(np.c_[xx.ravel(), yy.ravel()])
+        #Z = Z.reshape(xx.shape)
+        #plots.append(plotter.contourplot(xx, yy, Z,
+        #                                levels=np.linspace(Z.min(), threshold, 7)))
+    #return plotter.grid_plot(plots)
+    return predictions
+
 
 def correlation_analyze(df, col1, col2, categories=[], measures=[],
                         summary_only=False, check_linearity=False, trellis=False):

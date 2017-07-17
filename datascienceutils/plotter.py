@@ -55,6 +55,17 @@ def genColors(n, ptype=None):
     else:
         return viridis(n)
 
+def contour_plot(dataframe, model , **kwargs):
+    import matplotlib.pyplot as plt
+    xx, yy = np.meshgrid(np.linspace(-7, 7, 500), np.linspace(-7, 7, 500))
+    Z = model.decision_function(np.c_[xx.ravel(), yy.ravel()])
+    Z = Z.reshape(xx.shape)
+    if not levels:
+        levels = np.linspace(Z.min(), threshold, 7)
+    plot1 = plt.plot()
+    plot1.contourf(xx, yy, Z, levels=levels, cmap=plt.cm.Blues_r, **kwargs)
+    return plot1
+
 def grid_plot(plots, chunks=2):
     grid = gridplot(list(utils.chunks(plots, size=2)))
     show(grid)
@@ -128,7 +139,7 @@ def show_model_interpretation(model, model_type='randomforest'):
 def lineplot(df, legend=None, title=None, **kwargs):
     assert all([ptypes.is_numeric_dtype(df[col]) for col in df.columns]), "Only numeric datatypes"
     if not title:
-        title = "%s Vs %s" %(xcol, ycol)
+        title = "%s Vs %s" %(kwargs.get('xcol'), kwargs.get('ycol'))
     return Line(df, title=title,legend=True)
 
 def timestamp(datetimeObj):

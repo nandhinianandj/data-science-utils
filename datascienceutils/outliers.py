@@ -27,8 +27,8 @@ def sigmaDeviation(seq, threshold=3, passes=1):
     # filter and remove values beyond +/- 3 sigma variance
     # default one pass.
     for i in range(passes):
-        std     = np.std(seq)
-        seq = filter(lambda x: x > std, seq)
+        std = np.std(seq)
+        seq = filter(lambda x: x > threshold*std, seq)
     return seq
 
 def interQuartileRangeDev(seq, threshold=1.5):
