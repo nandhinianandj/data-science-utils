@@ -69,30 +69,30 @@ def cluster_analyze(dataframe, name='', **kwargs):
                                   average_linkage, dbscan, birch, bgmm]
 
         for model_name, algorithm in zip(clustering_names, clustering_algorithms):
-    	    # predict cluster memberships
-    	    t0 = time.time()
-    	    algorithm.fit(X)
-    	    t1 = time.time()
-    	    if hasattr(algorithm, 'labels_'):
-    	        print("According to %s there are %d clusters"%(name, len(set(algorithm.labels_))))
-    	        y_pred = algorithm.labels_.astype(np.int)
-    	    else:
-    	        y_pred = algorithm.predict(X)
+            # predict cluster memberships
+            t0 = time.time()
+            algorithm.fit(X)
+            t1 = time.time()
+            if hasattr(algorithm, 'labels_'):
+                print("According to %s there are %d clusters"%(name, len(set(algorithm.labels_))))
+                y_pred = algorithm.labels_.astype(np.int)
+            else:
+                y_pred = algorithm.predict(X)
 
-    	    # plot
-    	    plot_data = np.c_[X, y_pred]
-    	    columns = list(dataframe.columns) + ['classes']
-    	    new_df = pd.DataFrame(data=plot_data, columns=columns)
+            # plot
+            plot_data = np.c_[X, y_pred]
+            columns = list(dataframe.columns) + ['classes']
+            new_df = pd.DataFrame(data=plot_data, columns=columns)
             s_plot = plotter.scatterplot(new_df, columns[0], columns[1],
-                                            plttitle='%s: %s'%(name, model_name), groupCol='classes')
-    	    plots.append(s_plot)
+                                    plttitle='%s: %s'%(name, model_name), groupCol='classes')
+            plots.append(s_plot)
 
-    	    if hasattr(algorithm, 'cluster_centers_'):
-    	        print("According to %s there are %d clusters"%(name, len(algorithm.cluster_centers_)))
-    	        centers = pd.DataFrame(algorithm.cluster_centers_)
-    	        for i, c in enumerate(algorithm.cluster_centers_):
-    	            # Draw white circles at cluster centers
-    	            plotter.mtext(s_plot, c[0], c[1], "%s"%str(i), text_color="red")
+            if hasattr(algorithm, 'cluster_centers_'):
+                print("According to %s there are %d clusters"%(name, len(algorithm.cluster_centers_)))
+                centers = pd.DataFrame(algorithm.cluster_centers_)
+                for i, c in enumerate(algorithm.cluster_centers_):
+                    # Draw white circles at cluster centers
+                    plotter.mtext(s_plot, c[0], c[1], "%s"%str(i), text_color="red")
     else:
         from . import analyze
         analyze.dist_analyze(dataframe, dataframe.columns[0], bayesian_hist=True)
