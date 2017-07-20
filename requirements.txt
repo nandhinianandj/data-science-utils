@@ -70,6 +70,27 @@ glove
 # Package for map projections
 geos
 
+#Scikits-plugins
+#scikit-beam
+scikit-MDR
+scikit-build
+#scikit-cuda
+scikit-data
+# Goodness of fit tests
+scikit-gof
+# Geodesic manifolds
+scikit-geodesic
+scikit-gpuppy
+scikit-kinematics
+scikit-multilearn
+scikit-neuralnetwork
+scikit-procrustes
+scikit-sound
+scikit-sos
+#scikit-xray
+#datasmooth
+scikits.talkbox
+
 # Neural network packages
 tensorflow
 gym
