@@ -524,6 +524,7 @@ def facets_dashboard(dataframe, **kwargs):
     html = HTML_TEMPLATE.format(jsonstr=jsonstr)
     display(HTML(html))
     pass
+
 def hyper_plot(dataframe, **kwargs):
     import hypertools as hyp
     hyp.plot(dataframe, 'o', **kwargs)
