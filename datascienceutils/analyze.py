@@ -222,10 +222,12 @@ def degrees_freedom(df, dof_range = [], categoricalCol=[]):
         print("p-value")
         print(result[1])
 
-def cosine_distance():
+def measure_distance(dist_type='cosine', dof_range=[]):
+    if not dof_range: dof_range = range(2,3)
     assert hasattr(dof_range, '__iter__')
+    from scipy.spatial.distance import cosine, cityblock, jaccard, canberra, euclidean, minkowski, braycurtis
     # TODO: Extend/generalise this to more than 2-norm (aka 2-D plane)
-    from scipy import spatial
+    dist_measure = eval(dist_type)
     dof_range = [2]
     all_cosine_dists = dict()
     for each in dof_range:
@@ -233,9 +235,9 @@ def cosine_distance():
         # TODO: calculate cosine distance
         cosine_dist = dict()
         for combo in combos:
-            cosine_dist[combo] = spatial.distance.cosine(df[combo[0]], df[combo[1]])
+            cosine_dist[combo] = dist_function(df[combo[0]], df[combo[1]])
         all_cosine_dists[each] = sorted(cosine_dist.items(), key=operator.itemgetter(1))
-    print("Cosine Distance Method")
+    print("%s Distance Method"%dist_type)
     return all_cosine_dists
 
 def factor_analyze(df, target=None, model_type ='pca', **kwargs):

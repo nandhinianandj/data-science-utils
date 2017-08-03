@@ -98,6 +98,7 @@ keras
 mxnet
 tensorboard
 -e git+https://github.com/sevamoo/SOMPY#egg=sompy
+neat-python
 
 # Vision packages
 #object detections
