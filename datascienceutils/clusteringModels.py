@@ -84,7 +84,7 @@ def cluster_analyze(dataframe, name='', **kwargs):
             columns = list(dataframe.columns) + ['classes']
             new_df = pd.DataFrame(data=plot_data, columns=columns)
             s_plot = plotter.scatterplot(new_df, columns[0], columns[1],
-                                    plttitle='%s: %s'%(name, model_name), groupCol='classes')
+                        plttitle='%s: %s'%(name, model_name), groupCol='classes')
             plots.append(s_plot)
 
             if hasattr(algorithm, 'cluster_centers_'):
