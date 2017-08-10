@@ -525,9 +525,15 @@ def facets_dashboard(dataframe, **kwargs):
     display(HTML(html))
     pass
 
-def hyper_plot(dataframe, **kwargs):
+def hyper_plot(dataframe, pca_plot=False, cluster=False, n_clusters=None, **kwargs):
     import hypertools as hyp
-    hyp.plot(dataframe, 'o', **kwargs)
+    if pca_plot:
+        hyp.tools.describe_pca(dataframe)
+    elif cluster:
+        assert n_clusters
+        hyp.plot(dataframe, 'o', n_clusters=n_clusters, **kwargs)
+    else:
+        hyp.plot(dataframe, 'o', **kwargs)
 
 def gp_pointplot(geo_dataframe, geo_locations, scale_column):
     import geoplot.crs as gcrs

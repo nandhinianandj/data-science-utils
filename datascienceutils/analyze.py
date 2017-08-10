@@ -494,7 +494,7 @@ def dimension_analyze(dataframe, group=None, **kwargs):
         groupVals = dataframe[group]
         groupLabels = dataframe[group].unique()
         dataframe.drop(group, 1, inplace=True)
-        plotter.hyper_plot(dataframe, group=groupVals, legend=groupLabels)
+        plotter.hyper_plot(dataframe, group=groupVals, legend=groupLabels, **kwargs)
     pass
 
 def recommend_nn(dataframe, **kwargs):
