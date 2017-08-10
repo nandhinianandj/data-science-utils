@@ -1,6 +1,8 @@
 ## TODO
 	* Setup python sphinx and add proper documentation for all classes and functions
 
+	* [partial path demo](http://scikit-learn.org/stable/auto_examples/ensemble/plot_partial_dependence.html) for tree-based mmethods(random-forest, gradient boosted etc..)
+
 	* Also add some code that reads the validation parameters and generates test cases to test
 	  /validate the model(stats tests, input distributions, output distributions etc..)
 
