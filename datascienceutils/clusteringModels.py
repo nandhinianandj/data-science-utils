@@ -164,8 +164,6 @@ def silhouette_analyze(dataframe, cluster_type='KMeans', n_clusters=None):
                                      plttitle="Visualization of the clustered data")
 
         if hasattr(clusterer, 'cluster_centers_'):
-            # Labeling the clusters
-            centers = pd.DataFrame(clusterer.cluster_centers_)
             for i, c in enumerate(clusterer.cluster_centers_):
                 # Draw white circles at cluster centers
                 plotter.mtext(s_plot, c[0], c[1], "%s"%str(i), text_color="red")
