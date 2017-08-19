@@ -125,3 +125,6 @@ scikit-surprise
 # For understanding blackbox models
 skater
 
+#For message passing across processes
+mpi4py
+
