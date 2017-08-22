@@ -3,7 +3,7 @@
 # For multi-class labels prediction, also test cross-correlation between the label frequencies
 
 # When a model predicts binary classification, add tests of similarity to binomial distribution(with
-# random prior or a given prior)
+# random prior or a given prior). Also check V-C dimension(https://datascience.stackexchange.com/questions/16140/how-to-calculate-vc-dimension/16146)
 
 # When a model is unsupervised clustering, do tests of independence on the clusters
 # generated/predicted

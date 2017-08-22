@@ -128,3 +128,6 @@ skater
 # Pygraphistry for visualizing large graphs
 #graphistry[all]
 #vispy
+#For message passing across processes
+mpi4py
+
