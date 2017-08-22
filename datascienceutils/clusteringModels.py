@@ -125,10 +125,11 @@ def silhouette_analyze(dataframe, cluster_type='KMeans', n_clusters=None):
         n_clusters = range(2, 8, 2)
     assert isinstance(n_clusters, collections.Iterable), "n_clusters must be an iterable object"
     dataframe = dataframe.as_matrix()
+    # A DF for plotting silhouetted score vs num of clusters
     cluster_scores_df = pd.DataFrame(columns=['cluster_size', 'silhouette_score'])
-    for j, cluster in enumerate(n_clusters):
+    for j, clusternum in enumerate(n_clusters):
         if cluster_type != 'bgmm':
-            clusterer = utils.get_model_obj(cluster_type, n_clusters=cluster)
+            clusterer = utils.get_model_obj(cluster_type, n_clusters=clusternum)
         else:
             # We're passing max clusters/components, the Bayesian GMM will figure out appropriate
             # num.
@@ -145,14 +146,14 @@ def silhouette_analyze(dataframe, cluster_type='KMeans', n_clusters=None):
         # clusters
         if len(set(cluster_labels)) > 1:
             silhouette_avg = silhouette_score(dataframe, cluster_labels)
-            cluster_scores_df.loc[j] = [cluster, silhouette_avg]
-            print("For clusters =", cluster,
+            cluster_scores_df.loc[j] = [clusternum, silhouette_avg]
+            print("For clusters =", clusternum,
                     "The average silhouette_score is :", silhouette_avg)
         else:
-            print("No cluster found with cluster no:%d and algo type: %s"%(cluster, cluster_type))
+            print("No cluster found with cluster no:%d and algo type: %s"%(clusternum, cluster_type))
             continue
 
-        # 2nd Plot showing the actual clusters formed
+        # Plot showing the actual clusters formed
         dataframe = pd.DataFrame(dataframe)
         cols = list(dataframe.columns)
         dataframe['predictions'] = pd.Series(cluster_labels)

@@ -125,3 +125,6 @@ scikit-surprise
 # For understanding blackbox models
 skater
 
+# Pygraphistry for visualizing large graphs
+#graphistry[all]
+#vispy
