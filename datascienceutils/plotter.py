@@ -560,4 +560,25 @@ def gp_polyplot(geo_dataframe):
     import geoplot as gplt
 
 
+def candle_stick_plot():
+    import matplotlib.ticker as mticker
+    from matplotlib.finance import candlestick_ohlc
 
+    fig = plt.figure(figsize=(12,8))
+    ax1 = plt.subplot2grid((1,1), (0,0))
+
+    temp_df = df[df['Date']>'2017-05-01']
+    ohlc = []
+    for ind, row in temp_df.iterrows():
+        ol = [row['Date_mpl'],row['Open'], row['High'], row['Low'], row['Close'], row['Volume']]
+        ohlc.append(ol)
+
+    candlestick_ohlc(ax1, ohlc, width=0.4, colorup='#77d879', colordown='#db3f3f')
+    ax1.xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
+    ax1.xaxis.set_major_locator(mticker.MaxNLocator(10))
+
+    plt.xlabel("Date", fontsize=12)
+    plt.ylabel("Price in USD", fontsize=12)
+    plt.title("Candlestick chart for Bitcoin", fontsize=15)
+    plt.subplots_adjust(left=0.09, bottom=0.20, right=0.94, top=0.90, wspace=0.2, hspace=0)
+    return to_bokeh(plt)
