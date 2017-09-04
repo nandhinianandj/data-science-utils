@@ -53,9 +53,12 @@
 	* Add [Correspondence
 	  Analysis](http://www.mathematica-journal.com/2010/09/an-introduction-to-correspondence-analysis/)
 
-	* Sensitivity analysis
+	* [Sensitivity analysis](https://en.wikipedia.org/wiki/Sensitivity_analysis)
 
 	* Interaction Analysis
+
+	* [Survival
+	  Analysis](https://www.nature.com/bjc/journal/v89/n2/pdf/6601118a.pdf?foxtrotcallback=true)
 
 	* Add 3D heatmaps and may be 3D + 1D(time) visualizations/Animations(like the gapminder
 	  bubble chart for ex:)
