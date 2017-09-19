@@ -582,3 +582,24 @@ def candle_stick_plot():
     plt.title("Candlestick chart for Bitcoin", fontsize=15)
     plt.subplots_adjust(left=0.09, bottom=0.20, right=0.94, top=0.90, wspace=0.2, hspace=0)
     return to_bokeh(plt)
+
+def show_volume(dataframe, cols, vec_cols=None, plt_type='vol'):
+    import ipyvolume as ipv
+    if plt_type=='vol':
+        assert len(cols) == 3, "Only 3d Volumes"
+        ipv.quickvolshow(dataframe[cols], level=[0.25, 0.75], opacity=0.03, level_width=0.1, data_min=0,
+                data_max=1)
+    elif plt_type=='scatter':
+        ipv.quickscatter(dataframe[cols], size=1, marker='sphere')
+
+    elif plt_type=='quiver':
+        assert vec_cols, 'Vector Columns needed'
+        x,y,z = dataframe[cols]
+        u,v,w = dataframe[vec_cols]
+        ipv.quickquiver(x,y,z, u,v,w, size=5)
+    elif plt_type('mesh'):
+        m = ipv.plot(x,y,z,wireframe=False)
+        ipv.squarelim()
+        ipv.show()
+    else:
+        raise 'Unsupported plot type'

@@ -131,3 +131,5 @@ skater
 #For message passing across processes
 mpi4py
 
+# Ipython volume
+ipyvolume
