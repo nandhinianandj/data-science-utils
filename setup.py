@@ -10,6 +10,8 @@ import os
 import sys
 import subprocess
 
+# Common settings between conda and pypi setup.py
+import settings
 
 if sys.version_info[:2] < (2, 6) or (3, 0) <= sys.version_info[0:2] < (3, 2):
     raise RuntimeError("Python version 2.6, 2.7 or >= 3.2 required.")
@@ -39,13 +41,6 @@ Operating System :: Unix
 Operating System :: MacOS
 
 """
-
-MAJOR = 1
-MINOR = 2
-MICRO = 17
-ISRELEASED = True
-VERSION = '%d.%d.%d' % (MAJOR, MINOR, MICRO)
-
 
 # Return the git revision as a string
 def git_version():
@@ -88,7 +83,7 @@ def get_version_info():
     # Adding the git rev number needs to be done inside
     # write_version_py(), otherwise the import of scipy.version messes
     # up the build under Python 3.
-    FULLVERSION = VERSION
+    FULLVERSION = settings.VERSION
     if os.path.exists('.git'):
         GIT_REVISION = git_version()
     elif os.path.exists('datascienceutils/version.py'):
