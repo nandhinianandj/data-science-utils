@@ -3,6 +3,7 @@ from bokeh.layouts import gridplot
 from statsmodels.stats import diagnostic
 from statsmodels.stats import outliers_influence
 
+import networkx
 import operator
 import functools
 import itertools
@@ -506,6 +507,19 @@ def recommend_nn(dataframe, **kwargs):
     # If some columns exhibit iterative function systems behaviour, aka fractal dimensions add
     # feed-backward propagation(it adds markov state and some dependence on previous state)
     #
+    pass
+
+def causal_analyze(dataframe):
+    for each in dataframe.columns:
+        assert utils.is_numeric(dataframe, column=col)
+    import causality
+    from causality.inference.independence_tests import RobustRegressionTest
+    from causality.inference.search import IC
+    variable_types = dict(zip(dataframe.columns, ['c'] * len(dataframe)))
+    ic_algorithm = IC(RobustRegressionTest)
+    graph = ic_algorithm.search(dataframe, variable_types)
+    import pdb; pdb.set_trace()
+    plotter.show_graph(graph)
     pass
 
 def chaid_tree(dataframe, targetCol):

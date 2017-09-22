@@ -92,6 +92,16 @@ def show_var_imp(model, X,y):
     imp[ : 10 ].plot( kind = 'barh' )
     print (model.score( X , y ))
 
+def show_graph(graph):
+
+    fout = tempfile.NamedTemporaryFile(suffix='.png')
+    dot_fname = '.'.join([fout.name.split('.')[0], 'dot'])
+    gr = networkx.draw_graphviz(graph)
+    dot_data = tree.export_graphviz(model, out_file=dot_fname)
+    os.system('dot -Tpng %s -o %s'%(dot_fname, fout.name))
+    show(show_image(io.imread(fout.name)))
+    os.remove(dot_fname)
+
 def show_tree_model(model, model_type='tree'):
     assert model_type in ['tree', 'randomforest', 'xgboost']
     from sklearn import tree
