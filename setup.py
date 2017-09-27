@@ -95,7 +95,7 @@ def get_version_info():
     else:
         GIT_REVISION = "Unknown"
 
-    if not ISRELEASED:
+    if not settings.ISRELEASED:
         FULLVERSION += '.dev0+' + GIT_REVISION[:7]
 
     return FULLVERSION, GIT_REVISION
@@ -117,10 +117,10 @@ if not release:
 
     a = open(filename, 'w')
     try:
-        a.write(cnt % {'version': VERSION,
+        a.write(cnt % {'version': settings.VERSION,
             'full_version': FULLVERSION,
             'git_revision': GIT_REVISION,
-            'isrelease': str(ISRELEASED)})
+            'isrelease': str(settings.ISRELEASED)})
     finally:
         a.close()
 

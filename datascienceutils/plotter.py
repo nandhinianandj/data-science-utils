@@ -17,6 +17,7 @@ import numpy as np
 import operator
 import os
 import random
+import tempfile
 
 #TODO: Ugh.. this file/module needs a cleanup
 # Custom imports
@@ -93,7 +94,7 @@ def show_var_imp(model, X,y):
     print (model.score( X , y ))
 
 def show_graph(graph):
-
+    import networkx
     fout = tempfile.NamedTemporaryFile(suffix='.png')
     dot_fname = '.'.join([fout.name.split('.')[0], 'dot'])
     gr = networkx.draw_graphviz(graph)
@@ -106,7 +107,6 @@ def show_tree_model(model, model_type='tree'):
     assert model_type in ['tree', 'randomforest', 'xgboost']
     from sklearn import tree
     import pydotplus
-    import tempfile
     from skimage import io
     #assert isinstance(model, tree.DecisionTreeClassifier)
     if model_type == 'tree':

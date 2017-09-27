@@ -511,16 +511,15 @@ def recommend_nn(dataframe, **kwargs):
 
 def causal_analyze(dataframe):
     for each in dataframe.columns:
-        assert utils.is_numeric(dataframe, column=col)
+        assert utils.is_numeric(dataframe, column=each)
+    from networkx import drawing
     import causality
     from causality.inference.independence_tests import RobustRegressionTest
     from causality.inference.search import IC
     variable_types = dict(zip(dataframe.columns, ['c'] * len(dataframe)))
     ic_algorithm = IC(RobustRegressionTest)
     graph = ic_algorithm.search(dataframe, variable_types)
-    import pdb; pdb.set_trace()
-    plotter.show_graph(graph)
-    pass
+    drawing.draw_networkx(graph)
 
 def chaid_tree(dataframe, targetCol):
     import CHAID as ch

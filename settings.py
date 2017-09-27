@@ -1,5 +1,5 @@
 MAJOR = 1
 MINOR = 2
 MICRO = 17
-ISRELEASED = True
+ISRELEASED = False
 VERSION = '%d.%d.%d' % (MAJOR, MINOR, MICRO)
