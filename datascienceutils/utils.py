@@ -351,7 +351,7 @@ def bayesian_blocks(t):
 
 def get_full_path(base_path, filename, model_params, extn='.pkl', params_file=False):
     if params_file:
-        return os.path.join(base_path, model_params['id'] + '_' + filename + 'params'+ extn)
+        return os.path.join(base_path, model_params['id'] + '_' + filename + '_' + 'params'+ extn)
     else:
         return os.path.join(base_path, model_params['id'] + '_' + filename + extn)
 

@@ -86,7 +86,7 @@ def dump_model(model, filename, model_params):
     joblib.dump(model, utils.get_full_path(settings.MODELS_BASE_PATH, filename,
                                             model_params, extn='.pkl'), compress=('lzma', 3))
 
-def load_model(filename, model_type=None):
+def load_model(filename=None, model_type=None):
     """
     @params:
         @filename: Filename..
@@ -104,22 +104,23 @@ def load_model(filename, model_type=None):
         assert relevant_models, "no relevant models found"
         relevant_models.sort(key=lambda x: os.stat(os.path.join(foldername, x)).st_mtime, reverse=True)
         model = joblib.load(os.path.join(foldername, relevant_models[0]))
-        names = elevant_models[0].split('_')
+        names = relevant_models[0].split('_')
+        names[-1] = names[-1].split('.')[0]
     else:
-        model = joblib.load(os.path.join(foldername, filename))
+        model = joblib.load(os.path.join(foldername, filename + '.pkl'))
         names = filename.split('_')
     names.append('params')
     with open(os.path.join(foldername, '_'.join(names)) + '.json', 'r') as fd:
         params = json.load(fd)
     return model, params
 
-def load_latest_model(foldername, modelType='knn'):
+def load_latest_model(foldername, model_type='knn'):
     """
     Parses through the files in the model folder and returns the latest model
-    @modelType: can be overloaded to match any string. though the function surrounds a * after value
+    @model_type: can be overloaded to match any string. though the function surrounds a * after value
     """
     assert foldername, "Please pass in a foldername"
-    relevant_models = list(filter(lambda x: fnmatch.fnmatch(x, '*' + modelType + '*.pkl'), os.listdir(foldername)))
+    relevant_models = list(filter(lambda x: fnmatch.fnmatch(x, '*' + model_type + '*.pkl'), os.listdir(foldername)))
     assert relevant_models, "no relevant models found"
     relevant_models.sort(key=lambda x: os.stat(os.path.join(foldername, x)).st_mtime, reverse=True)
     latest_model = relevant_models[0]
