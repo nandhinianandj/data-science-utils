@@ -54,6 +54,12 @@ try:
 except Exception:
     pass
 
+def dummy_imports(name):
+    try:
+        eval('import ' + name)
+    except Exception:
+        global eval(name)
+
 def create_base_nn(**kwargs):
     from keras.models import Sequential
     from keras.layers import Dense
