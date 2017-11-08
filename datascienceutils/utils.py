@@ -31,28 +31,24 @@ from sklearn.neighbors.kde import KernelDensity
 # (Gaussian) Mixture models
 from sklearn.mixture import *
 
-try:
-    # TIME SERIES MODELS
-    import statsmodels.api as sm
-    # Online classifiers http://scikit-learn.org/stable/auto_examples/linear_model/plot_sgd_comparison.html
-    # xgboost
-    import xgboost as xgb
+# TIME SERIES MODELS
+import statsmodels.api as sm
+# Online classifiers http://scikit-learn.org/stable/auto_examples/linear_model/plot_sgd_comparison.html
+# xgboost
+import xgboost as xgb
 
-    # Dimensionality Reduction with umap
-    from umap import UMAP
+# Dimensionality Reduction with umap
+from umap import UMAP
 
-    # LightGBM models
-    #from pylightgbm.models import *
-    # Sigh lightgbm insist this is the only way
-    #os.environ['LIGHTGBM_EXEC'] = os.path.join(os.getenv("HOME"), 'bin', 'lightgbm')
-    os.environ['DATAROBOT_CONFIG_FILE'] = os.path.join(os.getenv("HOME"), '.config', 'datarobot',
-            'drconfig.yaml')
+# LightGBM models
+#from pylightgbm.models import *
+# Sigh lightgbm insist this is the only way
+#os.environ['LIGHTGBM_EXEC'] = os.path.join(os.getenv("HOME"), 'bin', 'lightgbm')
+os.environ['DATAROBOT_CONFIG_FILE'] = os.path.join(os.getenv("HOME"), '.config', 'datarobot',
+        'drconfig.yaml')
 
-
-    # Scipy distance measures
-    import neat
-except Exception:
-    pass
+# Scipy distance measures
+import neat
 
 #def dummy_imports(name):
 #    try:

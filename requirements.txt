@@ -1,5 +1,5 @@
 # Visualization packages
-bokeh
+bokeh==0.10.0
 seaborn
 matplotlib
 # shapely
@@ -57,8 +57,9 @@ xgboost
 rasterio
 
 # NLP stuff
-gensim
-glove
+#nltk
+#gensim
+#glove
 
 #Light GBM
 #-e git+https://github.com/Microsoft/LightGBM.git#egg=lightgbm
@@ -79,17 +80,17 @@ scikit-data
 # Goodness of fit tests
 scikit-gof
 # Geodesic manifolds
-scikit-geodesic
-scikit-gpuppy
-scikit-kinematics
-scikit-multilearn
+#scikit-geodesic
+#scikit-gpuppy
+#scikit-kinematics
+#scikit-multilearn
 scikit-neuralnetwork
-scikit-procrustes
-scikit-sound
-scikit-sos
+#scikit-procrustes
+#scikit-sound
+#scikit-sos
 #scikit-xray
 #datasmooth
-scikits.talkbox
+#scikits.talkbox
 
 # Neural network packages
 tensorflow
@@ -102,34 +103,33 @@ neat-python
 
 # Vision packages
 #object detections
-gpod
+#gpod
 
 #Workflow management
-
 #dagpype
 #luigi
 
 # String fuzzy(lev. distance based) matching
 fuzzywuzzy
 
-datarobot
-pynasa
+#datarobot
+#pynasa
 
 # For graphical models
-pystruct
-seqlearn
+#pystruct
+#seqlearn
 
 # For recommendation engines
-scikit-surprise
+#scikit-surprise
 
 # For understanding blackbox models
-skater
+#skater
 
 # Pygraphistry for visualizing large graphs
 #graphistry[all]
 #vispy
 #For message passing across processes
-mpi4py
+#mpi4py
 
 # Ipython volume
 ipyvolume
