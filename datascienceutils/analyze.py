@@ -1,5 +1,5 @@
 # Standard and external libraries
-from bokeh.layouts import gridplot
+from bokeh.io import gridplot
 from statsmodels.stats import diagnostic
 from statsmodels.stats import outliers_influence
 

@@ -2,7 +2,7 @@
 from pandas.api import types as ptypes
 from bokeh.mpl import to_bokeh
 from bokeh.plotting import figure
-from bokeh.layouts import gridplot
+from bokeh.io import gridplot
 from bokeh.plotting import figure, show, output_file, output_notebook, ColumnDataSource
 from bokeh.resources import CDN
 from bokeh.embed import components
