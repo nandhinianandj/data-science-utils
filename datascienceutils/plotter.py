@@ -46,15 +46,29 @@ BOKEH_TOOLS = "resize,crosshair,pan,wheel_zoom,box_zoom,reset,tap,previewsave,bo
 def genColors(n, ptype=None):
     """
     """
-    from bokeh.palettes import magma, inferno, plasma, viridis
-    if ptype=='magma':
-        return magma(n)
-    elif ptype == 'inferno':
-        return inferno(n)
-    elif ptype == 'plasma':
-        return plasma(n)
+    from bokeh.palettes import (Blues3, Blues4, Blues5,
+                            Blues6, Blues7, Blues8, Blues9,
+                            Greens3, Greens4, Greens5,
+                            Greens6, Greens7, Greens8, Greens9,
+                            Reds3, Reds4, Reds5, Reds6,
+                            Reds7, Reds8, Reds9, Spectral3,
+                            Spectral4, Spectral5, Spectral6,
+                            Spectral7, Spectral8, Spectral9)
+    if n <= 2:
+        given_val = 3
     else:
-        return viridis(n)
+        given_val = n
+    if ptype=='magma':
+        chosen = eval('Spectral' +'%s'%str(given_val))
+    elif ptype == 'inferno':
+        chosen = eval('Greens' + '%s'%str(given_val))
+    elif ptype == 'plasma':
+        chosen = eval('Reds' + '%s'%str(given_val))
+    else:
+        chosen = eval('Blues' + '%s'%str(given_val))
+    if given_val == 3:
+        return chosen[:n]
+    return chosen
 
 def contour_plot(dataframe, model , **kwargs):
     import matplotlib.pyplot as plt
@@ -164,7 +178,7 @@ def multi_line_plot(dataframe, idx=None):
         dataframe.set_index(idx)
         dataframe.drop(idx, 1, inplace=True)
     numlines = len(dataframe.columns)
-    mypalette= genColors(numlines) # Spectral11[0:numlines]
+    mypalette= genColors(numlines, ptype='magma') # Spectral11[0:numlines]
     p = figure(width=500, height=300, x_axis_type='datetime')
     p.multi_line(xs=[dataframe.index.values]*numlines,
                  ys=[dataframe[name].values for name in dataframe],
@@ -391,7 +405,7 @@ def scatterplot(scatterDF, xcol, ycol,
         p.circle(scatterDF[xcol], scatterDF[ycol], size=5, **kwargs)
     else:
         groups = list(scatterDF[groupCol].unique())
-        colors = genColors(len(groups))
+        colors = genColors(len(groups), ptype='plasma')
         colors = list(np.hstack([colors] * 20))
         for group in groups:
             color = colors.pop(random.randrange(len(colors)))

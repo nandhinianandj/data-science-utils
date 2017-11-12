@@ -1,4 +1,10 @@
-
+import json
+def validate(model, model_info_file):
+    with open(model_info, 'r') as fd:
+        model_info = json.load(fd)
+    assert 'input_metadata' in model_info, "Input metadata missing in model info"
+    assert 'output_type' in model_info , "Output type required"
+    pass
 # Add tests of independence, when a model predicts multi-class labels and probabilities
 # For multi-class labels prediction, also test cross-correlation between the label frequencies
 
