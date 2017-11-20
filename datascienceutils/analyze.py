@@ -3,7 +3,6 @@ from bokeh.io import gridplot
 from statsmodels.stats import diagnostic
 from statsmodels.stats import outliers_influence
 
-import networkx
 import operator
 import functools
 import itertools
@@ -512,6 +511,7 @@ def recommend_nn(dataframe, **kwargs):
 def causal_analyze(dataframe):
     for each in dataframe.columns:
         assert utils.is_numeric(dataframe, column=each)
+    import networkx
     from networkx import drawing
     import causality
     from causality.inference.independence_tests import RobustRegressionTest

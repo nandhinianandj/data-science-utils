@@ -38,7 +38,7 @@ import statsmodels.api as sm
 import xgboost as xgb
 
 # Dimensionality Reduction with umap
-from umap import UMAP
+# from umap import UMAP
 
 # LightGBM models
 #from pylightgbm.models import *
@@ -48,7 +48,7 @@ os.environ['DATAROBOT_CONFIG_FILE'] = os.path.join(os.getenv("HOME"), '.config',
         'drconfig.yaml')
 
 # Scipy distance measures
-import neat
+#import neat
 
 #def dummy_imports(name):
 #    try:
@@ -96,7 +96,7 @@ models_dict = { 'knn': KNeighborsClassifier,
                 'FactorAnalysis': FactorAnalysis,
                 'lda': LinearDiscriminantAnalysis,
                 'tsne': TSNE,
-                'umap': UMAP,
+                #'umap': UMAP,
 
                 'kde': KernelDensity,
                 'AR': sm.tsa.AR,

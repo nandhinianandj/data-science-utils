@@ -374,10 +374,10 @@ def boxplot(boxDF, values_label, xlabel, title="boxplot", **kwargs):
     boxplot = BoxPlot(boxDF, values=values_label, label=xlabel, color=xlabel, title=title, **kwargs)
     return boxplot
 
-def heatmap(heatMapDF,xlabel, ylabel, value_label,
+def heatmap(heatMapDF, xlabel, ylabel, value_label,
             title="heatmap", palette=None, width=500,
             height=500,**kwargs):
-    from bokeh.charts import HeatMap
+    from bokeh._legacy_charts import HeatMap
     if not palette:
         from bokeh.palettes import RdBu11 as palette_tmpl
         palette = palette_tmpl
