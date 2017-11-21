@@ -514,7 +514,7 @@ def sb_distplot(df, column, **kwargs):
     facet.map( sns.kdeplot , column , shade= True )
     facet.set( xlim=( df[column] , df[column].max() ) )
     facet.add_legend()
-    return to_bokeh(facet)
+    facet.show()
 
 def sb_violinplot(series, dataframe=None, groupCol = None, **kwargs):
     import seaborn as sns
@@ -522,19 +522,19 @@ def sb_violinplot(series, dataframe=None, groupCol = None, **kwargs):
     import pandas as pd
     if not groupCol:
         assert isinstance(series, pd.Series)
-        return to_bokeh(sns.violinplot(x=series, **kwargs).figure)
+        plt = sns.violinplot(x=series, **kwargs)
     else:
         assert dataframe and groupCol
         assert isinstance(series, str)
-        return to_bokeh(sns.violinplot(x=groupCol, y=series, data=dataframe, **kwargs).figure)
-
+        plt = sns.violinplot(x=groupCol, y=series, data=dataframe, **kwargs)
+    plt.show()
 def sb_jointplot(series1, series2):
     import numpy as np
     import seaborn as sns
     sns.set(style="white")
 
     # Show the joint distribution using kernel density estimation
-    sns.jointplot(series1, series2, kind="kde", size=7, space=0)
+    plt = sns.jointplot(series1, series2, kind="kde", size=7, space=0)
 
 def facets_dashboard(dataframe, **kwargs):
     # WARNING: needs facets -nbextension from google installed
@@ -608,7 +608,7 @@ def candle_stick_plot():
     plt.ylabel("Price in USD", fontsize=12)
     plt.title("Candlestick chart for Bitcoin", fontsize=15)
     plt.subplots_adjust(left=0.09, bottom=0.20, right=0.94, top=0.90, wspace=0.2, hspace=0)
-    return to_bokeh(plt)
+    plt.show()
 
 def show_volume(dataframe, cols, vec_cols=None, plt_type='vol'):
     import ipyvolume as ipv

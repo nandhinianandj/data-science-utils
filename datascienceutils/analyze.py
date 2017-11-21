@@ -50,7 +50,7 @@ def dist_analyze(df, column='', category='', is_normal=True, bayesian_hist=False
             check_normality(df[column], column)
 
         if violinplot:
-            plots.append(plotter.sb_violinplot(df[column], inner='box'))
+            plotter.sb_violinplot(df[column], inner='box')
         plots.append(plotter.histogram(df, column, bayesian_bins=bayesian_hist))
     else:
         if df[column].nunique() < 7:
@@ -133,7 +133,7 @@ def correlation_analyze(df, col1, col2, categories=[], measures=[],
 
     u,v = col1, col2
     plots.append(plotter.scatterplot(df, u, v))
-    plots.append(plotter.sb_jointplot(df[u], df[v]))
+    plotter.sb_jointplot(df[u], df[v])
     if check_linearity:
         u_2diff = np.gradient(df[u], 2)
         v_2diff = np.gradient(df[v], 2)
