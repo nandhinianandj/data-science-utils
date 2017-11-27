@@ -1,3 +1,4 @@
+import flashtext
 def filter_letters_only(text):
     import re
     # Use regular expressions to do a find-and-replace

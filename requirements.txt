@@ -111,6 +111,8 @@ neat-python
 
 # String fuzzy(lev. distance based) matching
 fuzzywuzzy
+# Faster Text search
+flashtext
 
 #datarobot
 #pynasa
