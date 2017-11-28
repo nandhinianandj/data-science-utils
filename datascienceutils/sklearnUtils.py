@@ -74,6 +74,8 @@ def dump_model(model, filename, model_params):
     assert model_params['model_type'], "model_type required in model_params"
     assert model_params['output_type'], "output_type required in model_params"
     assert model_params['input_metadata'], "input_metadata required in model_params"
+    if not model_params['output_metadata']:
+        model_params['output_metadata'] = None
 
     model_params.update({'filename': filename,
                          'id': str(uuid.uuid4())})
