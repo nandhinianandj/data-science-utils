@@ -4,11 +4,19 @@ def validate(model, model_info_file, input_data):
     with open(model_info, 'r') as fd:
         model_info = json.load(fd)
     assert 'input_metadata' in model_info, "Input metadata missing in model info"
-    assert 'output_metadata' in model_info, "Input metadata missing in model info"
+    assert 'output_metadata' in model_info, "Output metadata missing in model info"
     assert 'output_type' in model_info , "Output type required"
-    if model_info.output_type == 'float':
-        assert map(lambda x: isinstance(x, float), m)
+    assert 'model_class' in model_info, "Model Class (multi-class/single-class/regression) required"
     if model_info.output_metadata:
+        pass
+    if model_info.model_class == 'regression':
+        predictions = model.predict(input_data)
+        # Check the predictions are type of continuous variables (float or int)
+        # parse and translate output_metadata to choice of tests
+        pass
+    if model_info.model_class == 'multiclass':
+        # Check the predictions are type of categorical variables (float or int)
+        # parse and translate output_metadata to choice of tests
         pass
     if model_info.input_metadata:
         input_cols = model_info.input_metadata['ncols']
