@@ -21,7 +21,8 @@ def validate(model, model_info_file, input_data):
     if model_info.input_metadata:
         input_cols = model_info.input_metadata['ncols']
         input_dists = model_info.input_metadata['input_dists']
-        check_dists()
+        for col,dist in input_dists:
+            check_dists(input_data[col], dist)
 
         pass
 
