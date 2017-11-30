@@ -268,7 +268,6 @@ def roc_plot(dataframe, target, score, cls_list=[],multi_class=True):
         plt.show()
         return plt
 
-
 def bins(df):
     """
     Thanks to guy from [here](https://stackoverflow.com/questions/16947336/binning-a-dataframe-in-pandas-in-python)

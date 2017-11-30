@@ -11,6 +11,8 @@ def validate(model, model_info_file, input_data):
         pass
     if model_info.model_class == 'regression':
         predictions = model.predict(input_data)
+        for col in input_data.columns:
+            su.distribution_tests(input_data, col)
         # Check the predictions are type of continuous variables (float or int)
         # parse and translate output_metadata to choice of tests
         pass
@@ -23,10 +25,8 @@ def validate(model, model_info_file, input_data):
         input_dists = model_info.input_metadata['input_dists']
         for col,dist in input_dists:
             check_dists(input_data[col], dist)
-
-        pass
-
     pass
+
 # Add tests of independence, when a model predicts multi-class labels and probabilities
 # For multi-class labels prediction, also test cross-correlation between the label frequencies
 

@@ -1,6 +1,5 @@
 # Standard and external libraries
 from bokeh.io import gridplot
-from statsmodels.stats import diagnostic
 from statsmodels.stats import outliers_influence
 
 import operator
@@ -11,31 +10,11 @@ import numpy as np
 import pandas as pd
 
 # Custom libraries
-from . import sklearnUtils
+from . import sklearnUtils as sku
 from . import plotter
 from . import utils
+from . import statsutils as su
 
-#TODO: only the non-parametric ones used, check the rest andfigure out how to choose
-# parameters(think kde estimator from sklearn)
-CHECK_DISTS = ['norm']#, 'exponweib','zipf', 'geom', 'hypergeom', 'poisson', 'randint',
-        #'multivariate_normal', 'weibull_min', 'weibull_max', 'logistic', 'chi', 'chi2', 'cosine',
-        #'cauchy','alpha', 'beta', 'bernoulli','binom',
-
-def distribution_tests(df, column, test_type='ks'):
-    from scipy import stats
-    for distribution in CHECK_DISTS:
-        if test_type=='ks':
-            print("Kolmogrov - Smirnov test with distribution %s"%distribution)
-            print(stats.kstest(df[column].tolist(), distribution))
-        #elif test_type =='wald':
-        #    print("Wald test with distribution %s"%distribution)
-        #    print(lm.wald_test(df[column], distribution))
-        else:
-            raise "Unknown distribution similarity test type"
-
-def check_normality(series, name):
-    print("Anderson-Darling normality test on %s "%name)
-    print("Statistic: %f \n p-value: %f\n"%diagnostic.normal_ad(series))
 
 def dist_analyze(df, column='', category='', is_normal=True, bayesian_hist=False,
                     kdeplot=True, violinplot=False):
@@ -45,9 +24,9 @@ def dist_analyze(df, column='', category='', is_normal=True, bayesian_hist=False
         print(df[column].var())
         print("Skewness of %s"%column)
         print(df[column].skew())
-        distribution_tests(df, column)
+        su.distribution_tests(df, column)
         if is_normal:
-            check_normality(df[column], column)
+            su.check_normality(df[column], column)
 
         if violinplot:
             plotter.sb_violinplot(df[column], inner='box')
@@ -183,21 +162,6 @@ def correlation_analyze(df, col1, col2, categories=[], measures=[],
     #print("# Pandas co-variance coefficients matrix")
     #print(df.cov())
 
-def is_independent(series1, series2):
-    pass
-
-def is_similar_distribution(original_dist, target_dist, test_type='permutation'):
-    if test_type=='permutation':
-        from permute.core import two_sample
-        kwargs = {'stat':'t','alternative':'two-sided','seed':20}
-        p_value = two_sample(original_dist, target_dist)
-        print(p_value)
-    elif test_type=='chi_sq':
-        pass
-    else:
-        raise "Unknown distribution similarity test type"
-
-
 def degrees_freedom(df, dof_range = [], categoricalCol=[]):
     """
     Find what are the maximum orthogonal dimensions in the data
@@ -212,15 +176,8 @@ def degrees_freedom(df, dof_range = [], categoricalCol=[]):
                 probabilities[(col,val)] = grouped_df[val]/df[categoricalCol].count()
         print(probabilities)
     else:
-        print("Chi-square test of independence()")
-        from scipy.stats import chi2_contingency
-        result = chi2_contingency(df.as_matrix())
-        print("Statistical degrees of freedom")
-        print(result[2])
-        print("Chi-square value")
-        print(result[0])
-        print("p-value")
-        print(result[1])
+        for (col1, col2) in utils.chunks(df.columns, 2):
+            chi2_test_independence(df[col1], df[col2])
 
 def measure_distance(dist_type='cosine', dof_range=[]):
     if not dof_range: dof_range = range(2,3)
@@ -245,7 +202,7 @@ def factor_analyze(df, target=None, model_type ='pca', **kwargs):
     numericalColumns = df.select_dtypes(include=[np.number]).columns
     catColumns = set(df.columns).difference(set(numericalColumns))
     for col in catColumns:
-        df[col] = sklearnUtils.encode_labels(df, col)
+        df[col] = sku.encode_labels(df, col)
     print("Model being used is :%s "%model_type)
     if model_type == 'linear_da':
         assert target is not None, "Target class/category necessary for Linear DA factor analysis"
