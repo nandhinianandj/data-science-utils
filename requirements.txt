@@ -5,8 +5,7 @@ matplotlib
 # shapely
 hypertools # For multi-dimensional data
 
-#pygal
-
+patsy
 # Modular data processing
 mdp
 
