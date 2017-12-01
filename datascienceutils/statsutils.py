@@ -40,8 +40,8 @@ def is_similar_distribution(original_dist, target_dist, test_type='permutation')
 
 def distribution_tests(series, test_type='ks', dist_type=None):
     from scipy import stats
+    test_results = pd.DataFrame(columns=['distribution', 'statistic', 'p-value'])
     if not dist_type:
-        test_results = pd.DataFrame(columns=['distribution', 'statistic', 'p-value'])
         for i, distribution in enumerate(CHECK_DISTS):
             if test_type=='ks':
                 print("Kolmogrov - Smirnov test with distribution %s"%distribution)
@@ -53,7 +53,8 @@ def distribution_tests(series, test_type='ks', dist_type=None):
             else:
                 raise "Unknown distribution similarity test type"
     else:
-        test_results.loc[0] = [dist_type, stats.kstest(series, dist_type)]
+        stat, pval = stats.kstest(series, dist_type)
+        test_results.loc[0] = [dist_type, stat, pval]
     return test_results
 
 def chisq_stat(O, E):
