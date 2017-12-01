@@ -7,15 +7,20 @@ def validate(model, model_info_file, input_data):
     assert 'output_metadata' in model_info, "Output metadata missing in model info"
     assert 'output_type' in model_info , "Output type required"
     assert 'model_class' in model_info, "Model Class (multi-class/single-class/regression) required"
+
+    for col in input_data.columns:
+        dist = model_info['input_metadata'][col]
+        su.distribution_tests(input_data[col], dist_type=dist)
+
     if model_info.output_metadata:
         pass
     if model_info.model_class == 'regression':
         predictions = model.predict(input_data)
-        for col in input_data.columns:
-            su.distribution_tests(input_data, col)
         # Check the predictions are type of continuous variables (float or int)
         # parse and translate output_metadata to choice of tests
-        pass
+        dist = model_info['output_metadata']['dist']
+        su.distribution_tests(predictions, dist_type=dist)
+
     if model_info.model_class == 'multiclass':
         # Check the predictions are type of categorical variables (float or int)
         # parse and translate output_metadata to choice of tests
