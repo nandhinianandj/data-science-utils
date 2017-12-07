@@ -4,18 +4,7 @@ import pandas as pd
 from statsmodels.stats import diagnostic
 from scipy.stats import chi2
 
-#TODO: only the non-parametric ones used, check the rest andfigure out how to choose
-# parameters(think kde estimator from sklearn)
-CHECK_DISTS = ['norm', 'expon', 'logistic', 'cosine', 'cauchy',]
-        # 'poisson', 'zipf', 'geom', 'hypergeom', 'randint', 'multivariate_normal', 'weibull_min', 'weibull_max',
-        # 'logistic', 'chi', 'chi2', 'alpha', 'beta', 'bernoulli','binom', 'exponweib','exponpow'
-def check_normality(series, name):
-    print("Anderson-Darling normality test on %s "%name)
-    print("Statistic: %f \n p-value: %f\n"%diagnostic.normal_ad(series))
-
-def is_independent(series1, series2):
-    pass
-
+# Chi-square tests
 def chi2_test_independence(series1, series2):
     print("Chi-square test of independence()")
     from scipy.stats import chi2_contingency
@@ -26,6 +15,20 @@ def chi2_test_independence(series1, series2):
     print(result[0])
     print("p-value")
     print(result[1])
+
+def chisq_test(O, E, degree=3, sig_level=0.05):
+    measured_val = sum( [(o - e)**2/e for (o, e) in zip(O, E)] )
+    return chi2.cdf(measured_val, degree), chi2.sf(measured_val, degree)
+
+#TODO: only the non-parametric ones used, check the rest andfigure out how to choose
+# parameters(think kde estimator from sklearn)
+CHECK_DISTS = ['norm', 'expon', 'logistic', 'cosine', 'cauchy',]
+        # 'poisson', 'zipf', 'geom', 'hypergeom', 'randint', 'multivariate_normal', 'weibull_min', 'weibull_max',
+        # 'logistic', 'chi', 'chi2', 'alpha', 'beta', 'bernoulli','binom', 'exponweib','exponpow'
+
+def check_normality(series, name):
+    print("Anderson-Darling normality test on %s "%name)
+    print("Statistic: %f \n p-value: %f\n"%diagnostic.normal_ad(series))
 
 def is_similar_distribution(original_dist, target_dist, test_type='permutation'):
     if test_type=='permutation':
@@ -38,31 +41,26 @@ def is_similar_distribution(original_dist, target_dist, test_type='permutation')
     else:
         raise "Unknown distribution similarity test type"
 
-def distribution_tests(series, test_type='ks', dist_type=None):
+def distribution_similarity(series, dist_type, test_type='ks'):
     from scipy import stats
     test_results = pd.DataFrame(columns=['distribution', 'statistic', 'p-value'])
-    if not dist_type:
-        for i, distribution in enumerate(CHECK_DISTS):
-            if test_type=='ks':
-                print("Kolmogrov - Smirnov test with distribution %s"%distribution)
-                stat, pval = stats.kstest(series, distribution)
-                test_results.loc[i] = [distribution, stat, pval]
-            elif test_type =='wald':
-                print("Wald test with distribution %s"%distribution)
-                print(lm.wald_test(series, distribution))
-            else:
-                raise "Unknown distribution similarity test type"
-    else:
+    if test_type=='ks':
         stat, pval = stats.kstest(series, dist_type)
         test_results.loc[0] = [dist_type, stat, pval]
+    elif test_type =='wald':
+        test_results.loc[0] = lm.wald_test(series, dist_type)
+    else:
+        raise "Unknown distribution similarity test type"
     return test_results
 
-def chisq_stat(O, E):
-    return sum( [(o - e)**2/e for (o, e) in zip(O, E)] )
+def check_distribution(series, test_type='ks'):
+    test_results = pd.DataFrame(columns=['distribution', 'statistic', 'p-value'])
+    for i, distribution in enumerate(CHECK_DISTS):
+        res = distribution_similarity(series, distribution, test_type)
+        test_results = test_results.append(res, ignore_index=True)
+    test_results.sort_values(by=['p-value'])
+    return test_results
 
-def chisq_test(O, E, degree=3, sig_level=0.05):
-    measured_val = sum( [(o - e)**2/e for (o, e) in zip(O, E)] )
-    return chi2.cdf(measured_val, degree), chi2.sf(measured_val, degree)
 
 def calculate_anova(df, targetCol, sourceCol):
     from statsmodels.formula.api import ols
@@ -71,10 +69,6 @@ def calculate_anova(df, targetCol, sourceCol):
             data=df).fit()
     table = anova_lm(lm, typ=2)
     return table
-
-def average(x):
-    assert len(x) > 0
-    return float(sum(x)) / len(x)
 
 def pearson_def(x, y):
     assert len(x) == len(y)

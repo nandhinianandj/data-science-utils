@@ -12,7 +12,8 @@ __pycache__/
 
 # C extensions
 *.so
-
+# anything that starts with a .
+^.*
 # Distribution / packaging
 .Python
 data
