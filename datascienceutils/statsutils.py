@@ -44,6 +44,8 @@ def is_similar_distribution(original_dist, target_dist, test_type='permutation')
 def distribution_similarity(series, dist_type, test_type='ks'):
     from scipy import stats
     test_results = pd.DataFrame(columns=['distribution', 'statistic', 'p-value'])
+    if not isinstance(dist_type, str):
+        dist_type = dist_type.cdf
     if test_type=='ks':
         stat, pval = stats.kstest(series, dist_type)
         test_results.loc[0] = [dist_type, stat, pval]

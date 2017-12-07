@@ -2,6 +2,7 @@ import json
 from . import statsutils as su
 
 def validate(model, model_info_or_file, input_data):
+    # when it's a naive bayes model check, conjugate pairs([https://www.johndcook.com/blog/conjugate_prior_diagram/] (a diagram here))
     if not isinstance(model_info_or_file, dict):
         with open(model_info, 'r') as fd:
             model_info = json.load(fd)
@@ -18,36 +19,37 @@ def validate(model, model_info_or_file, input_data):
         dist = model_info['input_metadata'][col]['dist']
         su.distribution_similarity(input_data[col].tolist(), dist_type=dist)
 
-    if model_info.get('output_metadata', None):
-        pass
+    predictions = model.predict(input_data)
+    series = predictions
     if model_info.get('model_class', None) == 'regression':
-        predictions = model.predict(input_data)
-        series = predictions
-        dist = model_info['output_metadata']['dist']
-
+        if model_info.get('output_metadata', None):
+            dist = model_info['output_metadata']['dist']
+        else:
+            dist = 'norm'
         print('Output dist tests')
         # Run k-s test for similarity between output and distribution
         test_results = su.distribution_similarity(series, dist)
         print(test_results)
-        # When a model is predicting numeric/floating point values, check the distribution (of output) makes
-        # sense given the distribution (of inputs) in the bayesian sense(i.e: output dist and input dists
-        # make a conjugate pairs([https://www.johndcook.com/blog/conjugate_prior_diagram/] (a diagram here))
 
     if model_info.get('model_class', None) == 'multiclass':
         # Check the predictions are type of categorical variables (float or int)
-        # parse and translate output_metadata to choice of tests
         print('Output dist tests')
         # Check for belongingness to a multinomial distribution.
-        # Add tests of independence, for multi-class labels and probabilities
-        # also test cross-correlation between the label frequencies
-        pass
+        n_classes = model_info['output_metadata']['n_classes']
+        class_probs = model_info['output_metadata']['class_probs']
+        assert n_classes == len(class_probs), 'n_classes must equal length of class_probs'
+        dist = stats.multinomial(len(input_data), class_probs)
+        test_results = su.distribution_similarity(series, dist)
+
     if model_info.get('model_class', None) == 'singleclass':
         # When a model predicts binary classification, add tests of similarity to binomial distribution(with
         # random prior or a given prior). Also check V-C dimension(https://datascience.stackexchange.com/questions/16140/how-to-calculate-vc-dimension/16146)
         # parse and translate output_metadata to choice of tests
         print('Output dist tests')
+        prob = model_info['output_metadata']['success_prob']
         # Check for belongingness to a binomial distribution.
-        pass
+        dist = stats.binom(len(input_data), prob ) #'binom'
+        test_results = su.distribution_similarity(series, dist)
 
     if model_info.get('input_metadata', None):
         input_dists = model_info['input_metadata']
