@@ -32,7 +32,10 @@ tsfresh
 deap
 update_checker
 tqdm
+
+# Automated sklearn
 tpot
+-e git+https://github.com/hyperopt/hyperopt-sklearn.git#egg=hpsklearn
 
 # notebook tools
 jupyter
@@ -63,6 +66,7 @@ rasterio
 #Light GBM
 #-e git+https://github.com/Microsoft/LightGBM.git#egg=lightgbm
 -e git+https://github.com/ArdalanM/pyLightGBM.git#egg=pylightgbm
+
 
 # Manifold learning
 # -e git+https://github.com/lmcinnes/umap.git#egg=umap
