@@ -35,6 +35,7 @@ def find_centers(X, K):
         # Reevaluate centers
         mu = reevaluate_centers(oldmu, clusters)
     return(mu, clusters)
+
 def Wk(mu, clusters):
     K = len(mu)
     return sum([np.linalg.norm(mu[i]-c)**2/(2*len(c)) \

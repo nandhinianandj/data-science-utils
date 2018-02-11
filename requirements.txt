@@ -5,6 +5,7 @@ matplotlib
 # shapely
 hypertools # For multi-dimensional data
 
+astropy
 patsy
 # Modular data processing
 mdp

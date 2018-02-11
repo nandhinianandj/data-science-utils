@@ -24,7 +24,6 @@ def dist_analyze(df, column='', category='', is_normal=True, bayesian_hist=False
         print(df[column].var())
         print("Skewness of %s"%column)
         print(df[column].skew())
-        su.distribution_tests(df, column)
         if is_normal:
             su.check_normality(df[column], column)
 
@@ -267,7 +266,7 @@ def regression_analyze(df, col1, col2, trainsize=0.8, non_linear=False, check_he
 
     if check_dist_similarity:
         print("P-value and test statistic for distribution similarity between %s and %s"%(col1, col2))
-        is_similar_distribution(df[col1], df[col2])
+        su.is_similar_distribution(df[col1], df[col2])
 
     new_df = df[[col1, col2]].copy(deep=True)
     target = new_df[col2]
@@ -278,9 +277,9 @@ def regression_analyze(df, col1, col2, trainsize=0.8, non_linear=False, check_he
             pm.train(new_df, target, column=col1, modelType='LassoRegression'),
             pm.train(new_df, target, column=col1, modelType='ElasticNetRegression'),
             pm.train(new_df, target, column=col1, modelType='SVMRegression'),
-            #pm.train(new_df, target, column=col1, modelType='IsotonicRegression'),
+            pm.train(new_df, target, column=col1, modelType='IsotonicRegression'),
             #pm.train(new_df, target, column=col1, modelType='logarithmicRegression'),
-            #utils.train_pymc_linear_reg(new_df, target, column=col1)
+            utils.train_pymc_linear_reg(new_df, target, column=col1)
             ]
     plots = list()
     for model in models:
