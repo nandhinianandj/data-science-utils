@@ -229,7 +229,7 @@ def factor_analyze(df, target=None, model_type ='pca', **kwargs):
     print("Correlation of transformed")
     correlation_analyze(trans_df, 0, 1)
 
-def regression_analyze(df, col1, col2, trainsize=0.8, non_linear=False, check_heteroskedasticity=True,
+def regression_analyze(df, target_cols=list(), trainsize=0.8, non_linear=False, check_heteroskedasticity=True,
                                check_vif=True, check_dist_similarity=True, **kwargs):
     """
     Plot regressed data vs original data for the passed columns.
@@ -268,6 +268,7 @@ def regression_analyze(df, col1, col2, trainsize=0.8, non_linear=False, check_he
         print("P-value and test statistic for distribution similarity between %s and %s"%(col1, col2))
         su.is_similar_distribution(df[col1], df[col2])
 
+    for col in target_cols:
     new_df = df[[col1, col2]].copy(deep=True)
     target = new_df[col2]
     models = [
