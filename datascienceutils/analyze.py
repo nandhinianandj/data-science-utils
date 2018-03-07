@@ -1,6 +1,7 @@
 # Standard and external libraries
 from bokeh.io import gridplot
 from statsmodels.stats import outliers_influence
+from tqdm import tqdm_notebook
 
 import operator
 import functools
@@ -65,7 +66,7 @@ def outliers_analyze(df):
                                             contamination=outliers_fraction,
                                             random_state=rng)}
     plots = list()
-    for i, (clf_name, clf) in enumerate(classifiers.items()):
+    for i, (clf_name, clf) in tqdm_notebook(enumerate(classifiers.items())):
         # fit the data and tag outliers
         clf.fit(X)
         scores_pred = clf.decision_function(X)

@@ -1,5 +1,7 @@
 # OR tools
 ortools
+# progress bar library for python and jupyter notebook
+tqdm
 # Visualization packages
 bokeh==0.10.0
 seaborn
@@ -34,7 +36,6 @@ tsfresh
 # Tools for tpot
 deap
 update_checker
-tqdm
 
 # Automated sklearn
 tpot
