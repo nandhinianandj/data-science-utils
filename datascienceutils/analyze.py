@@ -269,45 +269,45 @@ def regression_analyze(df, target_cols=list(), trainsize=0.8, non_linear=False, 
         print("P-value and test statistic for distribution similarity between %s and %s"%(col1, col2))
         su.is_similar_distribution(df[col1], df[col2])
 
-    for col in target_cols:
-    new_df = df[[col1, col2]].copy(deep=True)
-    target = new_df[col2]
-    models = [
-            pm.train(new_df, target, column=col1, modelType='LinearRegression'),
-            pm.train(new_df, target, column=col1, modelType='RidgeRegression'),
-            pm.train(new_df, target, column=col1, modelType='RidgeRegressionCV'),
-            pm.train(new_df, target, column=col1, modelType='LassoRegression'),
-            pm.train(new_df, target, column=col1, modelType='ElasticNetRegression'),
-            pm.train(new_df, target, column=col1, modelType='SVMRegression'),
-            pm.train(new_df, target, column=col1, modelType='IsotonicRegression'),
-            #pm.train(new_df, target, column=col1, modelType='logarithmicRegression'),
-            utils.train_pymc_linear_reg(new_df, target, column=col1)
-            ]
-    plots = list()
-    for model in models:
-        scatter = plotter.scatterplot(new_df, col1, col2, plttitle=model.__repr__())
-        source = new_df[col1].as_matrix().reshape(-1,1)
-        predicted = list(model.predict(source))
-        flatSrc = [item for sublist in source for item in sublist]
-        scatter.line(flatSrc, predicted,
-                     line_color='red')
-        plots.append(scatter)
-        print("Regression Score: %s"%(model.__repr__()))
-        print(model.score(source, new_df[col2].as_matrix().reshape(-1,1)))
-        if check_vif:
-            exog = df.as_matrix().reshape(-1,1)
-            for col in [col1, col2]:
-                print("Variance Inflation Factors for %s"%col)
-                col_idx = list(df.columns).index(col)
-                print(outliers_influence.variance_inflation_factor(exog, col_idx))
+    for col1, col2 in itertools.combinations(target_cols, 2):
+        new_df = df[[col1, col2]].copy(deep=True)
+        target = new_df[col2]
+        models = [
+                pm.train(new_df, target, column=col1, modelType='LinearRegression'),
+                pm.train(new_df, target, column=col1, modelType='RidgeRegression'),
+                pm.train(new_df, target, column=col1, modelType='RidgeRegressionCV'),
+                pm.train(new_df, target, column=col1, modelType='LassoRegression'),
+                pm.train(new_df, target, column=col1, modelType='ElasticNetRegression'),
+                pm.train(new_df, target, column=col1, modelType='SVMRegression'),
+                pm.train(new_df, target, column=col1, modelType='IsotonicRegression'),
+                #pm.train(new_df, target, column=col1, modelType='logarithmicRegression'),
+                utils.train_pymc_linear_reg(new_df, target, column=col1)
+                ]
+        plots = list()
+        for model in models:
+            scatter = plotter.scatterplot(new_df, col1, col2, plttitle=model.__repr__())
+            source = new_df[col1].as_matrix().reshape(-1,1)
+            predicted = list(model.predict(source))
+            flatSrc = [item for sublist in source for item in sublist]
+            scatter.line(flatSrc, predicted,
+                         line_color='red')
+            plots.append(scatter)
+            print("Regression Score: %s"%(model.__repr__()))
+            print(model.score(source, new_df[col2].as_matrix().reshape(-1,1)))
+            if check_vif:
+                exog = df.as_matrix().reshape(-1,1)
+                for col in [col1, col2]:
+                    print("Variance Inflation Factors for %s"%col)
+                    col_idx = list(df.columns).index(col)
+                    print(outliers_influence.variance_inflation_factor(exog, col_idx))
 
-        if check_heteroskedasticity:
-            if not kwargs.get('exog', None):
-                other_cols = list(set(df.columns) - set([col1, col2]))
-                kwargs['exog'] = random.choice(other_cols)
-            exog = df[kwargs.get('exog')].as_matrix().reshape(-1,1)
-            print("Hetero-Skedasticity test(Breush-Pagan)")
-            print(diagnostic.het_breushpagan(model.residues_, exog_het=exog))
+            if check_heteroskedasticity:
+                if not kwargs.get('exog', None):
+                    other_cols = list(set(df.columns) - set([col1, col2]))
+                    kwargs['exog'] = random.choice(other_cols)
+                exog = df[kwargs.get('exog')].as_matrix().reshape(-1,1)
+                print("Hetero-Skedasticity test(Breush-Pagan)")
+                print(diagnostic.het_breushpagan(model.residues_, exog_het=exog))
     grid = gridplot(list(utils.chunks(plots, size=2)))
     plotter.show(grid)
 
