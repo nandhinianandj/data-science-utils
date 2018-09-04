@@ -4,7 +4,6 @@ from statsmodels.stats import outliers_influence
 from tqdm import tqdm_notebook
 
 import operator
-import functools
 import itertools
 import random
 import numpy as np
@@ -17,7 +16,8 @@ from . import utils
 from . import statsutils as su
 
 
-def dist_analyze(df, column='', category='', is_normal=True, bayesian_hist=False,
+def dist_analyze(df, column='', category='', is_normal=True,
+                    bayesian_hist=False,
                     kdeplot=True, violinplot=False):
     plots = []
     if (utils.is_numeric(df, column=column)):
@@ -47,6 +47,7 @@ def dist_analyze(df, column='', category='', is_normal=True, bayesian_hist=False
         print("# Joint Distribution of Numerical vs Categorical Columns")
     grid = gridplot(list(utils.chunks(plots, size=2)))
     return grid
+
 
 def outliers_analyze(df):
 
@@ -230,7 +231,21 @@ def factor_analyze(df, target=None, model_type ='pca', **kwargs):
     print("Correlation of transformed")
     correlation_analyze(trans_df, 0, 1)
 
-def regression_analyze(df, target_cols=list(), trainsize=0.8, non_linear=False, check_heteroskedasticity=True,
+def non_linear_regression_analyze(df, target_cols=list(),
+                                  trainsize=0.8, **kwargs):
+
+    plots = list()
+    for col1, col2 in itertools.combinations(target_cols, 2):
+        import ace
+        model = ace.model.Model()
+        model.build_model_from_xy([df[col1].as_matrix()], [df[col2].as_matrix()])
+
+        print(" # Ace Models btw numerical cols")
+        plot = plotter.lineplot(df[[col1, col2]], title='%s Vs %s'%(col1, col2))
+        plots.append(plot)
+    plotter.show(plots)
+
+def regression_analyze(df, target_cols=list(), trainsize=0.8, check_heteroskedasticity=True,
                                check_vif=True, check_dist_similarity=True, **kwargs):
     """
     Plot regressed data vs original data for the passed columns.
@@ -255,19 +270,7 @@ def regression_analyze(df, target_cols=list(), trainsize=0.8, non_linear=False, 
     #         d, parabolic function??
     #   Additionally plot the fitted y and the correct y in different colours against the same x
 
-    if non_linear:
-        plots = list()
-        import ace
-        model = ace.model.Model()
-        model.build_model_from_xy([df[col1].as_matrix()], [df[col2].as_matrix()])
 
-        print(" # Ace Models btw numerical cols")
-        plot = plotter.lineplot(df[[col1, col2]], title='%s Vs %s'%(col1, col2))
-        plotter.show(plot)
-
-    if check_dist_similarity:
-        print("P-value and test statistic for distribution similarity between %s and %s"%(col1, col2))
-        su.is_similar_distribution(df[col1], df[col2])
 
     for col1, col2 in itertools.combinations(target_cols, 2):
         new_df = df[[col1, col2]].copy(deep=True)
@@ -283,6 +286,9 @@ def regression_analyze(df, target_cols=list(), trainsize=0.8, non_linear=False, 
                 #pm.train(new_df, target, column=col1, modelType='logarithmicRegression'),
                 utils.train_pymc_linear_reg(new_df, target, column=col1)
                 ]
+        if check_dist_similarity:
+            print("P-value and test statistic for distribution similarity between %s and %s"%(col1, col2))
+            su.is_similar_distribution(df[col1], df[col2])
         plots = list()
         for model in models:
             scatter = plotter.scatterplot(new_df, col1, col2, plttitle=model.__repr__())
