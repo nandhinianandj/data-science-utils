@@ -1,3 +1,4 @@
+cython
 # OR tools
 ortools
 # progress bar library for python and jupyter notebook
