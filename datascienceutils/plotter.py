@@ -12,6 +12,8 @@ from bokeh.models import ( Text, PanTool, WheelZoomTool, LinearAxis,
 from bokeh.charts import Chart, Line
 from math import ceil
 
+import matplotlib
+from matplotlib import pyplot as plt
 import itertools
 import numpy as np
 import operator
@@ -41,7 +43,6 @@ AXIS_FORMATS = dict(
     axis_line_width=1,
     major_tick_line_width=1,)
 
-BOKEH_TOOLS = "resize,crosshair,pan,wheel_zoom,box_zoom,reset,tap,previewsave,box_select,poly_select,lasso_select"
 
 def genColors(n, ptype=None):
     """
@@ -186,166 +187,6 @@ def multi_line_plot(dataframe, idx=None):
                  line_width=5)
     return p
 
-def plot_twin_y_axis_scatter(conn, query1=None, query2=None,
-                             xy1={}, xy2={}):
-    """
-    Plots twin y axis scatter plot you just have to give conn sqlalchemy obj and
-    two query/dictionary of x and y values
-    :param conn: Sqlaclhemy connection object
-    :param query1: query 1 for x and y1
-    :param query2: query 2 for x and y2
-    :param xy1: dictionary containing x and y key values
-    :param xy2: dictionary containing x and y key values
-    :return: Bokeh plot object (script,div)
-    """
-
-    if query1:
-        result = conn.execute(query1)
-        plot_data1 = {'x': [], 'y': []}
-        for row in result:
-            if row[0] and row[1]:
-                plot_data1['x'].append(float(row[0]))
-                plot_data1['y'].append(str(row[1]))
-    else:
-        if isinstance(xy1, dict) and xy1:
-            plot_data1 = xy1
-        else:
-            raise ValueError('Parameters values not given properly')
-
-    if query2:
-        result = conn.execute(query2)
-        plot_data2 = {'x': [], 'y': []}
-        for row in result:
-            if row[0] and row[1]:
-                plot_data2['x'].append(float(row[0]))
-                plot_data2['y'].append(str(row[1]))
-    else:
-        if isinstance(xy2, dict) and xy2:
-            plot_data2 = xy2
-        else:
-            raise ValueError('Parameters values not given properly')
-
-    renderer_source = ColumnDataSource({'x': plot_data1['x'], 'y': plot_data1['y']})
-    renderer_source2 = ColumnDataSource({'x': plot_data2['x'], 'y': plot_data2['y']})
-
-    bokeh_plot = BokehTwinLinePlot(plot_data1, plot_data2,
-                                   xlabel="No. of Accounts",
-                                   ylabel="No. of. Leave Transactions",
-                                   ylabel2="No. of services")
-    plot = bokeh_plot.get_plot()
-    plot = bokeh_plot.add_text(plot)
-    # Add the triangle
-    triangle_glyph = Triangle(
-        x='x', y='y', size=15,
-        fill_color='#4682B4', fill_alpha=0.8,
-        line_color='#4682B4', line_width=0.5, line_alpha=0.5)
-    # Add the circle
-    circle_glyph = Circle(
-        x='x', y='y', size=15,
-        fill_color='#d24726', fill_alpha=0.8,
-        line_color='#d24726', line_width=0.5, line_alpha=0.5)
-    triangle_renderer = plot.add_glyph(renderer_source, triangle_glyph)
-    circle_renderer = plot.add_glyph(renderer_source2, circle_glyph, y_range_name="y_range2")
-
-    # Add the hover (only against the circle and not other plot elements)
-    tooltips = "@index"
-    plot.add_tools(HoverTool(tooltips=tooltips, renderers=[triangle_renderer, circle_renderer]))
-    plot.add_tools(PanTool(), WheelZoomTool())
-    return plot
-
-class BokehTwinLinePlot(object):
-    """
-    Class for creating basic bokeh structure of two y axis and one x axis
-    """
-
-    def __init__(self, plot_data1, plot_data2, xlabel='x', ylabel='y', ylabel2='y2'):
-        self.plot_data1 = plot_data1
-        self.plot_data2 = plot_data2
-        self.xlabel = xlabel
-        self.ylabel = ylabel
-        self.ylabel2 = ylabel2
-
-    def get_plot(self):
-        """
-        Creates the basic bokeh plot with xrange, y range
-        :return: Boekh plot obj.
-        """
-        min_x_range, max_x_range = self.get_x_ranges()
-        min_y_range, max_y_range = self.get_y_ranges(self.plot_data1)
-        min_y2_range, max_y2_range = self.get_y_ranges(self.plot_data2)
-        xdr = Range1d(min_x_range-(min_x_range/1.2), max_x_range+(max_x_range/1.2))
-        ydr = Range1d(min_y_range-(min_y_range/1.2), max_y_range+(max_y_range/1.2))
-        ydr2 = Range1d(min_y2_range-(min_y2_range/10), max_y2_range+(max_y2_range/10))
-        plot = Plot(
-            x_range=xdr,
-            y_range=ydr,
-            extra_y_ranges={"y_range2":ydr2},
-            title="",
-            plot_width=550,
-            plot_height=550,
-            outline_line_color=None,
-            toolbar_location=None,
-        )
-        return plot
-
-    def add_axes(self, plot):
-        """
-        Adds axis to Bokeh plot Obj
-        :param plot: Bokeh plot obj. from get_plot method
-        :return: Bokeh plot obj
-        """
-        min_x_range, max_x_range = self.get_x_ranges()
-        min_y_range, max_y_range = self.get_y_ranges(self.plot_data1)
-        min_y2_range, max_y2_range = self.get_y_ranges(self.plot_data2)
-        x_interval = utils.roundup(max_x_range)
-        y_interval = utils.roundup(max_y_range)
-        y2_interval = utils.roundup(max_y2_range)
-        xaxis = LinearAxis(SingleIntervalTicker(interval=x_interval), axis_label=self.xlabel, **AXIS_FORMATS)
-        yaxis = LinearAxis(SingleIntervalTicker(interval=y_interval), axis_label=self.ylabel, **AXIS_FORMATS)
-        yaxis2 = LinearAxis(SingleIntervalTicker(interval=y2_interval), y_range_name="y_range2", axis_label=self.ylabel2, **AXIS_FORMATS)
-        plot.add_layout(xaxis, 'below')
-        plot.add_layout(yaxis, 'left')
-        plot.add_layout(yaxis2, 'right')
-        return plot
-
-    def add_text(self, plot):
-        """
-        Adds text to Bokeh plot
-        :param plot: Bokeh plot obj.
-        :return: Bokeh plot obj.
-        """
-        plot = self.add_axes(plot)
-        return plot
-
-    def get_x_ranges(self):
-        """
-        get the minimum and maximum values of x
-        :return: Minimum x value, Maximum x value
-        """
-        plot_data1_x = list(self.plot_data1['x'])
-        plot_data2_x = list(self.plot_data2['x'])
-        if not plot_data1_x:
-            plot_data1_x = [0]
-        if not plot_data2_x:
-            plot_data2_x = [0]
-        min_x_range = min([min(plot_data1_x),min(plot_data2_x)])
-        max_x_range = max([max(plot_data1_x), max(plot_data2_x)])
-
-        return min_x_range, max_x_range
-
-    def get_y_ranges(self, plot_data):
-        """
-        get the minimum and maximum values of y
-        :return: Minimum y value, Maximum y value
-        """
-        plot_data_y = map(float, list(plot_data['y']))
-        if not plot_data_y:
-            plot_data_y = [0]
-        min_y_range = min(plot_data_y)
-        max_y_range = max(plot_data_y)
-        return min_y_range, max_y_range
-
-
 def histogram(histDF,values, bayesian_bins=False,**kwargs):
     if not bayesian_bins:
         from bokeh.charts import Histogram
@@ -354,7 +195,7 @@ def histogram(histDF,values, bayesian_bins=False,**kwargs):
         import numpy as np
         bins = utils.bayesian_blocks(histDF[values])
         p1 = figure(title=kwargs.pop('title', 'Histogram of %s'%values),
-                    tools="save", background_fill_color="#E8DDCB")
+                    tools="save")
         hist,edges = np.histogram(histDF[values], bins=bins)
         p1.quad(top=hist, bottom=0, left=edges[:-1], right=edges[1:],
                 fill_color="#036564", line_color="#033649")
