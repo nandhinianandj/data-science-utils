@@ -282,9 +282,9 @@ def regression_analyze(df, target_cols=list(), trainsize=0.8, check_heteroskedas
                 pm.train(new_df, target, column=col1, modelType='LassoRegression'),
                 pm.train(new_df, target, column=col1, modelType='ElasticNetRegression'),
                 pm.train(new_df, target, column=col1, modelType='SVMRegression'),
-                pm.train(new_df, target, column=col1, modelType='IsotonicRegression'),
+                #pm.train(new_df, target, column=col1, modelType='IsotonicRegression'),
                 #pm.train(new_df, target, column=col1, modelType='logarithmicRegression'),
-                utils.train_pymc_linear_reg(new_df, target, column=col1)
+                utils.train_pymc_linear_reg(new_df, col2, column=col1)
                 ]
         if check_dist_similarity:
             print("P-value and test statistic for distribution similarity between %s and %s"%(col1, col2))
