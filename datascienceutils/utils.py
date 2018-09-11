@@ -172,11 +172,10 @@ def get_model_obj(modelType, **kwargs):
         raise 'Unknown model type: see utils.py for available'
 
 def train_pymc_linear_reg(df, target, column):
-    from pymc3 import Model, glm, NUTS, find_MAP
+    from pymc3 import Model, glm, sample, NUTS, find_MAP
     with Model() as model:
         # specify glm and pass in data. The resulting linear model, its likelihood and
         # and all its parameters are automatically added to our model.
-        
         data = dict(y=df[target].values, x=df[column].values)
         glm.GLM.from_formula('y~x', data)
         start = find_MAP()
