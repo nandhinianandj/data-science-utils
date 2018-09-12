@@ -245,6 +245,18 @@ def non_linear_regression_analyze(df, target_cols=list(),
         plots.append(plot)
     plotter.show(plots)
 
+def bayesian_regression_analyze(df, target_cols=list(), **kwargs):
+    from pymc3 import traceplot
+    import matplotlib.pyplot as plt
+    for col1, col2 in itertools.combinations(target_cols, 2):
+        new_df = df[[col1, col2]].copy(deep=True)
+        target = new_df[col2]
+        trace = utils.train_pymc_linear_reg(new_df, col2, column=col1)
+        plt.figure(figsize=(7,7))
+        plt.title('%s Vs %s'%(col1, col2))
+        traceplot(trace[100:])
+        plt.tight_layout()
+
 def regression_analyze(df, target_cols=list(), trainsize=0.8, check_heteroskedasticity=True,
                                check_vif=True, check_dist_similarity=True, **kwargs):
     """
@@ -284,7 +296,6 @@ def regression_analyze(df, target_cols=list(), trainsize=0.8, check_heteroskedas
                 pm.train(new_df, target, column=col1, modelType='SVMRegression'),
                 #pm.train(new_df, target, column=col1, modelType='IsotonicRegression'),
                 #pm.train(new_df, target, column=col1, modelType='logarithmicRegression'),
-                utils.train_pymc_linear_reg(new_df, col2, column=col1)
                 ]
         if check_dist_similarity:
             print("P-value and test statistic for distribution similarity between %s and %s"%(col1, col2))

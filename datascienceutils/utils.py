@@ -173,6 +173,7 @@ def get_model_obj(modelType, **kwargs):
 
 def train_pymc_linear_reg(df, target, column):
     from pymc3 import Model, glm, sample, NUTS, find_MAP
+    mod = None
     with Model() as model:
         # specify glm and pass in data. The resulting linear model, its likelihood and
         # and all its parameters are automatically added to our model.
@@ -181,8 +182,7 @@ def train_pymc_linear_reg(df, target, column):
         start = find_MAP()
         step = NUTS(scaling=start) # Instantiate MCMC sampling algorithm
         trace = sample(2000, step, progressbar=False) # draw 2000 posterior samples using NUTS sampling
-
-    pass
+    return trace
 
 def cross_validate():
     for i, (train, test) in enumerate(cv):
