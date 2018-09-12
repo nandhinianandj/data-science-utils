@@ -30,17 +30,6 @@ def check_normality(series, name):
     print("Anderson-Darling normality test on %s "%name)
     print("Statistic: %f \n p-value: %f\n"%diagnostic.normal_ad(series))
 
-def is_similar_distribution(original_dist, target_dist, test_type='permutation'):
-    if test_type=='permutation':
-        from permute.core import two_sample
-        kwargs = {'stat':'t','alternative':'two-sided','seed':20}
-        p_value = two_sample(original_dist, target_dist)
-        print(p_value)
-    elif test_type=='chi_sq':
-        pass
-    else:
-        raise "Unknown distribution similarity test type"
-
 def distribution_similarity(series, dist_type, test_type='ks'):
     from scipy import stats
     test_results = pd.DataFrame(columns=['distribution', 'statistic', 'p-value'])
@@ -89,12 +78,4 @@ def pearson_def(x, y):
         ydiff2 += ydiff * ydiff
 
     return diffprod / math.sqrt(xdiff2 * ydiff2)
-
-# Simulate R's poly function
-# from [here.](http://stackoverflow.com/questions/41317127/python-equivalent-to-r-poly-function)
-
-def poly(x, p):
-    x = np.array(x)
-    X = np.transpose(np.vstack((x**k for k in range(p+1))))
-    return np.linalg.qr(X)[0][:,1:]
 

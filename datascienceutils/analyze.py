@@ -245,6 +245,21 @@ def non_linear_regression_analyze(df, target_cols=list(),
         plots.append(plot)
     plotter.show(plots)
 
+def plot_posterior_glm(df, xlabel, ylabel):
+    from pymc3.plots import plot_posterior_predictive_glm
+    x = df[xlabel].values
+    y = df[ylabel].values
+    plt.figure(figsize=(7, 7))
+    plt.plot(x, y, 'x', label='data')
+    plot_posterior_predictive_glm(trace, samples=100,
+				  label='posterior predictive regression lines')
+    plt.plot(x, true_regression_line, label='true regression line', lw=3., c='y')
+
+    plt.title('Posterior predictive regression lines')
+    plt.legend(loc=0)
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel);
+
 def bayesian_regression_analyze(df, target_cols=list(), **kwargs):
     from pymc3 import traceplot
     import matplotlib.pyplot as plt
@@ -252,13 +267,16 @@ def bayesian_regression_analyze(df, target_cols=list(), **kwargs):
         new_df = df[[col1, col2]].copy(deep=True)
         target = new_df[col2]
         trace = utils.train_pymc_linear_reg(new_df, col2, column=col1)
+
         plt.figure(figsize=(7,7))
         plt.title('%s Vs %s'%(col1, col2))
         traceplot(trace[100:])
         plt.tight_layout()
 
+	plot_posterior_glm(df, col1, col2)
+
 def regression_analyze(df, target_cols=list(), trainsize=0.8, check_heteroskedasticity=True,
-                               check_vif=True, check_dist_similarity=True, **kwargs):
+                               check_vif=True, **kwargs):
     """
     Plot regressed data vs original data for the passed columns.
     @params:
@@ -297,9 +315,6 @@ def regression_analyze(df, target_cols=list(), trainsize=0.8, check_heteroskedas
                 #pm.train(new_df, target, column=col1, modelType='IsotonicRegression'),
                 #pm.train(new_df, target, column=col1, modelType='logarithmicRegression'),
                 ]
-        if check_dist_similarity:
-            print("P-value and test statistic for distribution similarity between %s and %s"%(col1, col2))
-            su.is_similar_distribution(df[col1], df[col2])
         plots = list()
         for model in models:
             scatter = plotter.scatterplot(new_df, col1, col2, plttitle=model.__repr__())
