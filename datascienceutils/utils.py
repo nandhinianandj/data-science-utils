@@ -119,6 +119,10 @@ models_dict = { 'knn': KNeighborsClassifier,
                 #'pymc':
         }
 
+def timestamp(datetimeObj):
+    timestamp = (datetimeObj - datetime(1970, 1, 1)).total_seconds()
+    return timestamp
+
 def na_pct(series):
     assert isinstance(series, pd.Series)
     return 1 - series.count()/len(series)
@@ -160,24 +164,25 @@ def roundup(x):
     """
     return int(ceil(x / 10.0))*2
 
-def get_model_obj(modelType, n_clusters=None, **kwargs):
+def get_model_obj(modelType, **kwargs):
     global models_dict
     if modelType in models_dict:
         return models_dict[modelType](**kwargs)
     else:
         raise 'Unknown model type: see utils.py for available'
 
-def train_pymc_linear_reg(df, target, column1):
-    from pymc3 import Model, glm, NUTS, find_MAP
+def train_pymc_linear_reg(df, target, column):
+    from pymc3 import Model, glm, sample, NUTS, find_MAP
+    mod = None
     with Model() as model:
         # specify glm and pass in data. The resulting linear model, its likelihood and
         # and all its parameters are automatically added to our model.
-        glm.glm('y ~ x', data)
+        data = dict(y=df[target].values, x=df[column].values)
+        glm.GLM.from_formula('y~x', data)
         start = find_MAP()
         step = NUTS(scaling=start) # Instantiate MCMC sampling algorithm
         trace = sample(2000, step, progressbar=False) # draw 2000 posterior samples using NUTS sampling
-
-    pass
+    return trace
 
 def cross_validate():
     for i, (train, test) in enumerate(cv):

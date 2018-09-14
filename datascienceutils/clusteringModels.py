@@ -10,8 +10,23 @@ from . import sklearnUtils as sku
 from . import plotter
 from . import utils
 
-class StarKMeans(cluster.KMeans):
-    pass
+def plot_clusters(dataframe, clusterer, cluster_labels):
+    # Plot showing the actual clusters formed
+    dataframe = pd.DataFrame(dataframe)
+    cols = list(dataframe.columns)
+    dataframe['predictions'] = pd.Series(cluster_labels)
+    s_plot = plotter.scatterplot(dataframe,
+                                 cols[0], cols[1],
+                                 groupCol='predictions',
+                                 xlabel="Feature space for 1st feature",
+                                 ylabel="Feature space for 2nd feature",
+                                 plttitle="Visualization of the clustered data")
+
+    if hasattr(clusterer, 'cluster_centers_'):
+        for i, c in enumerate(clusterer.cluster_centers_):
+            # Draw white circles at cluster centers
+            plotter.mtext(s_plot, c[0], c[1], "%s"%str(i), text_color="red")
+    plotter.show(s_plot)
 
 #TODO: add a way of weakening the discovered cluster structure and running again
 # http://scilogs.spektrum.de/hlf/sometimes-noise-signals/
@@ -120,20 +135,20 @@ def silhouette_analyze(dataframe, cluster_type='KMeans', n_clusters=None):
         if cluster_type != 'bgmm':
             clusterer = utils.get_model_obj(cluster_type, n_clusters=clusternum)
         else:
-            # We're passing max clusters/components, the Bayesian GMM will figure out appropriate
-            # num.
-            clusterer = utils.get_model_obj(cluster_type, n_components=2*cluster)
+            # We're passing max clusters/components, the Bayesian GMM will figure out appropriate num.
+            clusterer = utils.get_model_obj(cluster_type, n_components=2*clusternum)
         if cluster_type not in ['KMeans', 'spectral', 'bgmm', 'birch', 'dbscan' ]:
             cluster_labels = clusterer.fit(dataframe)
         elif cluster_type == 'bgmm':
             clusterer.fit(dataframe)
-            cluster_labels = set(clusterer.predict(dataframe))
+            cluster_labels = clusterer.predict(dataframe)
         else:
             cluster_labels = clusterer.fit_predict(dataframe)
+        plot_clusters(dataframe, clusterer, cluster_labels)
         # The silhouette_score gives the average value for all the samples.
         # This gives a perspective into the density and separation of the formed
         # clusters
-        if len(set(cluster_labels)) > 1:
+        if len(set(cluster_labels)) > 1 and cluster_type != 'bgmm':
             silhouette_avg = silhouette_score(dataframe, cluster_labels)
             cluster_scores_df.loc[j] = [clusternum, silhouette_avg]
             print("For clusters =", clusternum,
@@ -141,25 +156,8 @@ def silhouette_analyze(dataframe, cluster_type='KMeans', n_clusters=None):
         else:
             print("No cluster found with cluster no:%d and algo type: %s"%(clusternum, cluster_type))
             continue
-
-        # Plot showing the actual clusters formed
-        dataframe = pd.DataFrame(dataframe)
-        cols = list(dataframe.columns)
-        dataframe['predictions'] = pd.Series(cluster_labels)
-        s_plot = plotter.scatterplot(dataframe,
-                                     cols[0], cols[1],
-                                     groupCol='predictions',
-                                     xlabel="Feature space for 1st feature",
-                                     ylabel="Feature space for 2nd feature",
-                                     plttitle="Visualization of the clustered data")
-
-        if hasattr(clusterer, 'cluster_centers_'):
-            for i, c in enumerate(clusterer.cluster_centers_):
-                # Draw white circles at cluster centers
-                plotter.mtext(s_plot, c[0], c[1], "%s"%str(i), text_color="red")
-        plotter.show(s_plot)
-
-    plotter.show(plotter.lineplot(cluster_scores_df, xcol='cluster_size', ycol='silhouette_score'))
+    if cluster_type != 'bgmm':
+        plotter.show(plotter.lineplot(cluster_scores_df, xcol='cluster_size', ycol='silhouette_score'))
 
 def som_analyze(dataframe, mapsize, algo_type='som'):
     import sompy
