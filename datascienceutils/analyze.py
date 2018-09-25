@@ -247,6 +247,7 @@ def non_linear_regression_analyze(df, target_cols=list(),
 
 def plot_posterior_glm(df, xlabel, ylabel):
     from pymc3.plots import plot_posterior_predictive_glm
+    import matplotlib.pyplot as plt
     x = df[xlabel].values
     y = df[ylabel].values
     plt.figure(figsize=(7, 7))
@@ -272,8 +273,7 @@ def bayesian_regression_analyze(df, target_cols=list(), **kwargs):
         plt.title('%s Vs %s'%(col1, col2))
         traceplot(trace[100:])
         plt.tight_layout()
-
-	plot_posterior_glm(df, col1, col2)
+        plot_posterior_glm(df, col1, col2)
 
 def regression_analyze(df, target_cols=list(), trainsize=0.8, check_heteroskedasticity=True,
                                check_vif=True, **kwargs):
@@ -476,7 +476,7 @@ def fractal_dimension(image, threshold=0.9):
     coeffs = np.polyfit(np.log(sizes), np.log(counts), 1)
     return -coeffs[0]
 
-def dimension_analyze(dataframe, group=None, **kwargs):
+def hyperplot_analyze(dataframe, group=None, **kwargs):
     # Add pca, svd, linear discriminant analysis, tsne
     if not group:
         plotter.hyper_plot(dataframe, **kwargs)
@@ -485,6 +485,9 @@ def dimension_analyze(dataframe, group=None, **kwargs):
         groupLabels = dataframe[group].unique()
         dataframe.drop(group, 1, inplace=True)
         plotter.hyper_plot(dataframe, group=groupVals, legend=groupLabels, **kwargs)
+    pass
+
+def tsne_dim_analyze(dataframe, **kwargs):
     pass
 
 def recommend_nn(dataframe, **kwargs):
