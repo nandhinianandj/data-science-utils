@@ -2,14 +2,15 @@
 	* TSNE based dimensionalty analysis [function.](https://github.com/DmitryUlyanov/Multicore-TSNE)
 	* Topological Data
 	  Analysis(https://gist.github.com/anandjeyahar/df6d477271cf49b152f630aa72bc27c3)
-	* Setup python sphinx and add proper documentation for all classes and functions
+
+	* Add [Metric learning methods](https://github.com/metric-learn/metric-learn)
 
 	* [partial path demo](http://scikit-learn.org/stable/auto_examples/ensemble/plot_partial_dependence.html) for tree-based mmethods(random-forest, gradient boosted etc..)
+	* [Decision Tree visualization](http://explained.ai/decision-tree-viz/index.html)
 
+	* [Causality analysis](https://www.arxiv-vanity.com/papers/1809.09337/)
 	* Also add some code that reads the validation parameters and generates test cases to test
 	  /validate the model(stats tests, input distributions, output distributions etc..)
-
-        * Add a contour plot
 
 	* Yellow-fin algorithm(http://cs.stanford.edu/~zjian/project/YellowFin/)
 
@@ -20,26 +21,12 @@
 	  violated.(use pymc/pystan for creating conditions about probability distributions of data
 	  sources.)
 
-	* Add pymc based linear regression(https://github.com/pymc-devs/pymc/wiki/StraightLineFit)
-	  and this (http://pymc-devs.github.io/pymc/tutorial.html#an-example-statistical-model) and
-	  pystan (https://pystan.readthedocs.io/en/latest/)
-
-	* Add a wrapper for geo-plot in plotter.py(for plotting on a map)
-
-	* Add support for feature filtering..(tsfresh module and also others) in features.py
-
-	* Add Gini Coefficient-like measure visual for the cluster analyze
-
-	* Add dendrogram style visuals for cluster analyze
-
 	* Add support for https://github.com/ANNetGPGPU/ANNetGPGPU in the cluster analyze logic
-
-	* Add [Permute](https://github.com/statlab/permute) tests
 
 	* Finish off that kernel density estimation for 1-d data clustering(http://scikit-learn.org/stable/auto_examples/neighbors/plot_kde_1d.html) and (http://bokeh.pydata.org/en/0.9.3/docs/reference/charts.html).
 
 	* Add [Fractal Analysis](https://en.wikipedia.org/wiki/Fractal_analysis) R-equivalent
-	  package[fdim](http://cran.r-project.org/src/contrib/Archive/fdim/)
+	  package[fdim](http://cran.r-project.org/src/contrib/Archive/fdim/) a python [oss project](https://github.com/kaziida24/fractal)
 
 	* Add [Renormalization group analysis](https://medium.com/incerto/the-most-intolerant-wins-the-dictatorship-of-the-small-minority-3f1f83ce4e15)
 
@@ -63,12 +50,6 @@
 	* [Survival
 	  Analysis](https://www.nature.com/bjc/journal/v89/n2/pdf/6601118a.pdf?foxtrotcallback=true)
 
-	* Add 3D heatmaps and may be 3D + 1D(time) visualizations/Animations(like the gapminder
-	  bubble chart for ex:)
-
-	* Add a dask/airflow/luigi/pinball support for training models with different samples on
-	  distributed systems.
-
 	* Add a separate grid search function to grid search a data set with the given
 	  model.(wrapper around sklearn model_selection's grid search)
 
@@ -79,8 +60,6 @@
 	  or somethin else
 
 	* Add a way to check for non-linear correlations(aka ace algorithm)
-
-	* Implement the trellis plots for correlation analyze (when there's categories)
 
 
 	* Create a function to take dataframe, run tree/randomforest, pick out best tree, create a
