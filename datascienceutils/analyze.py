@@ -488,6 +488,11 @@ def hyperplot_analyze(dataframe, group=None, **kwargs):
     pass
 
 def tsne_dim_analyze(dataframe, **kwargs):
+    from MulticoreTSNE import MulticoreTSNE as TSNE
+    n_jobs = kwargs.get('n_jobs', 4)
+    tsne = TSNE(n_jobs=n_jobs)
+    Y = tsne.fit_transform(dataframe)
+    plotter.scatterplot(Y[0,0], Y[0, 1])
     pass
 
 def recommend_nn(dataframe, **kwargs):

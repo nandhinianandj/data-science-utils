@@ -6,7 +6,8 @@
 	* Add [Metric learning methods](https://github.com/metric-learn/metric-learn)
 
 	* [partial path demo](http://scikit-learn.org/stable/auto_examples/ensemble/plot_partial_dependence.html) for tree-based mmethods(random-forest, gradient boosted etc..)
-	* [Decision Tree visualization](http://explained.ai/decision-tree-viz/index.html)
+	* [Decision Tree visualization](http://explained.ai/decision-tree-viz/index.html) or
+	  [this](https://github.com/parrt/animl/tree/master)
 
 	* [Causality analysis](https://www.arxiv-vanity.com/papers/1809.09337/)
 	* Also add some code that reads the validation parameters and generates test cases to test

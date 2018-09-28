@@ -1,7 +1,7 @@
 #jupyter plugin
 wurlitzer
 # dimensionality
--e git+https://github.com/pavlin-policar/fastTSNE.git#egg=fasttsne
+-e git+git@github.com:DmitryUlyanov/Multicore-TSNE.git#egg=Multicore-TSNE
 cython
 # OR tools
 ortools
