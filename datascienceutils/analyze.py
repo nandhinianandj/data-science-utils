@@ -487,13 +487,16 @@ def hyperplot_analyze(dataframe, group=None, **kwargs):
         plotter.hyper_plot(dataframe, group=groupVals, legend=groupLabels, **kwargs)
     pass
 
-def tsne_dim_analyze(dataframe, **kwargs):
+def tsne_dim_analyze(dataframe, datatype='binary', **kwargs):
     from MulticoreTSNE import MulticoreTSNE as TSNE
     n_jobs = kwargs.get('n_jobs', 4)
     tsne = TSNE(n_jobs=n_jobs)
     Y = tsne.fit_transform(dataframe)
-    plotter.scatterplot(Y[0,0], Y[0, 1])
-    pass
+    df = pd.DataFrame()
+    df['x'] = Y[0,0]
+    df['y'] = Y[0,1]
+    plotter.show(plotter.scatterplot(df, 'x', 'y'))
+
 
 def recommend_nn(dataframe, **kwargs):
     # Each layer of the NN can be considered one level of partial differentiation in a purely
