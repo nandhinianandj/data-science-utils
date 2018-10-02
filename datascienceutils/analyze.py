@@ -245,7 +245,7 @@ def non_linear_regression_analyze(df, target_cols=list(),
         plots.append(plot)
     plotter.show(plots)
 
-def plot_posterior_glm(df, xlabel, ylabel):
+def plot_posterior_glm(df, xlabel, ylabel, trace):
     from pymc3.plots import plot_posterior_predictive_glm
     import matplotlib.pyplot as plt
     x = df[xlabel].values
@@ -254,8 +254,6 @@ def plot_posterior_glm(df, xlabel, ylabel):
     plt.plot(x, y, 'x', label='data')
     plot_posterior_predictive_glm(trace, samples=100,
 				  label='posterior predictive regression lines')
-    plt.plot(x, true_regression_line, label='true regression line', lw=3., c='y')
-
     plt.title('Posterior predictive regression lines')
     plt.legend(loc=0)
     plt.xlabel(xlabel)
@@ -268,12 +266,11 @@ def bayesian_regression_analyze(df, target_cols=list(), **kwargs):
         new_df = df[[col1, col2]].copy(deep=True)
         target = new_df[col2]
         trace = utils.train_pymc_linear_reg(new_df, col2, column=col1)
-
         plt.figure(figsize=(7,7))
         plt.title('%s Vs %s'%(col1, col2))
         traceplot(trace[100:])
         plt.tight_layout()
-        plot_posterior_glm(df, col1, col2)
+        plot_posterior_glm(df, col1, col2, trace)
 
 def regression_analyze(df, target_cols=list(), trainsize=0.8, check_heteroskedasticity=True,
                                check_vif=True, **kwargs):

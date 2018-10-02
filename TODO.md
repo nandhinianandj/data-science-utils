@@ -2,7 +2,7 @@
 	* TSNE based dimensionalty analysis [function.](https://github.com/DmitryUlyanov/Multicore-TSNE)
 	* Topological Data
 	  Analysis(https://gist.github.com/anandjeyahar/df6d477271cf49b152f630aa72bc27c3)
-
+	* Consider adding [swiftapply](https://github.com/jmcarpenter2/swifter) whereever you use pandas
 	* Add [Metric learning methods](https://github.com/metric-learn/metric-learn)
 
 	* [partial path demo](http://scikit-learn.org/stable/auto_examples/ensemble/plot_partial_dependence.html) for tree-based mmethods(random-forest, gradient boosted etc..)

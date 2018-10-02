@@ -1,3 +1,5 @@
+# swiftapply for speeding up pandas  apply operations
+swifter
 #jupyter plugin
 wurlitzer
 # dimensionality
