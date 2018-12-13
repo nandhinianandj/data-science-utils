@@ -4,7 +4,8 @@
 	  Analysis(https://gist.github.com/anandjeyahar/df6d477271cf49b152f630aa72bc27c3)
 	* Consider adding [swiftapply](https://github.com/jmcarpenter2/swifter) whereever you use pandas
 	* Add [Metric learning methods](https://github.com/metric-learn/metric-learn)
-
+	* [Pystacknet](https://github.com/h2oai/pystacknet) integration for support for integrated
+	  models.
 	* [partial path demo](http://scikit-learn.org/stable/auto_examples/ensemble/plot_partial_dependence.html) for tree-based mmethods(random-forest, gradient boosted etc..)
 	* [Decision Tree visualization](http://explained.ai/decision-tree-viz/index.html) or
 	  [this](https://github.com/parrt/animl/tree/master)
