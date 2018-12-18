@@ -524,3 +524,13 @@ def chaid_tree(dataframe, targetCol):
     columns = dataframe.columns
     columns = list(filter(lambda x: x not in [targetCol], dataframe.columns))
     print(ch.Tree.from_pandas_df(dataframe, columns, targetCol))
+
+def survival_analyze():
+    import numpy as np
+    import pymc3 as pm
+    import scipy as sp
+    import seaborn as sns
+    from statsmodels import datasets
+    from theano import shared, tensor as tt
+
+    pass
