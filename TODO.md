@@ -1,4 +1,5 @@
 ## TODO
+	* add Gaussian graphical models interface from this [library].(https://github.com/skggm/skggm)
 	* TSNE based dimensionalty analysis [function.](https://github.com/DmitryUlyanov/Multicore-TSNE)
 	* Topological Data
 	  Analysis(https://gist.github.com/anandjeyahar/df6d477271cf49b152f630aa72bc27c3)
