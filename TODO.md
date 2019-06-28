@@ -1,4 +1,5 @@
 ## TODO
+	* [Survival Analysis](https://github.com/CamDavidsonPilon/lifelines.git)
 	* add Gaussian graphical models interface from this [library].(https://github.com/skggm/skggm)
 	* TSNE based dimensionalty analysis [function.](https://github.com/DmitryUlyanov/Multicore-TSNE)
 	* Topological Data
