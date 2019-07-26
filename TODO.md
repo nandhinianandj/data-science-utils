@@ -1,4 +1,5 @@
 ## TODO
+	* [One-dimensional clustering aka rank statistics for streaming data ] (https://github.com/tdunning/t-digest)
 	* TSNE based dimensionalty analysis [function.](https://github.com/DmitryUlyanov/Multicore-TSNE)
 	* Topological Data
 	  Analysis(https://gist.github.com/anandjeyahar/df6d477271cf49b152f630aa72bc27c3)
