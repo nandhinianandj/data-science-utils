@@ -518,6 +518,7 @@ def causal_analyze(dataframe):
     ic_algorithm = IC(RobustRegressionTest)
     graph = ic_algorithm.search(dataframe, variable_types)
     drawing.draw_networkx(graph)
+    pass
 
 def chaid_tree(dataframe, targetCol):
     import CHAID as ch
@@ -525,12 +526,18 @@ def chaid_tree(dataframe, targetCol):
     columns = list(filter(lambda x: x not in [targetCol], dataframe.columns))
     print(ch.Tree.from_pandas_df(dataframe, columns, targetCol))
 
-def survival_analyze():
-    import numpy as np
-    import pymc3 as pm
-    import scipy as sp
-    import seaborn as sns
-    from statsmodels import datasets
-    from theano import shared, tensor as tt
+def survival_analyze(dataframe, lifetime_col, dead_col, strata_cols, covariate_col=None):
+    # Based on notebook here. https://github.com/CamDavidsonPilon/lifelines/tree/master/examples
+    import pandas as pd
+    from matplotlib import pyplot as plt
+    from lifelines import CoxPHFitter
 
+    cph = CoxPHFitter().fit(dataframe, lifetime_col, dead_col, strata=strata_cols)
+    cph.plot(ax=ax[1])
+    if covariate_col:
+        cph.plot_covariate_groups(covariate_col, values=[0,1])
+    pass
+
+def kde_analyze(dataframe):
+    #TODO: implement t-digest in python here https://github.com/tdunning/t-digest/blob/master/core/src/main/java/com/tdunning/math/stats/TDigest.java
     pass
