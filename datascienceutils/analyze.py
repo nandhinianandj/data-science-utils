@@ -538,6 +538,16 @@ def survival_analyze(dataframe, lifetime_col, dead_col, strata_cols, covariate_c
         cph.plot_covariate_groups(covariate_col, values=[0,1])
     pass
 
+def fbprophet(dataframe, ):
+    from fbprophet import Prophet
+    m=Prophet()
+    m.fit(dataframe)
+    future = m.make_future_dataframe(periods=365)
+    forecast = m.predict(future)
+    print(forecast)
+    m.plot(forecast)
+    pass
+
 def kde_analyze(dataframe):
     #TODO: implement t-digest in python here https://github.com/tdunning/t-digest/blob/master/core/src/main/java/com/tdunning/math/stats/TDigest.java
     pass
