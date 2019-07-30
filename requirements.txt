@@ -39,7 +39,7 @@ statsmodels
 # Feature selector for timeseries
 tsfresh
 #Forecasting for timeseries
-#fbprophet
+fbprophet
 
 # Genetic algo based feature selection
 # Tools for tpot
