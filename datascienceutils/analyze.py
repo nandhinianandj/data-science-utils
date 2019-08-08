@@ -526,6 +526,19 @@ def chaid_tree(dataframe, targetCol):
     columns = list(filter(lambda x: x not in [targetCol], dataframe.columns))
     print(ch.Tree.from_pandas_df(dataframe, columns, targetCol))
 
+## Time series/survival analysis
+
+def kaplan_meier_filter(dataframe, timeCol, targetCol):
+    from lifelines import KaplanMeierFitter
+
+    durations = [11, 74, 71, 76, 28, 92, 89, 48, 90, 39, 63, 36, 54, 64, 34, 73, 94, 37, 56, 76]
+    event_observed = [True, True, False, True, True, True, True, False, False, True, True,
+                  True, True, True, True, True, False, True, False, True]
+
+    kmf = KaplanMeierFitter()
+    kmf.fit(dataframe[timeCol], dataframe[targetCol])
+    kmf.plot()
+
 def survival_analyze(dataframe, lifetime_col, dead_col, strata_cols, covariate_col=None):
     # Based on notebook here. https://github.com/CamDavidsonPilon/lifelines/tree/master/examples
     import pandas as pd
