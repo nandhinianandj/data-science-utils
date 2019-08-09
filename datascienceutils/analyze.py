@@ -526,7 +526,12 @@ def chaid_tree(dataframe, targetCol):
     columns = list(filter(lambda x: x not in [targetCol], dataframe.columns))
     print(ch.Tree.from_pandas_df(dataframe, columns, targetCol))
 
+def kde_analyze(dataframe):
+    #TODO: implement t-digest in python here https://github.com/tdunning/t-digest/blob/master/core/src/main/java/com/tdunning/math/stats/TDigest.java
+    pass
+
 ## Time series/survival analysis
+
 
 def kaplan_meier_filter(dataframe, timeCol, targetCol):
     from lifelines import KaplanMeierFitter
@@ -551,7 +556,8 @@ def survival_analyze(dataframe, lifetime_col, dead_col, strata_cols, covariate_c
         cph.plot_covariate_groups(covariate_col, values=[0,1])
     pass
 
-def fbprophet(dataframe, ):
+def fbprophet_forecast(dataframe, ):
+    assert 'ds' in dataframe.columns, "column ds needed to be the time column"
     from fbprophet import Prophet
     m=Prophet()
     m.fit(dataframe)
@@ -559,8 +565,73 @@ def fbprophet(dataframe, ):
     forecast = m.predict(future)
     print(forecast)
     m.plot(forecast)
-    pass
 
-def kde_analyze(dataframe):
-    #TODO: implement t-digest in python here https://github.com/tdunning/t-digest/blob/master/core/src/main/java/com/tdunning/math/stats/TDigest.java
-    pass
+def fbprophet_multiplicative_seasonality(dataframe, timeCol):
+    assert 'ds' in dataframe.columns, "column ds needed to be the time column"
+    m = Prophet(seasonality_mode='multiplicative')
+    m.fit(dataframe)
+    future = m.make_future_dataframe(50, freq='MS')
+    forecast = m.predict(future)
+    print(forecast)
+    m.plot(forecast)
+    m.plot_components(forecast)
+
+def fbprophet_sub_daily_data(dataframe):
+    assert 'ds' in dataframe.columns, "column ds needed to be the time column"
+    m = Prophet(changepoint_prior_scale=0.01).fit(dataframe)
+    future = m.make_future_dataframe(periods=300, freq='H')
+    fcst = m.predict(future)
+    m.plot(fcst)
+    m.plot_components(forecast)
+
+def fbprophet_w_uncertainty(dataframe, estimate_type='mcmc'):
+    assert 'ds' in dataframe.columns, "column ds needed to be the time column"
+    if estimate_type =='mcmc':
+        m = Prophet(mcmc_samples=300)
+    else:
+        # MAP estimate
+        m = Prophet(interval_width=0.95)
+
+    forecast = m.fit(dataframe).predict(future)
+    m.plot(fcst)
+    m.plot_components(forecast)
+
+def fbprophet_changepoint_detect(dataframe):
+    assert 'ds' in dataframe.columns, "column ds needed to be the time column"
+    m = Prophet()
+    m.fit(dataframe)
+    future = m.make_future_dataframe(periods=366)
+    forecast = m.predict(future)
+    fig = m.plot(forecast)
+    for cp in m.changepoints:
+        plt.axvline(cp, c='gray', ls='--', lw=2)
+
+def tsfresh_extract_features(timeSeries, idCol, timeCol):
+    from tsfresh import extract_relevant_features
+    from tsfresh import select_features
+    from tsfresh.utilities.dataframe_functions import impute
+
+    extracted_features = extract_relevant_features(timeSeries, column_id=idCol, column_sort=timeCol)
+
+    impute(extracted_features)
+    features_filtered = select_features(extracted_features, y)
+    return features_filtered
+
+def tsfresh_sklearn_transform(dataframe):
+    assert 'id' in dataframe.columns, "dataframe needs id column"
+    assert 'time' in dataframe.columns, "Need time column in dataframe"
+    from sklearn.pipeline import Pipeline
+    from sklearn.ensemble import RandomForestClassifier
+    from tsfresh.examples import load_robot_execution_failures
+    from tsfresh.transformers import RelevantFeatureAugmenter
+
+    pipeline = Pipeline([('augmenter', RelevantFeatureAugmenter(column_id='id', column_sort='time')),
+                ('classifier', RandomForestClassifier())])
+
+    df_ts, y = load_robot_execution_failures()
+    X = pd.DataFrame(index=y.index)
+
+    pipeline.set_params(augmenter__timeseries_container=df_ts)
+    pipeline.fit(X, y)
+
+
