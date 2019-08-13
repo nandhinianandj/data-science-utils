@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "datascienceutils"
+name = "dsu"
 version = "1.4.0-dev"
 description = ""
 authors = ["Nandhini Anand <cattykatrina4@gmail.com>"]
