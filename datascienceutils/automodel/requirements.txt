@@ -1,5 +1,0 @@
-autokeras
-auto-sklearn
-optunity
-tpot
--e git+https://github.com/hyperopt/hyperopt-sklearn.git#egg=hpsklearn
