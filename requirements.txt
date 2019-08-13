@@ -1,10 +1,7 @@
 arviz
 # survival
 lifelines
-# swiftapply for speeding up pandas  apply operations
-swifter
-#jupyter plugin
-wurlitzer
+
 # dimensionality
 -e git+https://github.com/DmitryUlyanov/Multicore-TSNE.git#egg=Multicore-TSNE
 cython
@@ -16,52 +13,42 @@ tqdm
 bokeh==0.10.0
 seaborn
 matplotlib
-# shapely
 hypertools # For multi-dimensional data
 
-astropy
 patsy
-# Modular data processing
-mdp
-
-#Meta learning
-#auto-sklearn
-optunity
-
-# Vision
-scikit-image
-
-#Satellite imagery
-descartes
 
 # Stats Packages
 statsmodels
+robustats
 
 # Feature selector for timeseries
 tsfresh
 #Forecasting for timeseries
 fbprophet
 
-# Genetic algo based feature selection
-# Tools for tpot
-deap
-update_checker
-
 # Automated sklearn
 tpot
 -e git+https://github.com/hyperopt/hyperopt-sklearn.git#egg=hpsklearn
 
-# notebook tools
-jupyter
-psycopg2
 
 # matrix tool + data structure/frame
 numpy
 pandas
 sqlalchemy
+
+# Vision
+scikit-image
 scikit-learn
 scipy
 scikit-plot
+#Scikits-plugins
+scikit-MDR
+scikit-build
+scikit-data
+# Goodness of fit tests
+scikit-gof
+# For recommendation engines
+scikit-surprise
 
 #Non-linear correlation measures
 ace
@@ -69,88 +56,43 @@ ace
 #Xtreme Gradient Boosting
 xgboost
 
-#Rasterio reads and writes geospatial raster datasets
-rasterio
 
 # NLP stuff
-#nltk
-#gensim
-#glove
+nltk
+gensim
+spacy
+glove
 
 #Light GBM
 #-e git+https://github.com/Microsoft/LightGBM.git#egg=lightgbm
--e git+https://github.com/ArdalanM/pyLightGBM.git#egg=pylightgbm
+#-e git+https://github.com/ArdalanM/pyLightGBM.git#egg=pylightgbm
 
 
 # Manifold learning
 # -e git+https://github.com/lmcinnes/umap.git#egg=umap
 
-# Package for map projections
-geos
-
-#Scikits-plugins
-#scikit-beam
-scikit-MDR
-scikit-build
-#scikit-cuda
-scikit-data
-# Goodness of fit tests
-scikit-gof
-# Geodesic manifolds
-#scikit-geodesic
-#scikit-gpuppy
-#scikit-kinematics
-#scikit-multilearn
-scikit-neuralnetwork
-#scikit-procrustes
-#scikit-sound
-#scikit-sos
-#scikit-xray
-#datasmooth
-#scikits.talkbox
 
 # Neural network packages
 tensorflow
 gym
 keras
-mxnet
 tensorboard
 -e git+https://github.com/sevamoo/SOMPY#egg=sompy
-neat-python
-
-# Vision packages
-#object detections
-#gpod
-
-#Workflow management
-#dagpype
-#luigi
+#neat-python
 
 # String fuzzy(lev. distance based) matching
 fuzzywuzzy
 # Faster Text search
 flashtext
 
-#datarobot
-#pynasa
 
 # For graphical models
-#pystruct
-#seqlearn
+pystruct
+seqlearn
 
-# For recommendation engines
-#scikit-surprise
 
 # For understanding blackbox models
 #skater
 
-# Pygraphistry for visualizing large graphs
-#graphistry[all]
-#vispy
-#For message passing across processes
-#mpi4py
-
-# Ipython volume
-ipyvolume
 pymc
 causality
