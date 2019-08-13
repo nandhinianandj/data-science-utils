@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "dsu"
-version = "1.4.0-dev"
+version = "1.4.0"
 description = ""
 authors = ["Nandhini Anand <cattykatrina4@gmail.com>"]
 
