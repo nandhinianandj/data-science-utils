@@ -1,5 +1,5 @@
 MAJOR = 1
-MINOR = 3
-MICRO = 11
-ISRELEASED = True
-VERSION = '%d.%d.%d' % (MAJOR, MINOR, MICRO)
+MINOR = 4
+MICRO = '0-dev'
+ISRELEASED = False
+VERSION = '%d.%d.%s' % (MAJOR, MINOR, MICRO)

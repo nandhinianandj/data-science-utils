@@ -236,8 +236,8 @@ def non_linear_regression_analyze(df, target_cols=list(),
 
     plots = list()
     for col1, col2 in itertools.combinations(target_cols, 2):
-        import ace
-        model = ace.model.Model()
+        from ace import model
+        model = model.Model()
         model.build_model_from_xy([df[col1].as_matrix()], [df[col2].as_matrix()])
 
         print(" # Ace Models btw numerical cols")
@@ -245,13 +245,14 @@ def non_linear_regression_analyze(df, target_cols=list(),
         plots.append(plot)
     plotter.show(plots)
 
-def plot_posterior_glm(df, xlabel, ylabel, trace):
+def pymc_plot_posterior_glm(df, xlabel, ylabel, trace):
     from pymc3.plots import plot_posterior_predictive_glm
     import matplotlib.pyplot as plt
     x = df[xlabel].values
     y = df[ylabel].values
     plt.figure(figsize=(7, 7))
     plt.plot(x, y, 'x', label='data')
+
     plot_posterior_predictive_glm(trace, samples=100,
 				  label='posterior predictive regression lines')
     plt.title('Posterior predictive regression lines')
@@ -259,7 +260,7 @@ def plot_posterior_glm(df, xlabel, ylabel, trace):
     plt.xlabel(xlabel)
     plt.ylabel(ylabel);
 
-def bayesian_regression_analyze(df, target_cols=list(), **kwargs):
+def pymc_regression_analyze(df, target_cols=list(), **kwargs):
     from pymc3 import traceplot
     import matplotlib.pyplot as plt
     for col1, col2 in itertools.combinations(target_cols, 2):
@@ -270,7 +271,18 @@ def bayesian_regression_analyze(df, target_cols=list(), **kwargs):
         plt.title('%s Vs %s'%(col1, col2))
         traceplot(trace[100:])
         plt.tight_layout()
-        plot_posterior_glm(df, col1, col2, trace)
+        pymc_plot_posterior_glm(df, col1, col2, trace)
+
+def pymc_log_reg_analyze(dataframe, target_col=str(), **kwargs):
+    import pymc3 as pm
+    other_cols=set(dataframe.columns) - target_col
+    with pm.Model() as logistic_model:
+        pm.glm.GLM.from_formula('income ~ age + age2 + educ + hours',
+                                data,
+                                family=pm.glm.families.Binomial())
+        trace = pm.sample(1000, tune=1000, init='adapt_diag')
+
+
 
 def regression_analyze(df, target_cols=list(), trainsize=0.8, check_heteroskedasticity=True,
                                check_vif=True, **kwargs):

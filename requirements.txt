@@ -1,3 +1,4 @@
+arviz
 # survival
 lifelines
 # swiftapply for speeding up pandas  apply operations
