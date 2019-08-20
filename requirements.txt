@@ -1,3 +1,5 @@
+# Encode Categories
+category-encoders
 arviz
 # survival
 lifelines
@@ -14,6 +16,8 @@ bokeh==0.10.0
 seaborn
 matplotlib
 hypertools # For multi-dimensional data
+# google maps plot latitudes and longitudes
+gmplot
 
 patsy
 
@@ -34,6 +38,8 @@ tpot
 # matrix tool + data structure/frame
 numpy
 pandas
+# profile pandas
+pandas_profiling
 sqlalchemy
 
 # Vision
