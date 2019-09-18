@@ -1,9 +1,10 @@
+#Isolation forest
+https://github.com/linkedin/isolation-forest
 # Encode Categories
 category-encoders
 arviz
 # survival
 lifelines
-
 # dimensionality
 -e git+https://github.com/DmitryUlyanov/Multicore-TSNE.git#egg=Multicore-TSNE
 cython
@@ -83,6 +84,8 @@ tensorflow
 gym
 keras
 tensorboard
+# Tensorflow pre-trained models
+tensorflow_hub==0.4.0
 -e git+https://github.com/sevamoo/SOMPY#egg=sompy
 #neat-python
 
