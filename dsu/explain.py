@@ -1,3 +1,6 @@
+import lime
+import shap
+
 def interpret(dataframe, model):
     features = dataframe.columns
     from skater import Interpretation

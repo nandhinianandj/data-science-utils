@@ -1,12 +1,13 @@
 ## TODO
+	* Option to make [Confidence plot](https://documentation.sas.com/?docsetId=grstatproc&docsetTarget=p0e254y1nmv2fjn1t3jybtamodjp.htm&docsetVersion=9.4&locale=en) and [Calibration plots](https://en.wikipedia.org/wiki/Calibration_curve)
+	* [Model interpretability](https://medium.com/analytics-vidhya/how-to-understand-your-machine-learning-model-d4606c40a774) with skater, lime, and eli5
 	* [Category encoders](https://pypi.org/project/category-encoders/)
 	* [One-dimensional clustering aka rank statistics for streaming data ] (https://github.com/tdunning/t-digest)
 	* ~~[Survival Analysis](https://github.com/CamDavidsonPilon/lifelines.git)~~
 	* [Robust stats](https://github.com/FilippoBovo/robustats)
 	* add Gaussian graphical models interface from this [library](https://github.com/skggm/skggm)
 	* TSNE based dimensionalty analysis [function.](https://github.com/DmitryUlyanov/Multicore-TSNE)
-	* Topological Data
-	  Analysis(https://gist.github.com/anandjeyahar/df6d477271cf49b152f630aa72bc27c3)
+	* [Topological Data Analysis](https://gist.github.com/anandjeyahar/df6d477271cf49b152f630aa72bc27c3)
 	* Consider adding [swiftapply](https://github.com/jmcarpenter2/swifter) whereever you use pandas
 	* Add [Metric learning methods](https://github.com/metric-learn/metric-learn)
 	* [Pystacknet](https://github.com/h2oai/pystacknet) integration for support for integrated
@@ -19,7 +20,7 @@
 	* Also add some code that reads the validation parameters and generates test cases to test
 	  /validate the model(stats tests, input distributions, output distributions etc..)
 
-	* Yellow-fin algorithm(http://cs.stanford.edu/~zjian/project/YellowFin/)
+	* [Yellow-fin algorithm](http://cs.stanford.edu/~zjian/project/YellowFin/)
 
 	* Add test of independence support for categorical variables(use that P(A & B) = P(A) * P(B)
 	  as a test
@@ -52,25 +53,18 @@
 
 	* [Sensitivity analysis](https://en.wikipedia.org/wiki/Sensitivity_analysis)
 
-	* Interaction Analysis
+	* [Survival Analysis](https://www.nature.com/bjc/journal/v89/n2/pdf/6601118a.pdf?foxtrotcallback=true)
 
-	* [Survival
-	  Analysis](https://www.nature.com/bjc/journal/v89/n2/pdf/6601118a.pdf?foxtrotcallback=true)
-
-	* Add a separate grid search function to grid search a data set with the given
-	  model.(wrapper around sklearn model_selection's grid search)
+	* Add a separate grid search function to grid search a data set with the given model.(wrapper around sklearn model_selection's grid search)
 
 	* Add Gaussian Mixture Model to clustering models
 
-	* Add plots for regression analysis with different models(may be [r-squared like]
-	  http://scikit-learn.org/stable/auto_examples/linear_model/plot_lasso_and_elasticnet.html#sphx-glr-auto-examples-linear-model-plot-lasso-and-elasticnet-py)
-	  or somethin else
+	* Add plots for regression analysis with different models(may be [r-squared like] http://scikit-learn.org/stable/auto_examples/linear_model/plot_lasso_and_elasticnet.html#sphx-glr-auto-examples-linear-model-plot-lasso-and-elasticnet-py) or somethin else
 
 	* Add a way to check for non-linear correlations(aka ace algorithm)
 
 
-	* Create a function to take dataframe, run tree/randomforest, pick out best tree, create a
-	  neural network based on the tree, and return it.. (The user can then train it).
+	* Create a function to take dataframe, run tree/randomforest, pick out best tree, create a neural network based on the tree, and return it.. (The user can then train it).
 
 	* [Agglomerative Hierarchical clustering](https://www.xlstat.com/en/solutions/features/agglomerative-hierarchical-clustering-ahc)
 
