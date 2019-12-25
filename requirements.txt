@@ -1,5 +1,5 @@
 #Isolation forest
-https://github.com/linkedin/isolation-forest
+#-e git+https://github.com/linkedin/isolation-forest.git#egg
 # Encode Categories
 category-encoders
 arviz
@@ -13,9 +13,14 @@ ortools
 # progress bar library for python and jupyter notebook
 tqdm
 # Visualization packages
-bokeh==0.10.0
+bokeh
 seaborn
 matplotlib
+gleam
+missingno
+leather
+ggplot
+pygal
 hypertools # For multi-dimensional data
 # google maps plot latitudes and longitudes
 gmplot
@@ -68,7 +73,7 @@ xgboost
 nltk
 gensim
 spacy
-glove
+#glove
 
 #Light GBM
 #-e git+https://github.com/Microsoft/LightGBM.git#egg=lightgbm
