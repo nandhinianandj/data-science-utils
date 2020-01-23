@@ -20,8 +20,7 @@ gleam
 missingno
 leather
 ggplot
-pygal
-hypertools # For multi-dimensional data
+#hypertools # For multi-dimensional data
 # google maps plot latitudes and longitudes
 gmplot
 
@@ -37,8 +36,8 @@ tsfresh
 fbprophet
 
 # Automated sklearn
-tpot
--e git+https://github.com/hyperopt/hyperopt-sklearn.git#egg=hpsklearn
+#tpot
+#-e git+https://github.com/hyperopt/hyperopt-sklearn.git#egg=hpsklearn
 
 
 # matrix tool + data structure/frame
@@ -46,7 +45,6 @@ numpy
 pandas
 # profile pandas
 pandas_profiling
-sqlalchemy
 
 # Vision
 scikit-image
@@ -85,12 +83,12 @@ spacy
 
 
 # Neural network packages
-tensorflow
-gym
-keras
-tensorboard
+#tensorflow
+#gym
+#keras
+#tensorboard
 # Tensorflow pre-trained models
-tensorflow_hub==0.4.0
+#tensorflow_hub==0.4.0
 -e git+https://github.com/sevamoo/SOMPY#egg=sompy
 #neat-python
 
@@ -101,9 +99,8 @@ flashtext
 
 
 # For graphical models
-pystruct
-seqlearn
-
+#pystruct
+#seqlearn
 
 # For understanding blackbox models
 #skater

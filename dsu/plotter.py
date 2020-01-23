@@ -1,14 +1,12 @@
 # Standard and External lib imports
 from pandas.api import types as ptypes
-from bokeh.mpl import to_bokeh
-from bokeh.io import gridplot
+from bokeh.layouts import gridplot
 from bokeh.plotting import figure, show, output_file, output_notebook, ColumnDataSource
 from bokeh.resources import CDN
 from bokeh.embed import components
 from bokeh.models import ( Text, PanTool, WheelZoomTool, LinearAxis,
                            SingleIntervalTicker, Range1d,  Plot,
                            Text, Circle, HoverTool, Triangle)
-from bokeh.charts import Chart, Line
 from math import ceil
 
 import matplotlib
@@ -185,7 +183,6 @@ def scatterplot(scatterDF, xcol, ycol,
         p = figure(title=plttitle, **fig_kwargs)
     else:
         p = figure(title=plttitle)
-    from bokeh.charts import Scatter
 
     if not xlabel:
         xlabel = xcol

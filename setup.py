@@ -161,7 +161,7 @@ def setup_package():
     metadata = dict(
             name='datascienceutils',
             version=get_version_info()[0],
-            packages=['datascienceutils', 'datascienceutils/features'],
+            packages=['dsu', 'dsu/features'],
         maintainer="Nandhini Anand",
         maintainer_email="cattykatrina4@gmail.com",
         description="A wrapper around common exploratory data analyses done before a Data Science project",
