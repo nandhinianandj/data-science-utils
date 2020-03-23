@@ -56,6 +56,17 @@ os.environ['DATAROBOT_CONFIG_FILE'] = os.path.join(os.getenv("HOME"), '.config',
 #    except Exception:
 #        global eval(name)
 
+def recommend_nn(dataframe, **kwargs):
+    # Each layer of the NN can be considered one level of partial differentiation in a purely
+    # feed-forward network and standard sigmoid activation function
+    # CHeck distribution of columns if multimodal, split input into two and train two networks
+    # If columns are all orthogonal, then feed forward network is sufficient, if not (ie:
+    # multi-collinearity ) add a convolution layer
+    # If some columns exhibit iterative function systems behaviour, aka fractal dimensions add
+    # feed-backward propagation(it adds markov state and some dependence on previous state)
+    #
+    pass
+
 def create_base_nn(**kwargs):
     from keras.models import Sequential
     from keras.layers import Dense

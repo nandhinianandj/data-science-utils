@@ -16,11 +16,18 @@ from . import utils
 from . import statsutils as su
 
 
-def dist_analyze(df, column='', category='', is_normal=True,
+def dist_analyze(df, column=None, category=None, is_normal=True,
                     bayesian_hist=False,
                     kdeplot=True, violinplot=False):
-    plots = []
-    if (utils.is_numeric(df, column=column)):
+    """
+    Analyze/plot visual of a single distribution
+    @params:
+        @column: presence assumes this is one numeric column
+        @category:
+    """
+    plot = None
+    if column:
+        assert (utils.is_numeric(df, column=column))
         print("Variance of %s"%column)
         print(df[column].var())
         print("Skewness of %s"%column)
@@ -30,24 +37,27 @@ def dist_analyze(df, column='', category='', is_normal=True,
 
         if violinplot:
             plotter.sb_violinplot(df[column], inner='box')
-        plots.append(plotter.histogram(df, column, bayesian_bins=bayesian_hist))
-    else:
-        if df[column].nunique() < 7:
-            plots.append(plotter.pieChart(df, column, title='Distribution of %s'%column))
-        else:
-            print("Too many categories for col: %s can't plot pie-chart"%column)
+        plotter.sb_histogram(df[column], kdeplot=kdeplot, bayesian_bins=bayesian_hist)
 
     if kdeplot:
         assert utils.is_numeric(df, column=column), "KDE Plot Only available for numerical columns"
         df[column].plot.kde(label=column, title='Kernel density estimate')
 
     if category:
-        # Plot Barplots of combination of category and numerical columns
-        plots.append(plotter.barplot(df, column, category))
-        print("# Joint Distribution of Numerical vs Categorical Columns")
+        plot = plotter.sb_barplot(df, category, column, title='Distribution of %s'%column)
+    return plot
+
+def joint_dist_analyze(df, columns=None, categories=None):
+    plots = []
+    for category in categories:
+        for column in columns:
+            assert (utils.is_numeric(df, column=column))
+            print("Variance of %s"%column, df[column].var())
+            print("Skewness of %s"%column, df[column].skew())
+            # Plot Barplots of combination of category and numerical columns
+            plots.append(plotter.sb_barplot(df, category, column))
     grid = gridplot(list(utils.chunks(plots, size=2)))
     return grid
-
 
 def outliers_analyze(df):
 
@@ -112,7 +122,7 @@ def correlation_analyze(df, col1, col2, categories=[], measures=[],
     plots = []
 
     u,v = col1, col2
-    plots.append(plotter.scatterplot(df, u, v))
+    plots.append(plotter.sb_scatterplot(df, u, v))
     plotter.sb_jointplot(df[u], df[v])
     if check_linearity:
         u_2diff = np.gradient(df[u], 2)
@@ -311,6 +321,7 @@ def regression_analyze(df, target_cols=list(), trainsize=0.8, check_heteroskedas
 
 
 
+    plots = list()
     for col1, col2 in itertools.combinations(target_cols, 2):
         new_df = df[[col1, col2]].copy(deep=True)
         target = new_df[col2]
@@ -324,9 +335,8 @@ def regression_analyze(df, target_cols=list(), trainsize=0.8, check_heteroskedas
                 #pm.train(new_df, target, column=col1, modelType='IsotonicRegression'),
                 #pm.train(new_df, target, column=col1, modelType='logarithmicRegression'),
                 ]
-        plots = list()
         for model in models:
-            scatter = plotter.scatterplot(new_df, col1, col2, plttitle=model.__repr__())
+            scatter = plotter.sb_scatterplot(new_df, col1, col2, plttitle=model.__repr__())
             source = new_df[col1].as_matrix().reshape(-1,1)
             predicted = list(model.predict(source))
             flatSrc = [item for sublist in source for item in sublist]
@@ -504,19 +514,7 @@ def tsne_dim_analyze(dataframe, datatype='binary', **kwargs):
     df = pd.DataFrame()
     df['x'] = Y[0,0]
     df['y'] = Y[0,1]
-    plotter.show(plotter.scatterplot(df, 'x', 'y'))
-
-
-def recommend_nn(dataframe, **kwargs):
-    # Each layer of the NN can be considered one level of partial differentiation in a purely
-    # feed-forward network and standard sigmoid activation function
-    # CHeck distribution of columns if multimodal, split input into two and train two networks
-    # If columns are all orthogonal, then feed forward network is sufficient, if not (ie:
-    # multi-collinearity ) add a convolution layer
-    # If some columns exhibit iterative function systems behaviour, aka fractal dimensions add
-    # feed-backward propagation(it adds markov state and some dependence on previous state)
-    #
-    pass
+    plotter.sb_scatterplot(df, 'x', 'y')
 
 def causal_analyze(dataframe):
     for each in dataframe.columns:
