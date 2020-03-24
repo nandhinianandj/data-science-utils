@@ -25,7 +25,7 @@ def dist_analyze(df, column=None, category=None, is_normal=True,
         @column: presence assumes this is one numeric column
         @category:
     """
-    plot = None
+    plots = list()
     if column:
         assert (utils.is_numeric(df, column=column))
         print("Variance of %s"%column)
@@ -36,16 +36,16 @@ def dist_analyze(df, column=None, category=None, is_normal=True,
             su.check_normality(df[column], column)
 
         if violinplot:
-            plotter.sb_violinplot(df[column], inner='box')
-        plotter.sb_histogram(df[column], kdeplot=kdeplot, bayesian_bins=bayesian_hist)
+            plots.append(plotter.sb_violinplot(df[column], inner='box'))
+        plots.append(plotter.sb_histogram(df[column], kdeplot=kdeplot, bayesian_bins=bayesian_hist))
 
     if kdeplot:
         assert utils.is_numeric(df, column=column), "KDE Plot Only available for numerical columns"
         df[column].plot.kde(label=column, title='Kernel density estimate')
 
     if category:
-        plot = plotter.sb_barplot(df, category, column, title='Distribution of %s'%column)
-    return plot
+        plots.append(plotter.sb_barplot(df, category, column, title='Distribution of %s'%column))
+    return plots
 
 def joint_dist_analyze(df, columns=None, categories=None):
     plots = []
