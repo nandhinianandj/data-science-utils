@@ -1,5 +1,4 @@
 import pandas as pd
-from bokeh.plotting import figure, show
 
 from . import plotter
 def test_stationarity(timeseries, valueCol, skip_stationarity=False, title='timeseries', **kwargs):

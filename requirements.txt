@@ -13,7 +13,6 @@ ortools
 # progress bar library for python and jupyter notebook
 tqdm
 # Visualization packages
-bokeh
 seaborn
 matplotlib
 gleam

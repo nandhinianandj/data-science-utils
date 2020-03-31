@@ -65,6 +65,5 @@
 
 
 	* Create a function to take dataframe, run tree/randomforest, pick out best tree, create a neural network based on the tree, and return it.. (The user can then train it).
-
-	* [Agglomerative Hierarchical clustering](https://www.xlstat.com/en/solutions/features/agglomerative-hierarchical-clustering-ahc)
+* [Agglomerative Hierarchical clustering](https://www.xlstat.com/en/solutions/features/agglomerative-hierarchical-clustering-ahc)
 

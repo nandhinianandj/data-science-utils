@@ -1,12 +1,5 @@
 # Standard and External lib imports
 from pandas.api import types as ptypes
-from bokeh.layouts import gridplot
-from bokeh.plotting import figure, show, output_file, output_notebook, ColumnDataSource
-from bokeh.resources import CDN
-from bokeh.embed import components
-from bokeh.models import ( Text, PanTool, WheelZoomTool, LinearAxis,
-                           SingleIntervalTicker, Range1d,  Plot,
-                           Text, Circle, HoverTool, Triangle)
 from math import ceil
 
 from IPython.display import display
@@ -27,38 +20,6 @@ sns.set(style='white')
 # Custom imports
 from . import utils
 
-def genColors(n, ptype=None):
-    """
-    """
-    from bokeh.palettes import (Blues3, Blues4, Blues5,
-                            Blues6, Blues7, Blues8, Blues9,
-                            Greens3, Greens4, Greens5,
-                            Greens6, Greens7, Greens8, Greens9,
-                            Reds3, Reds4, Reds5, Reds6,
-                            Reds7, Reds8, Reds9, Spectral3,
-                            Spectral4, Spectral5, Spectral6,
-                            Spectral7, Spectral8, Spectral9)
-    if n <= 2:
-        given_val = 3
-    else:
-        given_val = n
-    if ptype=='magma':
-        chosen = eval('Spectral' +'%s'%str(given_val))
-    elif ptype == 'inferno':
-        chosen = eval('Greens' + '%s'%str(given_val))
-    elif ptype == 'plasma':
-        chosen = eval('Reds' + '%s'%str(given_val))
-    else:
-        chosen = eval('Blues' + '%s'%str(given_val))
-    if given_val == 3:
-        return chosen[:n]
-    return chosen
-
-
-def grid_plot(plots, chunks=2):
-    grid = gridplot(list(utils.chunks(plots, size=2)))
-    show(grid)
-
 def sb_gridplot(df, col1, col2, category1, category2, chunks=2):
     if category:
         with sns.axes_style("white"):
@@ -68,6 +29,8 @@ def sb_gridplot(df, col1, col2, category1, category2, chunks=2):
         #g.set(xticks=[10, 30, 50], yticks=[2, 6, 10]);
         g.fig.subplots_adjust(wspace=.02, hspace=.02);
 
+def sb_show():
+    plt.show()
 
 def show_image(image, **kwargs):
     p = figure(x_range=(0, 10), y_range=(0, 10), **kwargs)
@@ -106,18 +69,6 @@ def histogram(histDF,values, bayesian_bins=False,**kwargs):
         p1.xaxis.axis_label = 'x'
         p1.yaxis.axis_label = 'Frequency'
         return p1
-
-
-def heatmap(heatMapDF, xlabel, ylabel, value_label,
-            title="heatmap", palette=None, width=500,
-            height=500,**kwargs):
-    from bokeh._legacy_charts import HeatMap
-    if not palette:
-        from bokeh.palettes import RdBu11 as palette_tmpl
-        palette = palette_tmpl
-    hm = HeatMap(heatMapDF, x=xlabel, y=ylabel, values=value_label,
-                        title=title, height=height, width=width, palette=palette, **kwargs)
-    return hm
 
 def mtext(p, x, y, textstr, **kwargs):
    p.text(x, y, text=[textstr],

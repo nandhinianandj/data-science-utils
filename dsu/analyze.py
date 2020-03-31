@@ -121,7 +121,9 @@ def correlation_analyze(df, col1, col2, categories=[], measures=[],
 
     u,v = col1, col2
     plotter.sb_scatterplot(df[u], df[v])
-    plotter.sb_jointplot(df[u], df[v])
+    plotter.sb_show()
+
+    #plotter.sb_jointplot(df[u], df[v])
     if check_linearity:
         u_2diff = np.gradient(df[u], 2)
         v_2diff = np.gradient(df[v], 2)
@@ -148,7 +150,8 @@ def correlation_analyze(df, col1, col2, categories=[], measures=[],
                 print("# Correlation btw Columns %s & %s by count" % (combo[0], combo[1]))
                 group0 = df.groupby(list(combo)).size().reset_index()
                 group0.rename(columns={col1: 'counts'}, inplace=True)
-                heatmaps.append(plotter.heatmap(group0, combo[0], combo[1], 'counts'))
+                plotter.sb_heatmap(group0, combo[0], combo[1], 'counts')
+                plotter.sb_show()
 
         for meas in measures:
             # Plot heatmaps for measure across all combination of categories
@@ -158,79 +161,10 @@ def correlation_analyze(df, col1, col2, categories=[], measures=[],
                     meas))
                 group0 = df.groupby(list(combo)).sum().reset_index()
                 group0.rename(columns={meas: 'sum_%s'%meas}, inplace=True)
-                heatmaps.append(plotter.heatmap(group0, combo[0], combo[1], 'sum_%s'%meas,
+                plotter.sb_heatmap(group0, combo[0], combo[1], 'sum_%s'%meas,
                                                 title="%s vs %s %s heatmap"%(combo[0], combo[1], meas)
-                                                ))
-        hmGrid = plotter.gridplot(list(utils.chunks(heatmaps, size=2)))
-        plotter.show(hmGrid)
-
-def degrees_freedom(df, dof_range = [], categoricalCol=[]):
-    """
-    Find what are the maximum orthogonal dimensions in the data
-    """
-    if categoricalCol:
-        assert len(categoricalCol)==2, "Only two categories supported"
-        probabilities = dict()
-        for col in categoricalCol:
-            values = df[categoricalCol].unique()
-            grouped_df = df.groupby(categoricalCol).count()
-            for val in values:
-                probabilities[(col,val)] = grouped_df[val]/df[categoricalCol].count()
-        print(probabilities)
-    else:
-        for (col1, col2) in utils.chunks(df.columns, 2):
-            chi2_test_independence(df[col1], df[col2])
-
-def measure_distance(dist_type='cosine', dof_range=[]):
-    if not dof_range: dof_range = range(2,3)
-    assert hasattr(dof_range, '__iter__')
-    from scipy.spatial.distance import cosine, cityblock, jaccard, canberra, euclidean, minkowski, braycurtis
-    # TODO: Extend/generalise this to more than 2-norm (aka 2-D plane)
-    dist_measure = eval(dist_type)
-    dof_range = [2]
-    all_cosine_dists = dict()
-    for each in dof_range:
-        combos = itertools.combinations(df.columns, each)
-        # TODO: calculate cosine distance
-        cosine_dist = dict()
-        for combo in combos:
-            cosine_dist[combo] = dist_function(df[combo[0]], df[combo[1]])
-        all_cosine_dists[each] = sorted(cosine_dist.items(), key=operator.itemgetter(1))
-    print("%s Distance Method"%dist_type)
-    return all_cosine_dists
-
-def factor_analyze(df, target=None, model_type ='pca', **kwargs):
-    model = utils.get_model_obj(model_type, **kwargs)
-    numericalColumns = df.select_dtypes(include=[np.number]).columns
-    catColumns = set(df.columns).difference(set(numericalColumns))
-    for col in catColumns:
-        df[col] = sku.encode_labels(df, col)
-    print("Model being used is :%s "%model_type)
-    if model_type == 'linear_da':
-        assert target is not None, "Target class/category necessary for Linear DA factor analysis"
-        model.fit(df, target)
-        print("Coefficients")
-        print(model.coef_)
-        print("Covariance")
-        print(model.covariance_)
-    elif model_type == 'latent_da':
-        print("Components")
-        print(model.components_)
-    else:
-        model.fit(df[numericalColumns])
-        print("No. of Components")
-        print(model.n_components)
-        print("Components")
-        print(model.components_)
-        print("Explained variance")
-        print(model.explained_variance_)
-        exp_var_df = pd.DataFrame(columns=['Principal Components', 'Explained variance'])
-        plotter.show(plotter.barplot(exp_var_df, alpha=0.5, align='center',
-            label='individual explained variance'))
-
-    trans_df = pd.DataFrame(model.transform(df))
-    print("Correlation of transformed")
-    correlation_analyze(trans_df, 0, 1)
+                                                )
+                plotter.sb_show()
 
 def non_linear_regression_analyze(df, target_cols=list(),
                                   trainsize=0.8, **kwargs):

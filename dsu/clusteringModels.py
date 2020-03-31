@@ -1,4 +1,3 @@
-from bokeh.layouts import gridplot
 from sklearn import cluster
 from sklearn.neighbors import kneighbors_graph, KernelDensity
 import numpy as np
@@ -107,7 +106,7 @@ def cluster_analyze(dataframe, name='', **kwargs):
             for i, c in enumerate(algorithm.cluster_centers_):
                 # Draw white circles at cluster centers
                 plotter.mtext(s_plot, c[0], c[1], "%s"%str(i), text_color="red")
-    grid = gridplot(list(utils.chunks(plots,size=2)))
+    #grid = gridplot(list(utils.chunks(plots,size=2)))
     plotter.show(grid)
 
 
