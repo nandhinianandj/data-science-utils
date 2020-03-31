@@ -59,8 +59,15 @@ def grid_plot(plots, chunks=2):
     grid = gridplot(list(utils.chunks(plots, size=2)))
     show(grid)
 
-def gridplot(plots, chunks=2):
-    import matplotlib.pyplot as plt
+def sb_gridplot(df, col1, col2, category1, category2, chunks=2):
+    if category:
+        with sns.axes_style("white"):
+            g = sns.FacetGrid(tips, row=category1, col=category2, margin_titles=True, height=2.5)
+        g.map(plt.scatter, col1, col2, color="#334488", edgecolor="white", lw=.5);
+        g.set_axis_labels(col1, col2 );
+        #g.set(xticks=[10, 30, 50], yticks=[2, 6, 10]);
+        g.fig.subplots_adjust(wspace=.02, hspace=.02);
+
 
 def show_image(image, **kwargs):
     p = figure(x_range=(0, 10), y_range=(0, 10), **kwargs)
@@ -100,9 +107,6 @@ def histogram(histDF,values, bayesian_bins=False,**kwargs):
         p1.yaxis.axis_label = 'Frequency'
         return p1
 
-def sb_barplot(df, category, column):
-    return sns.barplot(x=category, y=column, data=df)
-
 
 def heatmap(heatMapDF, xlabel, ylabel, value_label,
             title="heatmap", palette=None, width=500,
@@ -119,6 +123,24 @@ def mtext(p, x, y, textstr, **kwargs):
    p.text(x, y, text=[textstr],
          text_color=kwargs.get('text_color'),
          text_align="center", text_font_size="10pt")
+
+def sb_barplot(df, category, column):
+    return sns.barplot(x=category, y=column, data=df)
+
+def sb_heatmap(corr_df, **kwargs):
+    # Generate a mask for the upper triangle
+    mask = np.triu(np.ones_like(corr_df, dtype=np.bool))
+
+    # Set up the matplotlib figure
+    f, ax = plt.subplots(figsize=(11, 9))
+
+    # Generate a custom diverging colormap
+    cmap = sns.diverging_palette(220, 10, as_cmap=True)
+
+    # Draw the heatmap with the mask and correct aspect ratio
+    sns.heatmap(corr_df, mask=mask, cmap=cmap, vmax=.3, center=0,
+                square=True, linewidths=.5, cbar_kws={"shrink": .5})
+    return
 
 def sb_scatterplot(series1, series2, **kwargs):
     return sns.scatterplot(series1, series2, **kwargs)

@@ -98,17 +98,18 @@ def outliers_analyze(df):
 def correlation_analyze(df, col1, col2, categories=[], measures=[],
                         summary_only=False, check_linearity=False, trellis=False):
     """
-    Plot scatter plots of all combinations of numerical columns.
+    Visually plot possible correlation between two columns mentioned and other categories and
+    measures involved
     If categories and measures are passed, plot heatmap of combination of categories by measure.
 
     @params:
         df: Dataframe table data.
         categories: list of categorical variable names
         measures: List of measures to plot heatmap of categories
-        trellis: Plot trellis type plots for the categories only valid if categories is passed
     """
     if summary_only:
-        plotter.heatmap(df.corr())
+        plotter.sb_heatmap(df.corr())
+        return
     for meas in measures:
         assert meas in list(df.columns)
     for catg in categories:
@@ -118,11 +119,8 @@ def correlation_analyze(df, col1, col2, categories=[], measures=[],
     if categories and not measures:
         measures = ['count']
 
-    # Plot scatter plot of combination of numerical columns
-    plots = []
-
     u,v = col1, col2
-    plots.append(plotter.sb_scatterplot(df[u], df[v]))
+    plotter.sb_scatterplot(df[u], df[v])
     plotter.sb_jointplot(df[u], df[v])
     if check_linearity:
         u_2diff = np.gradient(df[u], 2)
@@ -135,19 +133,18 @@ def correlation_analyze(df, col1, col2, categories=[], measures=[],
         linearity_2nd_diff = linearity_2nd_diff[~np.isinf(linearity_2nd_diff)]
         print(np.mean(linearity_2nd_diff))
 
-    print("# Correlation btw Numerical Columns")
-    grid = plotter.gridplot(list(utils.chunks(plots, size=2)))
-    plotter.show(grid)
+    #print("# Correlation btw Numerical Columns")
+    #plotter.gridplot(list(utils.chunks(plots, size=2)))
 
     if (categories and measures):
         # Plot heatmaps of category-combos by measure value.
         heatmaps = []
-        combos = itertools.combinations(categories, 2)
+        catCombos = itertools.combinations(categories, 2)
         cols = list(df.columns)
         if 'count' in measures:
             # Do a group by on categories and use count() to heatmap
             measures.remove('count')
-            for combo in combos:
+            for combo in catCombos:
                 print("# Correlation btw Columns %s & %s by count" % (combo[0], combo[1]))
                 group0 = df.groupby(list(combo)).size().reset_index()
                 group0.rename(columns={col1: 'counts'}, inplace=True)
@@ -155,7 +152,7 @@ def correlation_analyze(df, col1, col2, categories=[], measures=[],
 
         for meas in measures:
             # Plot heatmaps for measure across all combination of categories
-            for combo in combos:
+            for combo in catCombos:
                 print("# Correlation btw Columns %s & %s by measure %s" % (combo[0],
                     combo[1],
                     meas))
@@ -166,12 +163,6 @@ def correlation_analyze(df, col1, col2, categories=[], measures=[],
                                                 ))
         hmGrid = plotter.gridplot(list(utils.chunks(heatmaps, size=2)))
         plotter.show(hmGrid)
-        if trellis:
-            trellisPlots = list()
-    #print("# Pandas correlation coefficients matrix")
-    #print(df.corr())
-    #print("# Pandas co-variance coefficients matrix")
-    #print(df.cov())
 
 def degrees_freedom(df, dof_range = [], categoricalCol=[]):
     """
@@ -336,7 +327,7 @@ def regression_analyze(df, target_cols=list(), trainsize=0.8, check_heteroskedas
                 #pm.train(new_df, target, column=col1, modelType='logarithmicRegression'),
                 ]
         for model in models:
-            scatter = plotter.sb_scatterplot(new_df, col1, col2, plttitle=model.__repr__())
+            scatter = plotter.sb_scatterplot(new_df[col1], new_df[col2], plttitle=model.__repr__())
             source = new_df[col1].as_matrix().reshape(-1,1)
             predicted = list(model.predict(source))
             flatSrc = [item for sublist in source for item in sublist]
@@ -514,7 +505,7 @@ def tsne_dim_analyze(dataframe, datatype='binary', **kwargs):
     df = pd.DataFrame()
     df['x'] = Y[0,0]
     df['y'] = Y[0,1]
-    plotter.sb_scatterplot(df, 'x', 'y')
+    plotter.sb_scatterplot(df['x'], df['y'])
 
 def causal_analyze(dataframe):
     for each in dataframe.columns:
