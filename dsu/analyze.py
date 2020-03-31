@@ -1,5 +1,4 @@
 # Standard and external libraries
-from bokeh.layouts import gridplot
 from statsmodels.stats import outliers_influence
 from tqdm import tqdm_notebook
 
@@ -14,6 +13,7 @@ from . import sklearnUtils as sku
 from . import plotter
 from . import utils
 from . import statsutils as su
+from . import plotter
 
 
 def dist_analyze(df, column=None, category=None, is_normal=True,
@@ -56,7 +56,7 @@ def joint_dist_analyze(df, columns=None, categories=None):
             print("Skewness of %s"%column, df[column].skew())
             # Plot Barplots of combination of category and numerical columns
             plots.append(plotter.sb_barplot(df, category, column))
-    grid = gridplot(list(utils.chunks(plots, size=2)))
+    grid = plotter.gridplot(list(utils.chunks(plots, size=2)))
     return grid
 
 def outliers_analyze(df):
@@ -122,7 +122,7 @@ def correlation_analyze(df, col1, col2, categories=[], measures=[],
     plots = []
 
     u,v = col1, col2
-    plots.append(plotter.sb_scatterplot(df, u, v))
+    plots.append(plotter.sb_scatterplot(df[u], df[v]))
     plotter.sb_jointplot(df[u], df[v])
     if check_linearity:
         u_2diff = np.gradient(df[u], 2)
@@ -136,7 +136,7 @@ def correlation_analyze(df, col1, col2, categories=[], measures=[],
         print(np.mean(linearity_2nd_diff))
 
     print("# Correlation btw Numerical Columns")
-    grid = gridplot(list(utils.chunks(plots, size=2)))
+    grid = plotter.gridplot(list(utils.chunks(plots, size=2)))
     plotter.show(grid)
 
     if (categories and measures):
@@ -164,7 +164,7 @@ def correlation_analyze(df, col1, col2, categories=[], measures=[],
                 heatmaps.append(plotter.heatmap(group0, combo[0], combo[1], 'sum_%s'%meas,
                                                 title="%s vs %s %s heatmap"%(combo[0], combo[1], meas)
                                                 ))
-        hmGrid = gridplot(list(utils.chunks(heatmaps, size=2)))
+        hmGrid = plotter.gridplot(list(utils.chunks(heatmaps, size=2)))
         plotter.show(hmGrid)
         if trellis:
             trellisPlots = list()
@@ -359,7 +359,7 @@ def regression_analyze(df, target_cols=list(), trainsize=0.8, check_heteroskedas
                 exog = df[kwargs.get('exog')].as_matrix().reshape(-1,1)
                 print("Hetero-Skedasticity test(Breush-Pagan)")
                 print(diagnostic.het_breushpagan(model.residues_, exog_het=exog))
-    grid = gridplot(list(utils.chunks(plots, size=2)))
+    grid = plotter.gridplot(list(utils.chunks(plots, size=2)))
     plotter.show(grid)
 
 def time_series_analysis(df, timeCol='date', valueCol=None, timeInterval='30min',

@@ -59,6 +59,9 @@ def grid_plot(plots, chunks=2):
     grid = gridplot(list(utils.chunks(plots, size=2)))
     show(grid)
 
+def gridplot(plots, chunks=2):
+    import matplotlib.pyplot as plt
+
 def show_image(image, **kwargs):
     p = figure(x_range=(0, 10), y_range=(0, 10), **kwargs)
     p.image(image=[image], x=0, y=0, dw=10, dh=10, palette='Spectral11')
@@ -117,8 +120,8 @@ def mtext(p, x, y, textstr, **kwargs):
          text_color=kwargs.get('text_color'),
          text_align="center", text_font_size="10pt")
 
-def sb_scatterplot(series1, series2):
-    return sns.scatterplot(series1, series2)
+def sb_scatterplot(series1, series2, **kwargs):
+    return sns.scatterplot(series1, series2, **kwargs)
 
 def sb_histogram(series, kdeplot=False, bayesian_bins=False ):
     return sns.distplot(series, kde=kdeplot)
