@@ -38,13 +38,15 @@ def dist_analyze(df, column=None, category=None, is_normal=True,
         if violinplot:
             plots.append(plotter.sb_violinplot(df[column], inner='box'))
         plots.append(plotter.sb_histogram(df[column], kdeplot=kdeplot, bayesian_bins=bayesian_hist))
+        plotter.sb_show()
 
     if kdeplot:
         assert utils.is_numeric(df, column=column), "KDE Plot Only available for numerical columns"
-        df[column].plot.kde(label=column, title='Kernel density estimate', bw=1.5)
+        df[column].plot.kde(label=column, title='Kernel density estimate')
 
     if category:
-        plots.append(plotter.sb_barplot(df, category, column, title='Distribution of %s'%column))
+        plots.append(plotter.sb_barplot(df, category, column))#, title='Distribution of %s'%column))
+        plotter.sb_show()
     return plots
 
 def joint_dist_analyze(df, columns=None, categories=None):

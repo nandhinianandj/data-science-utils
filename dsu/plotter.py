@@ -97,7 +97,10 @@ def sb_scatterplot(series1, series2, **kwargs):
     return sns.scatterplot(series1, series2, **kwargs)
 
 def sb_histogram(series, kdeplot=False, bayesian_bins=False ):
-    return sns.distplot(series, kde=kdeplot, bw=1.5)
+    if kdeplot:
+        return sns.distplot(series, kde=kdeplot)
+    else:
+        return sns.distplot(series, kde=kdeplot, kde_kws={'bw': 'silverman'})
 
 def sb_violinplot(series, dataframe=None, groupCol = None, **kwargs):
     if not groupCol:
