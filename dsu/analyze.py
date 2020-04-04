@@ -41,7 +41,7 @@ def dist_analyze(df, column=None, category=None, is_normal=True,
 
     if kdeplot:
         assert utils.is_numeric(df, column=column), "KDE Plot Only available for numerical columns"
-        df[column].plot.kde(label=column, title='Kernel density estimate')
+        df[column].plot.kde(label=column, title='Kernel density estimate', bw=1.5)
 
     if category:
         plots.append(plotter.sb_barplot(df, category, column, title='Distribution of %s'%column))
