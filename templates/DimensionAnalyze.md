@@ -13,7 +13,7 @@ jupyter:
 ---
 
 ```python
-from datascienceutils import analyze
+from dsu import analyze
 ```
 
 ```python
@@ -27,7 +27,7 @@ import random
 ```
 
 ```python
-irisDf = pd.read_csv('/home/anand/DataScientist/data/Iris.csv')
+irisDf = pd.read_csv('../data/train.csv')
 numColumns = irisDf.select_dtypes(include=[np.number])
 ```
 
@@ -44,8 +44,4 @@ analyze.hyperplot_analyze(irisDf,group='Class')
 ```python
 for col in numColumns:
     analyze.fractal_dimension(irisDf, col)
-```
-
-```python
-
 ```
