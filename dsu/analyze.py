@@ -17,8 +17,8 @@ from . import plotter
 
 
 def dist_analyze(df, column=None, category=None, is_normal=True,
-                    bayesian_hist=False,
-                    kdeplot=True, violinplot=False):
+                 bayesian_hist=False,
+                 kdeplot=True, violinplot=False):
     """
     Analyze/plot visual of a single distribution
     @params:
@@ -178,7 +178,7 @@ def non_linear_regression_analyze(df, target_cols=list(),
         model.build_model_from_xy([df[col1].as_matrix()], [df[col2].as_matrix()])
 
         print(" # Ace Models btw numerical cols")
-        plot = plotter.lineplot(df[[col1, col2]], title='%s Vs %s'%(col1, col2))
+        plot = plotter.lineplot(df[[col1, col2]]) #, title='%s Vs %s'%(col1, col2))
         plots.append(plot)
     plotter.show(plots)
 
@@ -234,6 +234,7 @@ def regression_analyze(df, target_cols=list(), trainsize=0.8, check_heteroskedas
         be very slow)
         check_heteroskedasticity: self-evident
     """
+    from statsmodels.stats import diagnostic
     # TODO: non-linearity tests
     from . import predictiveModels as pm
 
@@ -263,13 +264,13 @@ def regression_analyze(df, target_cols=list(), trainsize=0.8, check_heteroskedas
                 #pm.train(new_df, target, column=col1, modelType='logarithmicRegression'),
                 ]
         for model in models:
-            scatter = plotter.sb_scatterplot(new_df[col1], new_df[col2], plttitle=model.__repr__())
+            scatter = plotter.sb_scatterplot(new_df[col1], new_df[col2])# , plttitle=model.__repr__())
             source = new_df[col1].as_matrix().reshape(-1,1)
             predicted = list(model.predict(source))
-            flatSrc = [item for sublist in source for item in sublist]
-            scatter.line(flatSrc, predicted,
-                         line_color='red')
-            plots.append(scatter)
+            #flatSrc = [item for sublist in source for item in sublist]
+            #scatter.line(flatSrc, predicted,
+            #             line_color='red')
+            #plots.append(scatter)
             print("Regression Score: %s"%(model.__repr__()))
             print(model.score(source, new_df[col2].as_matrix().reshape(-1,1)))
             if check_vif:

@@ -75,8 +75,8 @@ def mtext(p, x, y, textstr, **kwargs):
          text_color=kwargs.get('text_color'),
          text_align="center", text_font_size="10pt")
 
-def sb_barplot(df, category, column):
-    return sns.barplot(x=category, y=column, data=df)
+def sb_barplot(df, category, column, **kwargs):
+    return sns.barplot(x=column, y=category, data=df, **kwargs)
 
 def sb_heatmap(corr_df, **kwargs):
     # Generate a mask for the upper triangle
