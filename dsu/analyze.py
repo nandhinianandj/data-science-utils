@@ -249,6 +249,7 @@ def regression_analyze(df, target_cols=list(), trainsize=0.8, check_heteroskedas
     from statsmodels.stats import outliers_influence
 
     plots = list()
+    results = list()
     for col1, col2 in itertools.combinations(target_cols, 2):
         new_df = df[[col1, col2]].copy(deep=True)
         target = new_df[col2].values.reshape(-1, 1)
@@ -262,30 +263,41 @@ def regression_analyze(df, target_cols=list(), trainsize=0.8, check_heteroskedas
                 #pm.train(new_df, target, column=col1, modelType='IsotonicRegression'),
                 #pm.train(new_df, target, column=col1, modelType='logarithmicRegression'),
                 ]
+        tempRes = dict()
         for model in models:
+            modelName = model.__repr__()
             scatter = plotter.sb_scatterplot(new_df[col1], new_df[col2])# , plttitle=model.__repr__())
-            source = new_df[col1].values.reshape(-1, 1)
-            predicted = list(model.predict(source))
+            predicted = list(model.predict(new_df))
             #flatSrc = [item for sublist in source for item in sublist]
             #scatter.line(flatSrc, predicted,
             #             line_color='red')
             #plots.append(scatter)
+            tempRes.update({(col1,col2): {modelName: []})
             print("Regression Score: %s"%(model.__repr__()))
-            print(model.score(source, new_df[col2].as_matrix().reshape(-1,1)))
+            print(model.score(new_df, new_df[col2].as_matrix().reshape(-1,1)))
             if check_vif:
+                tempVIF = list()
+                tempRes[modelName].append({'vif':[]})
                 exog = df.as_matrix().reshape(-1,1)
+
                 for col in [col1, col2]:
-                    print("Variance Inflation Factors for %s"%col)
                     col_idx = list(df.columns).index(col)
-                    print(outliers_influence.variance_inflation_factor(exog, col_idx))
+                    vifFactor = outliers_influence.variance_inflation_factor(exog, col_idx)
+                    tempVIF.append({col1:vifFactor})
+                    print("Variance Inflation Factors for %s"%col)
+                    print(vifFactor)
+                    tempRes[modelName]['vif'].append({col: vifFactor})
 
             if check_heteroskedasticity:
                 if not kwargs.get('exog', None):
                     other_cols = list(set(df.columns) - set([col1, col2]))
                     kwargs['exog'] = random.choice(other_cols)
                 exog = df[kwargs.get('exog')].as_matrix().reshape(-1,1)
-                print("Hetero-Skedasticity test(Breush-Pagan)")
-                print(statsmodels.stats.diagnostic.het_breushpagan(model.residues_, exog_het=exog))
+                resHetSkedas = statsmodels.stats.diagnostic.het_breushpagan(model.residues_, exog_het=exog)
+                tempHetSkedas = {modelName: resHetSkedas}
+                print("Hetero-Skedasticity test(Breush-Pagan) for %s"% kwargs['exog'])
+                print(resHetSkedas)
+                tempRes[modelName]['HetSkedas_%s'%kwargs['exog']] = resHetSkedas
     grid = plotter.gridplot(list(utils.chunks(plots, size=2)))
     plotter.show(grid)
 
