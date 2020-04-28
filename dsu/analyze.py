@@ -1,4 +1,6 @@
 # Standard and external libraries
+import json
+import pprint
 import statsmodels
 import statsmodels.stats.diagnostic as diag
 from tqdm import tqdm_notebook
@@ -250,9 +252,12 @@ def regression_analyze(df, target_cols=list(), trainsize=0.8, check_heteroskedas
 
     plots = list()
     results = list()
+    finalRes = dict()
     for col1, col2 in itertools.combinations(target_cols, 2):
         new_df = df[[col1, col2]].copy(deep=True)
         target = new_df[col2].values.reshape(-1, 1)
+        key = (col1, col2)
+        finalRes[key] = dict()
         models = [
                 pm.train(new_df, target, column=None, modelType='LinearRegression'),
                 pm.train(new_df, target, column=None, modelType='RidgeRegression'),
@@ -265,14 +270,10 @@ def regression_analyze(df, target_cols=list(), trainsize=0.8, check_heteroskedas
                 ]
         tempRes = dict()
         for model in models:
-            modelName = model.__repr__()
+            modelName = model.__repr__().split('(')[0]
+            tempRes[modelName] = list()
             scatter = plotter.sb_scatterplot(new_df[col1], new_df[col2])# , plttitle=model.__repr__())
             predicted = list(model.predict(new_df))
-            #flatSrc = [item for sublist in source for item in sublist]
-            #scatter.line(flatSrc, predicted,
-            #             line_color='red')
-            #plots.append(scatter)
-            tempRes.update({(col1,col2): {modelName: []})
             print("Regression Score: %s"%(model.__repr__()))
             print(model.score(new_df, new_df[col2].as_matrix().reshape(-1,1)))
             if check_vif:
@@ -298,6 +299,8 @@ def regression_analyze(df, target_cols=list(), trainsize=0.8, check_heteroskedas
                 print("Hetero-Skedasticity test(Breush-Pagan) for %s"% kwargs['exog'])
                 print(resHetSkedas)
                 tempRes[modelName]['HetSkedas_%s'%kwargs['exog']] = resHetSkedas
+        finalRes[key] = tempRes
+    pprint.pprint(finalRes)
     grid = plotter.gridplot(list(utils.chunks(plots, size=2)))
     plotter.show(grid)
 
