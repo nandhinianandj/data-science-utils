@@ -1,5 +1,6 @@
 # Standard and external libraries
-from statsmodels.stats import outliers_influence
+import statsmodels
+import statsmodels.stats.diagnostic as diag
 from tqdm import tqdm_notebook
 
 import operator
@@ -234,10 +235,8 @@ def regression_analyze(df, target_cols=list(), trainsize=0.8, check_heteroskedas
         be very slow)
         check_heteroskedasticity: self-evident
     """
-    from statsmodels.stats import diagnostic
     # TODO: non-linearity tests
     from . import predictiveModels as pm
-
 
     # this is the quantitative/hard version of teh above
     #TODO: Simple  line plots of column variables, but for the y-axis,
@@ -247,25 +246,25 @@ def regression_analyze(df, target_cols=list(), trainsize=0.8, check_heteroskedas
     #         d, parabolic function??
     #   Additionally plot the fitted y and the correct y in different colours against the same x
 
-
+    from statsmodels.stats import outliers_influence
 
     plots = list()
     for col1, col2 in itertools.combinations(target_cols, 2):
         new_df = df[[col1, col2]].copy(deep=True)
-        target = new_df[col2]
+        target = new_df[col2].values.reshape(-1, 1)
         models = [
-                pm.train(new_df, target, column=col1, modelType='LinearRegression'),
-                pm.train(new_df, target, column=col1, modelType='RidgeRegression'),
-                pm.train(new_df, target, column=col1, modelType='RidgeRegressionCV'),
-                pm.train(new_df, target, column=col1, modelType='LassoRegression'),
-                pm.train(new_df, target, column=col1, modelType='ElasticNetRegression'),
-                pm.train(new_df, target, column=col1, modelType='SVMRegression'),
+                pm.train(new_df, target, column=None, modelType='LinearRegression'),
+                pm.train(new_df, target, column=None, modelType='RidgeRegression'),
+                pm.train(new_df, target, column=None, modelType='RidgeRegressionCV'),
+                pm.train(new_df, target, column=None, modelType='LassoRegression'),
+                pm.train(new_df, target, column=None, modelType='ElasticNetRegression'),
+                pm.train(new_df, target, column=None, modelType='SVMRegression'),
                 #pm.train(new_df, target, column=col1, modelType='IsotonicRegression'),
                 #pm.train(new_df, target, column=col1, modelType='logarithmicRegression'),
                 ]
         for model in models:
             scatter = plotter.sb_scatterplot(new_df[col1], new_df[col2])# , plttitle=model.__repr__())
-            source = new_df[col1].as_matrix().reshape(-1,1)
+            source = new_df[col1].values.reshape(-1, 1)
             predicted = list(model.predict(source))
             #flatSrc = [item for sublist in source for item in sublist]
             #scatter.line(flatSrc, predicted,
@@ -286,7 +285,7 @@ def regression_analyze(df, target_cols=list(), trainsize=0.8, check_heteroskedas
                     kwargs['exog'] = random.choice(other_cols)
                 exog = df[kwargs.get('exog')].as_matrix().reshape(-1,1)
                 print("Hetero-Skedasticity test(Breush-Pagan)")
-                print(diagnostic.het_breushpagan(model.residues_, exog_het=exog))
+                print(statsmodels.stats.diagnostic.het_breushpagan(model.residues_, exog_het=exog))
     grid = plotter.gridplot(list(utils.chunks(plots, size=2)))
     plotter.show(grid)
 
