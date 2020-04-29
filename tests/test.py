@@ -7,7 +7,7 @@
 #
 #* Creation Date : 28-04-2020
 #
-#* Last Modified : Tuesday 28 April 2020 04:14:52 PM IST
+#* Last Modified : Wednesday 29 April 2020 11:03:56 AM IST
 #
 #* Created By :
 
@@ -25,7 +25,8 @@ def test_linear_regression_analyze():
     from dsu import analyze
     numColumns = dataframe.select_dtypes(include=[np.number]).columns.tolist()
     import pdb; pdb.set_trace()
-    analyze.regression_analyze(dataframe, numColumns, check_vif=True, check_heteroskedasticity=True)
+    analyze.regression_analyze( dataframe, numColumns,
+                                check_vif=False, check_heteroskedasticity=False)
 
 def test_non_linear_regression_analyze():
     from dsu import analyze

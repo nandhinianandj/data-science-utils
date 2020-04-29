@@ -263,8 +263,8 @@ def regression_analyze(df, target_cols=list(), trainsize=0.8, check_heteroskedas
                 pm.train(new_df, target, column=None, modelType='RidgeRegression'),
                 pm.train(new_df, target, column=None, modelType='RidgeRegressionCV'),
                 pm.train(new_df, target, column=None, modelType='LassoRegression'),
-                pm.train(new_df, target, column=None, modelType='ElasticNetRegression'),
-                pm.train(new_df, target, column=None, modelType='SVMRegression'),
+                #pm.train(new_df, target, column=None, modelType='ElasticNetRegression'),
+                #pm.train(new_df, target, column=None, modelType='SVMRegression'),
                 #pm.train(new_df, target, column=col1, modelType='IsotonicRegression'),
                 #pm.train(new_df, target, column=col1, modelType='logarithmicRegression'),
                 ]
@@ -275,7 +275,12 @@ def regression_analyze(df, target_cols=list(), trainsize=0.8, check_heteroskedas
             scatter = plotter.sb_scatterplot(new_df[col1], new_df[col2])# , plttitle=model.__repr__())
             predicted = list(model.predict(new_df))
             print("Regression Score: %s"%(model.__repr__()))
-            print(model.score(new_df, new_df[col2].as_matrix().reshape(-1,1)))
+            regScore = model.score(new_df, new_df[col2].as_matrix().reshape(-1,1))
+            print(regScore)
+            tempRes[modelName].append({'score': regScore})
+            #tempRes[modelName].append({'rank':model.rank_})
+            tempRes[modelName].append({'intercept': model.intercept_})
+            tempRes[modelName].append({'coef': model.coef_})
             if check_vif:
                 tempVIF = list()
                 tempRes[modelName].append({'vif':[]})
@@ -301,8 +306,8 @@ def regression_analyze(df, target_cols=list(), trainsize=0.8, check_heteroskedas
                 tempRes[modelName]['HetSkedas_%s'%kwargs['exog']] = resHetSkedas
         finalRes[key] = tempRes
     pprint.pprint(finalRes)
-    grid = plotter.gridplot(list(utils.chunks(plots, size=2)))
-    plotter.show(grid)
+    #grid = plotter.gridplot(list(utils.chunks(plots, size=2)))
+    #plotter.show(grid)
 
 def time_series_analysis(df, timeCol='date', valueCol=None, timeInterval='30min',
                             plot_title = 'timeseries',
