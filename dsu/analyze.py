@@ -2,7 +2,6 @@
 import json
 import pprint
 import statsmodels
-import statsmodels.stats.diagnostic as diag
 from tqdm import tqdm_notebook
 
 import operator
@@ -17,7 +16,6 @@ from . import plotter
 from . import utils
 from . import statsutils as su
 from . import plotter
-
 
 def dist_analyze(df, column=None, category=None, is_normal=True,
                  bayesian_hist=False,
@@ -178,7 +176,7 @@ def non_linear_regression_analyze(df, target_cols=list(),
     for col1, col2 in itertools.combinations(target_cols, 2):
         from ace import model
         model = model.Model()
-        model.build_model_from_xy([df[col1].as_matrix()], [df[col2].as_matrix()])
+        model.build_model_from_xy([df[col1].values], [df[col2].values])
 
         print(" # Ace Models btw numerical cols")
         plot = plotter.lineplot(df[[col1, col2]]) #, title='%s Vs %s'%(col1, col2))
@@ -248,7 +246,7 @@ def regression_analyze(df, target_cols=list(), trainsize=0.8, check_heteroskedas
     #         d, parabolic function??
     #   Additionally plot the fitted y and the correct y in different colours against the same x
 
-    from statsmodels.stats import outliers_influence
+    from statsmodels.stats import outliers_influence as oi
 
     plots = list()
     results = list()
@@ -269,13 +267,22 @@ def regression_analyze(df, target_cols=list(), trainsize=0.8, check_heteroskedas
                 #pm.train(new_df, target, column=col1, modelType='logarithmicRegression'),
                 ]
         tempRes = dict()
+        if check_heteroskedasticity:
+            tempRes['HeteroSkedas_%s'%col1] = list()
+            resHetSkedas = statsmodels.stats.diagnostic.het_breuschpagan(target,
+                                                            exog_het=df[[col1, col2]])
+            print("Hetero-Skedasticity test(Breush-Pagan)")
+            print(resHetSkedas)
+            tempHetSkedas = {'HeteroSkedasticity':
+                                dict(zip(['lm', 'lm_pvalue', 'fvalue', 'f_pvalue'], resHetSkedas))}
+            tempRes['HeteroSkedas_%s'%col1].append(tempHetSkedas)
         for model in models:
             modelName = model.__repr__().split('(')[0]
             tempRes[modelName] = list()
             scatter = plotter.sb_scatterplot(new_df[col1], new_df[col2])# , plttitle=model.__repr__())
             predicted = list(model.predict(new_df))
             print("Regression Score: %s"%(model.__repr__()))
-            regScore = model.score(new_df, new_df[col2].as_matrix().reshape(-1,1))
+            regScore = model.score(new_df, new_df[col2].values.reshape(-1,1))
             print(regScore)
             tempRes[modelName].append({'score': regScore})
             #tempRes[modelName].append({'rank':model.rank_})
@@ -283,27 +290,16 @@ def regression_analyze(df, target_cols=list(), trainsize=0.8, check_heteroskedas
             tempRes[modelName].append({'coef': model.coef_})
             if check_vif:
                 tempVIF = list()
-                tempRes[modelName].append({'vif':[]})
-                exog = df.as_matrix().reshape(-1,1)
+                tempRes[modelName].append({'VIF':[]})
 
                 for col in [col1, col2]:
                     col_idx = list(df.columns).index(col)
-                    vifFactor = outliers_influence.variance_inflation_factor(exog, col_idx)
-                    tempVIF.append({col1:vifFactor})
+                    vifFactor = oi.variance_inflation_factor(df.values.reshape(-1, 1), col_idx)
+                    tempVIF.append({col:vifFactor})
                     print("Variance Inflation Factors for %s"%col)
                     print(vifFactor)
-                    tempRes[modelName]['vif'].append({col: vifFactor})
+                    tempRes[modelName]['VIF'].append({col: vifFactor})
 
-            if check_heteroskedasticity:
-                if not kwargs.get('exog', None):
-                    other_cols = list(set(df.columns) - set([col1, col2]))
-                    kwargs['exog'] = random.choice(other_cols)
-                exog = df[kwargs.get('exog')].as_matrix().reshape(-1,1)
-                resHetSkedas = statsmodels.stats.diagnostic.het_breushpagan(model.residues_, exog_het=exog)
-                tempHetSkedas = {modelName: resHetSkedas}
-                print("Hetero-Skedasticity test(Breush-Pagan) for %s"% kwargs['exog'])
-                print(resHetSkedas)
-                tempRes[modelName]['HetSkedas_%s'%kwargs['exog']] = resHetSkedas
         finalRes[key] = tempRes
     pprint.pprint(finalRes)
     #grid = plotter.gridplot(list(utils.chunks(plots, size=2)))

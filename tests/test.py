@@ -7,7 +7,7 @@
 #
 #* Creation Date : 28-04-2020
 #
-#* Last Modified : Wednesday 29 April 2020 11:03:56 AM IST
+#* Last Modified : Wednesday 29 April 2020 01:51:56 PM IST
 #
 #* Created By :
 
@@ -24,9 +24,8 @@ dataframe['target'] = y
 def test_linear_regression_analyze():
     from dsu import analyze
     numColumns = dataframe.select_dtypes(include=[np.number]).columns.tolist()
-    import pdb; pdb.set_trace()
     analyze.regression_analyze( dataframe, numColumns,
-                                check_vif=False, check_heteroskedasticity=False)
+                                check_vif=False, check_heteroskedasticity=True)
 
 def test_non_linear_regression_analyze():
     from dsu import analyze
@@ -58,3 +57,4 @@ def test_dist_analyze():
 
 if __name__ == '__main__':
     test_linear_regression_analyze()
+    test_non_linear_regression_analyze()

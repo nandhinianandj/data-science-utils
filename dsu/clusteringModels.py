@@ -127,7 +127,7 @@ def silhouette_analyze(dataframe, cluster_type='KMeans', n_clusters=None):
     if not n_clusters:
         n_clusters = range(2, 8, 2)
     assert isinstance(n_clusters, collections.Iterable), "n_clusters must be an iterable object"
-    dataframe = dataframe.as_matrix()
+    dataframe = dataframe.values
     # A DF for plotting silhouetted score vs num of clusters
     cluster_scores_df = pd.DataFrame(columns=['cluster_size', 'silhouette_score'])
     for j, clusternum in enumerate(n_clusters):
@@ -161,7 +161,7 @@ def silhouette_analyze(dataframe, cluster_type='KMeans', n_clusters=None):
 def som_analyze(dataframe, mapsize, algo_type='som'):
     import sompy
     som_factory = sompy.SOMFactory()
-    data = dataframe.as_matrix()
+    data = dataframe.values
     assert isinstance(mapsize, tuple), "Mapsize must be a tuple"
     sm = som_factory.build(data, mapsize= mapsize, normalization='var', initialization='pca')
     if algo_type == 'som':
