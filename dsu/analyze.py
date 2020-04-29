@@ -235,7 +235,6 @@ def regression_analyze(df, target_cols=list(), trainsize=0.8, check_heteroskedas
         be very slow)
         check_heteroskedasticity: self-evident
     """
-    # TODO: non-linearity tests
     from . import predictiveModels as pm
 
     # this is the quantitative/hard version of teh above

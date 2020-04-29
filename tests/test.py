@@ -7,7 +7,7 @@
 #
 #* Creation Date : 28-04-2020
 #
-#* Last Modified : Wednesday 29 April 2020 01:51:56 PM IST
+#* Last Modified : Wednesday 29 April 2020 09:37:45 PM IST
 #
 #* Created By :
 
@@ -35,12 +35,12 @@ def test_non_linear_regression_analyze():
 def test_bayesian_regression_analyze():
     from dsu import analyze
     numColumns = dataframe.select_dtypes(include=[np.number]).columns.tolist()
-    analyze.bayesian_regression_analyze(dataframe, numColumns,)
+    analyze.pymc_regression_analyze(dataframe, numColumns,)
 
-def test_visual_analyze():
-    from dsu import analyze
-    numColumns = dataframe.select_dtypes(include=[np.number]).columns.tolist()
-    analyze.regression_analyze(dataframe, numColumns, check_vif=True, check_heteroskedasticity=True)
+#def test_visual_analyze():
+#    from dsu import analyze
+#    numColumns = dataframe.select_dtypes(include=[np.number]).columns.tolist()
+#    analyze.regression_analyze(dataframe, numColumns, check_vif=True, check_heteroskedasticity=True)
 
 def test_dimension_analyze():
     from dsu import analyze
@@ -56,5 +56,9 @@ def test_dist_analyze():
         analyze.dist_analyze(dataframe, col)
 
 if __name__ == '__main__':
-    test_linear_regression_analyze()
-    test_non_linear_regression_analyze()
+    #test_linear_regression_analyze()
+    #test_non_linear_regression_analyze()
+    test_bayesian_regression_analyze()
+    #test_visual_analyze()
+    #test_dimension_analyze()
+    #test_dist_analyze()
