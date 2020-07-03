@@ -47,20 +47,20 @@ def git_version():
     def _minimal_ext_cmd(cmd):
         # construct minimal environment
         env = {}
-        for k in ['SYSTEMROOT', 'PATH']:
+        for k in ["SYSTEMROOT", "PATH"]:
             v = os.environ.get(k)
             if v is not None:
                 env[k] = v
         # LANGUAGE is used on win32
-        env['LANGUAGE'] = 'C'
-        env['LANG'] = 'C'
-        env['LC_ALL'] = 'C'
+        env["LANGUAGE"] = "C"
+        env["LANG"] = "C"
+        env["LC_ALL"] = "C"
         out = subprocess.Popen(cmd, stdout=subprocess.PIPE, env=env).communicate()[0]
         return out
 
     try:
-        out = _minimal_ext_cmd(['git', 'rev-parse', 'HEAD'])
-        GIT_REVISION = out.strip().decode('ascii')
+        out = _minimal_ext_cmd(["git", "rev-parse", "HEAD"])
+        GIT_REVISION = out.strip().decode("ascii")
     except OSError:
         GIT_REVISION = "Unknown"
 
@@ -69,8 +69,8 @@ def git_version():
 
 # BEFORE importing distutils, remove MANIFEST. distutils doesn't properly
 # update it when the contents of directories change.
-if os.path.exists('MANIFEST'):
-    os.remove('MANIFEST')
+if os.path.exists("MANIFEST"):
+    os.remove("MANIFEST")
 
 # This is a bit hackish: we are setting a global variable so that the main
 # scipy __init__ can detect if it is being loaded by the setup routine, to
@@ -84,24 +84,25 @@ def get_version_info():
     # write_version_py(), otherwise the import of scipy.version messes
     # up the build under Python 3.
     FULLVERSION = settings.VERSION
-    if os.path.exists('.git'):
+    if os.path.exists(".git"):
         GIT_REVISION = git_version()
-    elif os.path.exists('dsu/version.py'):
+    elif os.path.exists("dsu/version.py"):
         # must be a source distribution, use existing version file
         # load it as a separate module to not load scipy/__init__.py
         import imp
-        version = imp.load_source('dsu.version', 'dsu/version.py')
+
+        version = imp.load_source("dsu.version", "dsu/version.py")
         GIT_REVISION = version.git_revision
     else:
         GIT_REVISION = "Unknown"
 
     if not settings.ISRELEASED:
-        FULLVERSION += '.dev0+' + GIT_REVISION[:7]
+        FULLVERSION += ".dev0+" + GIT_REVISION[:7]
 
     return FULLVERSION, GIT_REVISION
 
 
-def write_version_py(filename='dsu/version.py'):
+def write_version_py(filename="dsu/version.py"):
     cnt = """
 # THIS FILE IS GENERATED FROM SCIPY SETUP.PY
 short_version = '%(version)s'
@@ -115,26 +116,35 @@ if not release:
 """
     FULLVERSION, GIT_REVISION = get_version_info()
 
-    a = open(filename, 'w')
+    a = open(filename, "w")
     try:
-        a.write(cnt % {'version': settings.VERSION,
-            'full_version': FULLVERSION,
-            'git_revision': GIT_REVISION,
-            'isrelease': str(settings.ISRELEASED)})
+        a.write(
+            cnt
+            % {
+                "version": settings.VERSION,
+                "full_version": FULLVERSION,
+                "git_revision": GIT_REVISION,
+                "isrelease": str(settings.ISRELEASED),
+            }
+        )
     finally:
         a.close()
 
+
 try:
     from sphinx.setup_command import BuildDoc
+
     HAVE_SPHINX = True
 except:
     HAVE_SPHINX = False
 
 if HAVE_SPHINX:
+
     class ScipyBuildDoc(BuildDoc):
         """Run in-place build before Sphinx doc build"""
+
         def run(self):
-            ret = subprocess.call([sys.executable, sys.argv[0], 'build_ext', '-i'])
+            ret = subprocess.call([sys.executable, sys.argv[0], "build_ext", "-i"])
             if ret != 0:
                 raise RuntimeError("Building Scipy failed!")
             BuildDoc.run(self)
@@ -151,41 +161,51 @@ def setup_package():
     write_version_py()
 
     if HAVE_SPHINX:
-        cmdclass = {'build_sphinx': ScipyBuildDoc}
+        cmdclass = {"build_sphinx": ScipyBuildDoc}
     else:
         cmdclass = {}
 
-    build_requires = ['scikit-learn', 'bokeh', 'seaborn', 'pandas',
-                      'scipy','matplotlib', 'xgboost', 'statsmodels']#, 'pyLightGBM']
+    build_requires = [
+        "scikit-learn",
+        "bokeh",
+        "seaborn",
+        "pandas",
+        "scipy",
+        "matplotlib",
+        "xgboost",
+        "statsmodels",
+    ]  # , 'pyLightGBM']
 
     metadata = dict(
-            name='datascienceutils',
-            version=get_version_info()[0],
-            packages=['dsu', 'dsu/features'],
+        name="datascienceutils",
+        version=get_version_info()[0],
+        packages=["dsu", "dsu/features"],
         maintainer="Nandhini Anand",
         maintainer_email="cattykatrina4@gmail.com",
         description="A wrapper around common exploratory data analyses done before a Data Science project",
         long_description="\n".join(DOCLINES[2:]),
         url="https://github.com/nandhinianandj/data-science-utils",
         download_url="https://github.com/nandhinianandj/data-science-utils/releases",
-        license='GNU GPL v3',
+        license="GNU GPL v3",
         cmdclass=cmdclass,
-        classifiers=[_f for _f in CLASSIFIERS.split('\n') if _f],
+        classifiers=[_f for _f in CLASSIFIERS.split("\n") if _f],
         platforms=["Windows", "Linux", "Solaris", "Mac OS-X", "Unix"],
-        test_suite='nose.collector',
+        test_suite="nose.collector",
         setup_requires=build_requires,
         install_requires=build_requires,
     )
 
-    if len(sys.argv) >= 2 and ('--help' in sys.argv[1:] or
-            sys.argv[1] in ('--help-commands', 'egg_info', '--version',
-                            'clean')):
+    if len(sys.argv) >= 2 and (
+        "--help" in sys.argv[1:]
+        or sys.argv[1] in ("--help-commands", "egg_info", "--version", "clean")
+    ):
 
         FULLVERSION, GIT_REVISION = get_version_info()
-        metadata['version'] = FULLVERSION
+        metadata["version"] = FULLVERSION
     else:
-        if (len(sys.argv) >= 2 and sys.argv[1] == 'bdist_wheel') or (
-                    'develop' in sys.argv):
+        if (len(sys.argv) >= 2 and sys.argv[1] == "bdist_wheel") or (
+            "develop" in sys.argv
+        ):
             # bdist_wheel needs setuptools
             import setuptools
 
@@ -193,5 +213,6 @@ def setup_package():
 
     setup(**metadata)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     setup_package()

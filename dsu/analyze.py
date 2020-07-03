@@ -17,9 +17,16 @@ from . import utils
 from . import statsutils as su
 from . import plotter
 
-def dist_analyze(df, column=None, category=None, is_normal=True,
-                 bayesian_hist=False,
-                 kdeplot=True, violinplot=False):
+
+def dist_analyze(
+    df,
+    column=None,
+    category=None,
+    is_normal=True,
+    bayesian_hist=False,
+    kdeplot=True,
+    violinplot=False,
+):
     """
     Analyze/plot visual of a single distribution
     @params:
@@ -28,39 +35,49 @@ def dist_analyze(df, column=None, category=None, is_normal=True,
     """
     plots = list()
     if column:
-        assert (utils.is_numeric(df, column=column))
-        print("Variance of %s"%column)
+        assert utils.is_numeric(df, column=column)
+        print("Variance of %s" % column)
         print(df[column].var())
-        print("Skewness of %s"%column)
+        print("Skewness of %s" % column)
         print(df[column].skew())
         if is_normal:
             su.check_normality(df[column], column)
 
         if violinplot:
-            plots.append(plotter.sb_violinplot(df[column], inner='box'))
-        plots.append(plotter.sb_histogram(df[column], kdeplot=kdeplot, bayesian_bins=bayesian_hist))
+            plots.append(plotter.sb_violinplot(df[column], inner="box"))
+        plots.append(
+            plotter.sb_histogram(
+                df[column], kdeplot=kdeplot, bayesian_bins=bayesian_hist
+            )
+        )
         plotter.sb_show()
 
     if kdeplot:
-        assert utils.is_numeric(df, column=column), "KDE Plot Only available for numerical columns"
-        df[column].plot.kde(label=column, title='Kernel density estimate')
+        assert utils.is_numeric(
+            df, column=column
+        ), "KDE Plot Only available for numerical columns"
+        df[column].plot.kde(label=column, title="Kernel density estimate")
 
     if category:
-        plots.append(plotter.sb_barplot(df, category, column))#, title='Distribution of %s'%column))
+        plots.append(
+            plotter.sb_barplot(df, category, column)
+        )  # , title='Distribution of %s'%column))
         plotter.sb_show()
     return plots
+
 
 def joint_dist_analyze(df, columns=None, categories=None):
     plots = []
     for category in categories:
         for column in columns:
-            assert (utils.is_numeric(df, column=column))
-            print("Variance of %s"%column, df[column].var())
-            print("Skewness of %s"%column, df[column].skew())
+            assert utils.is_numeric(df, column=column)
+            print("Variance of %s" % column, df[column].var())
+            print("Skewness of %s" % column, df[column].skew())
             # Plot Barplots of combination of category and numerical columns
             plots.append(plotter.sb_barplot(df, category, column))
     grid = plotter.gridplot(list(utils.chunks(plots, size=2)))
     return grid
+
 
 def outliers_analyze(df):
 
@@ -73,33 +90,42 @@ def outliers_analyze(df):
 
     # define two outlier detection tools to be compared
     classifiers = {
-        "One-Class SVM": svm.OneClassSVM(nu=0.95 * outliers_fraction + 0.05,
-                                         kernel="rbf", gamma=0.1),
+        "One-Class SVM": svm.OneClassSVM(
+            nu=0.95 * outliers_fraction + 0.05, kernel="rbf", gamma=0.1
+        ),
         "Robust covariance": EllipticEnvelope(contamination=outliers_fraction),
-        "Isolation Forest": IsolationForest(max_samples=n_samples,
-                                            contamination=outliers_fraction,
-                                            random_state=rng)}
+        "Isolation Forest": IsolationForest(
+            max_samples=n_samples, contamination=outliers_fraction, random_state=rng
+        ),
+    }
     plots = list()
     for i, (clf_name, clf) in tqdm_notebook(enumerate(classifiers.items())):
         # fit the data and tag outliers
         clf.fit(X)
         scores_pred = clf.decision_function(X)
-        threshold = stats.scoreatpercentile(scores_pred,
-                                            100 * outliers_fraction)
+        threshold = stats.scoreatpercentile(scores_pred, 100 * outliers_fraction)
         y_pred = clf.predict(X)
         predictions[clf_name] = y_pred
         n_errors = (y_pred != ground_truth).sum()
         # plot the levels lines and the points
-        #Z = clf.decision_function(np.c_[xx.ravel(), yy.ravel()])
-        #Z = Z.reshape(xx.shape)
-        #plots.append(plotter.contourplot(xx, yy, Z,
+        # Z = clf.decision_function(np.c_[xx.ravel(), yy.ravel()])
+        # Z = Z.reshape(xx.shape)
+        # plots.append(plotter.contourplot(xx, yy, Z,
         #                                levels=np.linspace(Z.min(), threshold, 7)))
-    #return plotter.grid_plot(plots)
+    # return plotter.grid_plot(plots)
     return predictions
 
 
-def correlation_analyze(df, col1, col2, categories=[], measures=[],
-                        summary_only=False, check_linearity=False, trellis=False):
+def correlation_analyze(
+    df,
+    col1,
+    col2,
+    categories=[],
+    measures=[],
+    summary_only=False,
+    check_linearity=False,
+    trellis=False,
+):
     """
     Visually plot possible correlation between two columns mentioned and other categories and
     measures involved
@@ -118,112 +144,134 @@ def correlation_analyze(df, col1, col2, categories=[], measures=[],
     for catg in categories:
         assert catg in list(df.columns)
 
-    #TODO: add check for multi-collinearity
+    # TODO: add check for multi-collinearity
     if categories and not measures:
-        measures = ['count']
+        measures = ["count"]
 
-    u,v = col1, col2
+    u, v = col1, col2
     plotter.sb_scatterplot(df[u], df[v])
     plotter.sb_show()
 
-    #plotter.sb_jointplot(df[u], df[v])
+    # plotter.sb_jointplot(df[u], df[v])
     if check_linearity:
         u_2diff = np.gradient(df[u], 2)
         v_2diff = np.gradient(df[v], 2)
-        print("Linearity btw %s and %s"%(u, v))
-        print("No. of 2nd differences: %d"%len(u_2diff))
+        print("Linearity btw %s and %s" % (u, v))
+        print("No. of 2nd differences: %d" % len(u_2diff))
         linearity_2nd_diff = np.divide(u_2diff, v_2diff)
         # Drop inf and na values
         linearity_2nd_diff = linearity_2nd_diff[~np.isnan(linearity_2nd_diff)]
         linearity_2nd_diff = linearity_2nd_diff[~np.isinf(linearity_2nd_diff)]
         print(np.mean(linearity_2nd_diff))
 
-    #print("# Correlation btw Numerical Columns")
-    #plotter.gridplot(list(utils.chunks(plots, size=2)))
+    # print("# Correlation btw Numerical Columns")
+    # plotter.gridplot(list(utils.chunks(plots, size=2)))
 
-    if (categories and measures):
+    if categories and measures:
         # Plot heatmaps of category-combos by measure value.
         heatmaps = []
         catCombos = itertools.combinations(categories, 2)
         cols = list(df.columns)
-        if 'count' in measures:
+        if "count" in measures:
             # Do a group by on categories and use count() to heatmap
-            measures.remove('count')
+            measures.remove("count")
             for combo in catCombos:
-                print("# Correlation btw Columns %s & %s by count" % (combo[0], combo[1]))
+                print(
+                    "# Correlation btw Columns %s & %s by count" % (combo[0], combo[1])
+                )
                 group0 = df.groupby(list(combo)).size().reset_index()
-                group0.rename(columns={col1: 'counts'}, inplace=True)
-                plotter.sb_heatmap(group0, combo[0], combo[1], 'counts')
+                group0.rename(columns={col1: "counts"}, inplace=True)
+                plotter.sb_heatmap(group0, combo[0], combo[1], "counts")
                 plotter.sb_show()
 
         for meas in measures:
             # Plot heatmaps for measure across all combination of categories
             for combo in catCombos:
-                print("# Correlation btw Columns %s & %s by measure %s" % (combo[0],
-                    combo[1],
-                    meas))
+                print(
+                    "# Correlation btw Columns %s & %s by measure %s"
+                    % (combo[0], combo[1], meas)
+                )
                 group0 = df.groupby(list(combo)).sum().reset_index()
-                group0.rename(columns={meas: 'sum_%s'%meas}, inplace=True)
-                plotter.sb_heatmap(group0, combo[0], combo[1], 'sum_%s'%meas,
-                                                title="%s vs %s %s heatmap"%(combo[0], combo[1], meas)
-                                                )
+                group0.rename(columns={meas: "sum_%s" % meas}, inplace=True)
+                plotter.sb_heatmap(
+                    group0,
+                    combo[0],
+                    combo[1],
+                    "sum_%s" % meas,
+                    title="%s vs %s %s heatmap" % (combo[0], combo[1], meas),
+                )
                 plotter.sb_show()
 
-def non_linear_regression_analyze(df, target_cols=list(),
-                                  trainsize=0.8, **kwargs):
+
+def non_linear_regression_analyze(df, target_cols=list(), trainsize=0.8, **kwargs):
 
     plots = list()
     for col1, col2 in itertools.combinations(target_cols, 2):
         from ace import model
+
         model = model.Model()
         model.build_model_from_xy([df[col1].values], [df[col2].values])
 
         print(" # Ace Models btw numerical cols")
-        plot = plotter.lineplot(df[[col1, col2]]) #, title='%s Vs %s'%(col1, col2))
+        plot = plotter.lineplot(df[[col1, col2]])  # , title='%s Vs %s'%(col1, col2))
         plots.append(plot)
     plotter.show(plots)
+
 
 def pymc_plot_posterior_glm(df, xlabel, ylabel, trace):
     from pymc3.plots import plot_posterior_predictive_glm
     import matplotlib.pyplot as plt
+
     x = df[xlabel].values
     y = df[ylabel].values
     plt.figure(figsize=(7, 7))
-    plt.plot(x, y, 'x', label='data')
+    plt.plot(x, y, "x", label="data")
 
-    plot_posterior_predictive_glm(trace, samples=100,
-				  label='posterior predictive regression lines')
-    plt.title('Posterior predictive regression lines')
+    plot_posterior_predictive_glm(
+        trace, samples=100, label="posterior predictive regression lines"
+    )
+    plt.title("Posterior predictive regression lines")
     plt.legend(loc=0)
     plt.xlabel(xlabel)
-    plt.ylabel(ylabel);
+    plt.ylabel(ylabel)
+
 
 def pymc_regression_analyze(df, target_cols=list(), **kwargs):
     from pymc3 import traceplot
     import matplotlib.pyplot as plt
+
     for col1, col2 in itertools.combinations(target_cols, 2):
         new_df = df[[col1, col2]].copy(deep=True)
         target = new_df[col2]
         trace = utils.train_pymc_linear_reg(new_df, col2, column=col1)
-        plt.figure(figsize=(7,7))
-        plt.title('%s Vs %s'%(col1, col2))
+        plt.figure(figsize=(7, 7))
+        plt.title("%s Vs %s" % (col1, col2))
         traceplot(trace[100:])
         plt.tight_layout()
         pymc_plot_posterior_glm(df, col1, col2, trace)
 
+
 def pymc_log_reg_analyze(dataframe, target_col=str(), **kwargs):
     import pymc3 as pm
-    other_cols=set(dataframe.columns) - target_col
+
+    other_cols = set(dataframe.columns) - target_col
     with pm.Model() as logistic_model:
-        pm.glm.GLM.from_formula('income ~ age + age2 + educ + hours',
-                                data,
-                                family=pm.glm.families.Binomial())
-        trace = pm.sample(1000, tune=1000, init='adapt_diag')
+        pm.glm.GLM.from_formula(
+            "income ~ age + age2 + educ + hours",
+            data,
+            family=pm.glm.families.Binomial(),
+        )
+        trace = pm.sample(1000, tune=1000, init="adapt_diag")
 
 
-
-def regression_analyze(df, target_cols=list(), trainsize=0.8, check_heteroskedasticity=True,
-                               check_vif=True, **kwargs):
+def regression_analyze(
+    df,
+    target_cols=list(),
+    trainsize=0.8,
+    check_heteroskedasticity=True,
+    check_vif=True,
+    **kwargs
+):
     """
     Plot regressed data vs original data for the passed columns.
     @params:
@@ -238,7 +286,7 @@ def regression_analyze(df, target_cols=list(), trainsize=0.8, check_heteroskedas
     from . import predictiveModels as pm
 
     # this is the quantitative/hard version of teh above
-    #TODO: Simple  line plots of column variables, but for the y-axis,
+    # TODO: Simple  line plots of column variables, but for the y-axis,
     # Fit on
     #         b, logarithmic/exponetial function
     #         c, logistic function
@@ -256,177 +304,220 @@ def regression_analyze(df, target_cols=list(), trainsize=0.8, check_heteroskedas
         key = (col1, col2)
         finalRes[key] = dict()
         models = [
-                pm.train(new_df, target, column=None, modelType='LinearRegression'),
-                pm.train(new_df, target, column=None, modelType='RidgeRegression'),
-                pm.train(new_df, target, column=None, modelType='RidgeRegressionCV'),
-                pm.train(new_df, target, column=None, modelType='LassoRegression'),
-                #pm.train(new_df, target, column=None, modelType='ElasticNetRegression'),
-                #pm.train(new_df, target, column=None, modelType='SVMRegression'),
-                #pm.train(new_df, target, column=col1, modelType='IsotonicRegression'),
-                #pm.train(new_df, target, column=col1, modelType='logarithmicRegression'),
-                ]
+            pm.train(new_df, target, column=None, modelType="LinearRegression"),
+            pm.train(new_df, target, column=None, modelType="RidgeRegression"),
+            pm.train(new_df, target, column=None, modelType="RidgeRegressionCV"),
+            pm.train(new_df, target, column=None, modelType="LassoRegression"),
+            # pm.train(new_df, target, column=None, modelType='ElasticNetRegression'),
+            # pm.train(new_df, target, column=None, modelType='SVMRegression'),
+            # pm.train(new_df, target, column=col1, modelType='IsotonicRegression'),
+            # pm.train(new_df, target, column=col1, modelType='logarithmicRegression'),
+        ]
         tempRes = dict()
         if check_heteroskedasticity:
-            tempRes['HeteroSkedas_%s'%col1] = list()
-            resHetSkedas = statsmodels.stats.diagnostic.het_breuschpagan(target,
-                                                            exog_het=df[[col1, col2]])
+            tempRes["HeteroSkedas_%s" % col1] = list()
+            resHetSkedas = statsmodels.stats.diagnostic.het_breuschpagan(
+                target, exog_het=df[[col1, col2]]
+            )
             print("Hetero-Skedasticity test(Breush-Pagan)")
             print(resHetSkedas)
-            tempHetSkedas = {'HeteroSkedasticity':
-                                dict(zip(['lm', 'lm_pvalue', 'fvalue', 'f_pvalue'], resHetSkedas))}
-            tempRes['HeteroSkedas_%s'%col1].append(tempHetSkedas)
+            tempHetSkedas = {
+                "HeteroSkedasticity": dict(
+                    zip(["lm", "lm_pvalue", "fvalue", "f_pvalue"], resHetSkedas)
+                )
+            }
+            tempRes["HeteroSkedas_%s" % col1].append(tempHetSkedas)
         for model in models:
-            modelName = model.__repr__().split('(')[0]
+            modelName = model.__repr__().split("(")[0]
             tempRes[modelName] = list()
-            scatter = plotter.sb_scatterplot(new_df[col1], new_df[col2])# , plttitle=model.__repr__())
+            scatter = plotter.sb_scatterplot(
+                new_df[col1], new_df[col2]
+            )  # , plttitle=model.__repr__())
             predicted = list(model.predict(new_df))
-            print("Regression Score: %s"%(model.__repr__()))
-            regScore = model.score(new_df, new_df[col2].values.reshape(-1,1))
+            print("Regression Score: %s" % (model.__repr__()))
+            regScore = model.score(new_df, new_df[col2].values.reshape(-1, 1))
             print(regScore)
-            tempRes[modelName].append({'score': regScore})
-            #tempRes[modelName].append({'rank':model.rank_})
-            tempRes[modelName].append({'intercept': model.intercept_})
-            tempRes[modelName].append({'coef': model.coef_})
+            tempRes[modelName].append({"score": regScore})
+            # tempRes[modelName].append({'rank':model.rank_})
+            tempRes[modelName].append({"intercept": model.intercept_})
+            tempRes[modelName].append({"coef": model.coef_})
             if check_vif:
                 tempVIF = list()
-                tempRes[modelName].append({'VIF':[]})
+                tempRes[modelName].append({"VIF": []})
 
                 for col in [col1, col2]:
                     col_idx = list(df.columns).index(col)
-                    vifFactor = oi.variance_inflation_factor(df.values.reshape(-1, 1), col_idx)
-                    tempVIF.append({col:vifFactor})
-                    print("Variance Inflation Factors for %s"%col)
+                    vifFactor = oi.variance_inflation_factor(
+                        df.values.reshape(-1, 1), col_idx
+                    )
+                    tempVIF.append({col: vifFactor})
+                    print("Variance Inflation Factors for %s" % col)
                     print(vifFactor)
-                    tempRes[modelName]['VIF'].append({col: vifFactor})
+                    tempRes[modelName]["VIF"].append({col: vifFactor})
 
         finalRes[key] = tempRes
     pprint.pprint(finalRes)
-    #grid = plotter.gridplot(list(utils.chunks(plots, size=2)))
-    #plotter.show(grid)
+    return finalRes
+    # grid = plotter.gridplot(list(utils.chunks(plots, size=2)))
+    # plotter.show(grid)
 
-def time_series_analysis(df, timeCol='date', valueCol=None, timeInterval='30min',
-                            plot_title = 'timeseries',
-                            skip_stationarity=False,
-                            skip_autocorrelation=False,
-                            skip_seasonal_decompose=False,
-                            psf_analyze=False,
-                            **kwargs):
+
+def time_series_analysis(
+    df,
+    timeCol="date",
+    valueCol=None,
+    timeInterval="30min",
+    plot_title="timeseries",
+    skip_stationarity=False,
+    skip_autocorrelation=False,
+    skip_seasonal_decompose=False,
+    psf_analyze=False,
+    **kwargs
+):
     """
     Plot time series, rolling mean, rolling std , autocorrelation plot, partial autocorrelation plot
     and seasonal decompose
     """
-    #TODO: implement R-PSF forecasting interface
-    #TODO: integrate features from fbprophet
+    # TODO: implement R-PSF forecasting interface
+    # TODO: integrate features from fbprophet
     from . import timeSeriesUtils as tsu
-    if 'create' in kwargs:
-        ts = tsu.create_timeseries_df(df, timeCol=timeCol, timeInterval=timeInterval, **kwargs.get('create'))
+
+    if "create" in kwargs:
+        ts = tsu.create_timeseries_df(
+            df, timeCol=timeCol, timeInterval=timeInterval, **kwargs.get("create")
+        )
     else:
         ts = tsu.create_timeseries_df(df, timeCol=timeCol, timeInterval=timeInterval)
     # TODO;
     # 3. ARIMA model of the times
     # 4. And other time-series models like AR, etc..
     # 5. Wrappers around fbprophet
-    if 'stationarity' in kwargs:
-        plot = tsu.test_stationarity(ts, timeCol=timeCol, valueCol=valueCol,
-                title=plot_title,
-                skip_stationarity=skip_stationarity,
-                **kwargs.get('stationarity'))
+    if "stationarity" in kwargs:
+        plot = tsu.test_stationarity(
+            ts,
+            timeCol=timeCol,
+            valueCol=valueCol,
+            title=plot_title,
+            skip_stationarity=skip_stationarity,
+            **kwargs.get("stationarity")
+        )
     else:
-        plot = tsu.test_stationarity(ts, timeCol=timeCol, valueCol=valueCol,
-                title=plot_title,
-                skip_stationarity=skip_stationarity
-                )
+        plot = tsu.test_stationarity(
+            ts,
+            timeCol=timeCol,
+            valueCol=valueCol,
+            title=plot_title,
+            skip_stationarity=skip_stationarity,
+        )
         plotter.show(plot)
     if not skip_autocorrelation:
-        if 'autocorrelation' in kwargs:
-            tsu.plot_autocorrelation(ts, valueCol=valueCol, **kwargs.get('autocorrelation')) # AR model
-            tsu.plot_autocorrelation(ts, valueCol=valueCol, partial=True, **kwargs.get('autocorrelation')) # partial AR model
+        if "autocorrelation" in kwargs:
+            tsu.plot_autocorrelation(
+                ts, valueCol=valueCol, **kwargs.get("autocorrelation")
+            )  # AR model
+            tsu.plot_autocorrelation(
+                ts, valueCol=valueCol, partial=True, **kwargs.get("autocorrelation")
+            )  # partial AR model
         else:
-            tsu.plot_autocorrelation(ts, valueCol=valueCol) # AR model
-            tsu.plot_autocorrelation(ts, valueCol=valueCol, partial=True) # partial AR model
+            tsu.plot_autocorrelation(ts, valueCol=valueCol)  # AR model
+            tsu.plot_autocorrelation(
+                ts, valueCol=valueCol, partial=True
+            )  # partial AR model
 
     if not skip_seasonal_decompose:
-        if 'seasonal' in kwargs:
-            seasonal_args = kwargs.get('seasonal')
+        if "seasonal" in kwargs:
+            seasonal_args = kwargs.get("seasonal")
             tsu.seasonal_decompose(ts, **seasonal_args)
         else:
             tsu.seasonal_decompose(ts)
 
-def fractal_analyze(dataframe, column, L=None, dim_type='box'):
-    if dim_type == 'box':
+
+def fractal_analyze(dataframe, column, L=None, dim_type="box"):
+    if dim_type == "box":
         plotter.show(_box_dimension(dataframe, column, L=L))
     else:
         plotter.show(_hausdorff_dimension(dataframe[column], L=L))
 
-def _box_dimension(dataframe,column, L=None):
-    if not L: L = dataframe[column].max()
-    r = np.array([ L/(2.0**i) for i in range(12,0,-1) ])
-    N = [ utils.count_boxes( dataframe[column], ri, L ) for ri in r ]
-    def f( x, A, Df ):
-        '''
+
+def _box_dimension(dataframe, column, L=None):
+    if not L:
+        L = dataframe[column].max()
+    r = np.array([L / (2.0 ** i) for i in range(12, 0, -1)])
+    N = [utils.count_boxes(dataframe[column], ri, L) for ri in r]
+
+    def f(x, A, Df):
+        """
         User defined function for scipy.optimize.curve_fit(),
         which will find optimal values for A and Df.
-        '''
+        """
         return Df * x + A
+
     import scipy
-    popt, pcov = scipy.optimize.curve_fit( f, np.log( 1./r ), np.log( N ) )
+
+    popt, pcov = scipy.optimize.curve_fit(f, np.log(1.0 / r), np.log(N))
     A, Df = popt
-    new_df = pd.DataFrame(columns=['Box Size(1/r)', 'No. of Boxes'])
-    new_df['Box Size(1/r)'] = 1/r
-    new_df['No. of Boxes'] = N
-    return plotter.lineplot(new_df, title='Box Size(1/r) Vs No. of Boxes')
+    new_df = pd.DataFrame(columns=["Box Size(1/r)", "No. of Boxes"])
+    new_df["Box Size(1/r)"] = 1 / r
+    new_df["No. of Boxes"] = N
+    return plotter.lineplot(new_df, title="Box Size(1/r) Vs No. of Boxes")
+
 
 def _hausdorff_dimension(pixels):
 
     # computing the fractal dimension
-    #considering only scales in a logarithmic list
-    scales=np.logspace(1, 8, num=20, endpoint=False, base=2)
-    Ns=[]
+    # considering only scales in a logarithmic list
+    scales = np.logspace(1, 8, num=20, endpoint=False, base=2)
+    Ns = []
     # looping over several scales
     for scale in scales:
-        print("Scale ",scale)
+        print("Scale ", scale)
         # computing the histogram
-        H, edges=np.histogramdd(pixels, bins=(np.arange(0,Lx,scale),np.arange(0,Ly,scale)))
-        Ns.append(np.sum(H>0))
+        H, edges = np.histogramdd(
+            pixels, bins=(np.arange(0, Lx, scale), np.arange(0, Ly, scale))
+        )
+        Ns.append(np.sum(H > 0))
 
-    plot_df = pd.DataFrame(columns=['log(scales)', 'log(Ns)'])
-    plot_df['Log(scales)'] = np.log(scales)
-    plot_df['Log(Ns)'] = np.log(Ns)
+    plot_df = pd.DataFrame(columns=["log(scales)", "log(Ns)"])
+    plot_df["Log(scales)"] = np.log(scales)
+    plot_df["Log(Ns)"] = np.log(Ns)
     # linear fit, polynomial of degree 1
-    coeffs=np.polyfit(np.log(scales), np.log(Ns), 1)
-    plotter.lineplot(plot_df, title='log(scales) Vs log(Ns)')
+    coeffs = np.polyfit(np.log(scales), np.log(Ns), 1)
+    plotter.lineplot(plot_df, title="log(scales) Vs log(Ns)")
 
 
 def fractal_dimension(image, threshold=0.9):
 
     import scipy.misc
     import numpy as np
+
     # Only for 2d image
-    assert(len(image.shape) == 2)
+    assert len(image.shape) == 2
 
     # From https://github.com/rougier/numpy-100 (#87)
     def boxcount(image, k):
         S = np.add.reduceat(
             np.add.reduceat(image, np.arange(0, image.shape[0], k), axis=0),
-                               np.arange(0, image.shape[1], k), axis=1)
+            np.arange(0, image.shape[1], k),
+            axis=1,
+        )
 
         # We count non-empty (0) and non-full boxes (k*k)
-        return len(np.where((S > 0) & (S < k*k))[0])
+        return len(np.where((S > 0) & (S < k * k))[0])
 
     # Transform Z into a binary array
-    image = (image < threshold)
+    image = image < threshold
 
     # Minimal dimension of image
     p = min(image.shape)
 
     # Greatest power of 2 less than or equal to p
-    n = 2**np.floor(np.log(p)/np.log(2))
+    n = 2 ** np.floor(np.log(p) / np.log(2))
 
     # Extract the exponent
-    n = int(np.log(n)/np.log(2))
+    n = int(np.log(n) / np.log(2))
 
     # Build successive box sizes (from 2**n down to 2**1)
-    sizes = 2**np.arange(n, 1, -1)
+    sizes = 2 ** np.arange(n, 1, -1)
 
     # Actual box counting with decreasing size
     counts = []
@@ -436,6 +527,7 @@ def fractal_dimension(image, threshold=0.9):
     # Fit the successive log(sizes) with log (counts)
     coeffs = np.polyfit(np.log(sizes), np.log(counts), 1)
     return -coeffs[0]
+
 
 def hyperplot_analyze(dataframe, group=None, **kwargs):
     # Add pca, svd, linear discriminant analysis, tsne
@@ -448,15 +540,18 @@ def hyperplot_analyze(dataframe, group=None, **kwargs):
         plotter.hyper_plot(dataframe, group=groupVals, legend=groupLabels, **kwargs)
     pass
 
-def tsne_dim_analyze(dataframe, datatype='binary', **kwargs):
+
+def tsne_dim_analyze(dataframe, datatype="binary", **kwargs):
     from MulticoreTSNE import MulticoreTSNE as TSNE
-    n_jobs = kwargs.get('n_jobs', 4)
+
+    n_jobs = kwargs.get("n_jobs", 4)
     tsne = TSNE(n_jobs=n_jobs)
     Y = tsne.fit_transform(dataframe)
     df = pd.DataFrame()
-    df['x'] = Y[0,0]
-    df['y'] = Y[0,1]
-    plotter.sb_scatterplot(df['x'], df['y'])
+    df["x"] = Y[0, 0]
+    df["y"] = Y[0, 1]
+    plotter.sb_scatterplot(df["x"], df["y"])
+
 
 def causal_analyze(dataframe):
     for each in dataframe.columns:
@@ -466,21 +561,26 @@ def causal_analyze(dataframe):
     import causality
     from causality.inference.independence_tests import RobustRegressionTest
     from causality.inference.search import IC
-    variable_types = dict(zip(dataframe.columns, ['c'] * len(dataframe)))
+
+    variable_types = dict(zip(dataframe.columns, ["c"] * len(dataframe)))
     ic_algorithm = IC(RobustRegressionTest)
     graph = ic_algorithm.search(dataframe, variable_types)
     drawing.draw_networkx(graph)
     pass
 
+
 def chaid_tree(dataframe, targetCol):
     import CHAID as ch
+
     columns = dataframe.columns
     columns = list(filter(lambda x: x not in [targetCol], dataframe.columns))
     print(ch.Tree.from_pandas_df(dataframe, columns, targetCol))
 
+
 def kde_analyze(dataframe):
-    #TODO: implement t-digest in python here https://github.com/tdunning/t-digest/blob/master/core/src/main/java/com/tdunning/math/stats/TDigest.java
+    # TODO: implement t-digest in python here https://github.com/tdunning/t-digest/blob/master/core/src/main/java/com/tdunning/math/stats/TDigest.java
     pass
+
 
 ## Time series/survival analysis
 
@@ -488,15 +588,59 @@ def kde_analyze(dataframe):
 def kaplan_meier_filter(dataframe, timeCol, targetCol):
     from lifelines import KaplanMeierFitter
 
-    durations = [11, 74, 71, 76, 28, 92, 89, 48, 90, 39, 63, 36, 54, 64, 34, 73, 94, 37, 56, 76]
-    event_observed = [True, True, False, True, True, True, True, False, False, True, True,
-                  True, True, True, True, True, False, True, False, True]
+    durations = [
+        11,
+        74,
+        71,
+        76,
+        28,
+        92,
+        89,
+        48,
+        90,
+        39,
+        63,
+        36,
+        54,
+        64,
+        34,
+        73,
+        94,
+        37,
+        56,
+        76,
+    ]
+    event_observed = [
+        True,
+        True,
+        False,
+        True,
+        True,
+        True,
+        True,
+        False,
+        False,
+        True,
+        True,
+        True,
+        True,
+        True,
+        True,
+        True,
+        False,
+        True,
+        False,
+        True,
+    ]
 
     kmf = KaplanMeierFitter()
     kmf.fit(dataframe[timeCol], dataframe[targetCol])
     kmf.plot()
 
-def survival_analyze(dataframe, lifetime_col, dead_col, strata_cols, covariate_col=None):
+
+def survival_analyze(
+    dataframe, lifetime_col, dead_col, strata_cols, covariate_col=None
+):
     # Based on notebook here. https://github.com/CamDavidsonPilon/lifelines/tree/master/examples
     import pandas as pd
     from matplotlib import pyplot as plt
@@ -505,40 +649,45 @@ def survival_analyze(dataframe, lifetime_col, dead_col, strata_cols, covariate_c
     cph = CoxPHFitter().fit(dataframe, lifetime_col, dead_col, strata=strata_cols)
     cph.plot(ax=ax[1])
     if covariate_col:
-        cph.plot_covariate_groups(covariate_col, values=[0,1])
+        cph.plot_covariate_groups(covariate_col, values=[0, 1])
     pass
 
-def fbprophet_forecast(dataframe, ):
-    assert 'ds' in dataframe.columns, "column ds needed to be the time column"
+
+def fbprophet_forecast(dataframe,):
+    assert "ds" in dataframe.columns, "column ds needed to be the time column"
     from fbprophet import Prophet
-    m=Prophet()
+
+    m = Prophet()
     m.fit(dataframe)
     future = m.make_future_dataframe(periods=365)
     forecast = m.predict(future)
     print(forecast)
     m.plot(forecast)
 
+
 def fbprophet_multiplicative_seasonality(dataframe, timeCol):
-    assert 'ds' in dataframe.columns, "column ds needed to be the time column"
-    m = Prophet(seasonality_mode='multiplicative')
+    assert "ds" in dataframe.columns, "column ds needed to be the time column"
+    m = Prophet(seasonality_mode="multiplicative")
     m.fit(dataframe)
-    future = m.make_future_dataframe(50, freq='MS')
+    future = m.make_future_dataframe(50, freq="MS")
     forecast = m.predict(future)
     print(forecast)
     m.plot(forecast)
     m.plot_components(forecast)
 
+
 def fbprophet_sub_daily_data(dataframe):
-    assert 'ds' in dataframe.columns, "column ds needed to be the time column"
+    assert "ds" in dataframe.columns, "column ds needed to be the time column"
     m = Prophet(changepoint_prior_scale=0.01).fit(dataframe)
-    future = m.make_future_dataframe(periods=300, freq='H')
+    future = m.make_future_dataframe(periods=300, freq="H")
     fcst = m.predict(future)
     m.plot(fcst)
     m.plot_components(forecast)
 
-def fbprophet_w_uncertainty(dataframe, estimate_type='mcmc'):
-    assert 'ds' in dataframe.columns, "column ds needed to be the time column"
-    if estimate_type =='mcmc':
+
+def fbprophet_w_uncertainty(dataframe, estimate_type="mcmc"):
+    assert "ds" in dataframe.columns, "column ds needed to be the time column"
+    if estimate_type == "mcmc":
         m = Prophet(mcmc_samples=300)
     else:
         # MAP estimate
@@ -548,42 +697,49 @@ def fbprophet_w_uncertainty(dataframe, estimate_type='mcmc'):
     m.plot(fcst)
     m.plot_components(forecast)
 
+
 def fbprophet_changepoint_detect(dataframe):
-    assert 'ds' in dataframe.columns, "column ds needed to be the time column"
+    assert "ds" in dataframe.columns, "column ds needed to be the time column"
     m = Prophet()
     m.fit(dataframe)
     future = m.make_future_dataframe(periods=366)
     forecast = m.predict(future)
     fig = m.plot(forecast)
     for cp in m.changepoints:
-        plt.axvline(cp, c='gray', ls='--', lw=2)
+        plt.axvline(cp, c="gray", ls="--", lw=2)
+
 
 def tsfresh_extract_features(timeSeries, idCol, timeCol):
     from tsfresh import extract_relevant_features
     from tsfresh import select_features
     from tsfresh.utilities.dataframe_functions import impute
 
-    extracted_features = extract_relevant_features(timeSeries, column_id=idCol, column_sort=timeCol)
+    extracted_features = extract_relevant_features(
+        timeSeries, column_id=idCol, column_sort=timeCol
+    )
 
     impute(extracted_features)
     features_filtered = select_features(extracted_features, y)
     return features_filtered
 
+
 def tsfresh_sklearn_transform(dataframe):
-    assert 'id' in dataframe.columns, "dataframe needs id column"
-    assert 'time' in dataframe.columns, "Need time column in dataframe"
+    assert "id" in dataframe.columns, "dataframe needs id column"
+    assert "time" in dataframe.columns, "Need time column in dataframe"
     from sklearn.pipeline import Pipeline
     from sklearn.ensemble import RandomForestClassifier
     from tsfresh.examples import load_robot_execution_failures
     from tsfresh.transformers import RelevantFeatureAugmenter
 
-    pipeline = Pipeline([('augmenter', RelevantFeatureAugmenter(column_id='id', column_sort='time')),
-                ('classifier', RandomForestClassifier())])
+    pipeline = Pipeline(
+        [
+            ("augmenter", RelevantFeatureAugmenter(column_id="id", column_sort="time")),
+            ("classifier", RandomForestClassifier()),
+        ]
+    )
 
     df_ts, y = load_robot_execution_failures()
     X = pd.DataFrame(index=y.index)
 
     pipeline.set_params(augmenter__timeseries_container=df_ts)
     pipeline.fit(X, y)
-
-

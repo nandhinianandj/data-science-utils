@@ -12,28 +12,34 @@ from sklearn.preprocessing import LabelEncoder, MultiLabelBinarizer, LabelBinari
 
 from . import settings
 from . import utils
-def feature_scale_or_normalize(dataframe, col_names, norm_type='StandardScaler'):
+
+
+def feature_scale_or_normalize(dataframe, col_names, norm_type="StandardScaler"):
     """
     Basically converts floating point or integer valued columns to fit into the range of 0 to 1
     """
     from sklearn.preprocessing import StandardScaler, MinMaxScaler
-    if norm_type=='StandardScaler':
+
+    if norm_type == "StandardScaler":
         return StandardScaler().fit_transform(dataframe[col_names])
-    elif norm_type=='MinMaxScaler':
+    elif norm_type == "MinMaxScaler":
         return MinMaxScaler().fit_transform(dataframe[col_names])
     else:
         return None
 
-def feature_select(dataframe, target=None, selector='variance', **kwargs):
+
+def feature_select(dataframe, target=None, selector="variance", **kwargs):
     from sklearn.feature_selection import VarianceThreshold, SelectKBest
-    if selector=='variance':
+
+    if selector == "variance":
         selector = VarianceThreshold()
         return selector.fit_transform(dataframe)
-    elif selector == 'SelectKBest':
+    elif selector == "SelectKBest":
         assert target
         return SelectKBest(chi2, k=2).fit_transform(dataframe, target)
     else:
         raise "Don't know this feature selector"
+
 
 def feature_standardize(dataframe, col_names):
     """
@@ -43,7 +49,9 @@ def feature_standardize(dataframe, col_names):
     From here: http://www.analyticsvidhya.com/blog/2016/07/practical-guide-data-preprocessing-python-scikit-learn/
     """
     from sklearn.preprocessing import scale
+
     return scale(dataframe[col_names])
+
 
 def encode_labels(dataframe, column):
     if dataframe[column].nunique() == 2:
@@ -54,6 +62,7 @@ def encode_labels(dataframe, column):
         le = LabelEncoder()
         encoded_labels = le.fit_transform(dataframe[column])
     return encoded_labels
+
 
 def dump_model(model, filename, model_params):
     """
@@ -71,22 +80,34 @@ def dump_model(model, filename, model_params):
     assert model, "Model required"
     assert filename, "Filename Required"
     assert model_params, "model parameters (dict required)"
-    assert model_params['model_type'], "model_type required in model_params"
-    assert model_params['output_type'], "output_type required in model_params"
-    assert model_params['input_metadata'], "input_metadata required in model_params"
-    if not model_params['output_metadata']:
-        model_params['output_metadata'] = None
+    assert model_params["model_type"], "model_type required in model_params"
+    assert model_params["output_type"], "output_type required in model_params"
+    assert model_params["input_metadata"], "input_metadata required in model_params"
+    if not model_params["output_metadata"]:
+        model_params["output_metadata"] = None
 
-    model_params.update({'filename': filename,
-                         'id': str(uuid.uuid4())})
+    model_params.update({"filename": filename, "id": str(uuid.uuid4())})
 
-    with open(utils.get_full_path(settings.MODELS_BASE_PATH, filename,
-                            model_params, extn='.json', params_file=True),
-                      'w') as params_file:
+    with open(
+        utils.get_full_path(
+            settings.MODELS_BASE_PATH,
+            filename,
+            model_params,
+            extn=".json",
+            params_file=True,
+        ),
+        "w",
+    ) as params_file:
         json.dump(model_params, params_file)
 
-    joblib.dump(model, utils.get_full_path(settings.MODELS_BASE_PATH, filename,
-                                            model_params, extn='.pkl'), compress=('lzma', 3))
+    joblib.dump(
+        model,
+        utils.get_full_path(
+            settings.MODELS_BASE_PATH, filename, model_params, extn=".pkl"
+        ),
+        compress=("lzma", 3),
+    )
+
 
 def load_model(filename=None, model_type=None):
     """
@@ -101,43 +122,59 @@ def load_model(filename=None, model_type=None):
     """
     foldername = settings.MODELS_BASE_PATH
     if not filename:
-        assert model_type, 'model_type or filename mandatory'
-        relevant_models = list(filter(lambda x: fnmatch.fnmatch(x, '*' + model_type + '*.pkl'), os.listdir(foldername)))
+        assert model_type, "model_type or filename mandatory"
+        relevant_models = list(
+            filter(
+                lambda x: fnmatch.fnmatch(x, "*" + model_type + "*.pkl"),
+                os.listdir(foldername),
+            )
+        )
         assert relevant_models, "no relevant models found"
-        relevant_models.sort(key=lambda x: os.stat(os.path.join(foldername, x)).st_mtime, reverse=True)
+        relevant_models.sort(
+            key=lambda x: os.stat(os.path.join(foldername, x)).st_mtime, reverse=True
+        )
         model = joblib.load(os.path.join(foldername, relevant_models[0]))
-        names = relevant_models[0].split('_')
-        names[-1] = names[-1].split('.')[0]
+        names = relevant_models[0].split("_")
+        names[-1] = names[-1].split(".")[0]
     else:
-        model = joblib.load(os.path.join(foldername, filename + '.pkl'))
-        names = filename.split('_')
-    names.append('params')
-    with open(os.path.join(foldername, '_'.join(names)) + '.json', 'r') as fd:
+        model = joblib.load(os.path.join(foldername, filename + ".pkl"))
+        names = filename.split("_")
+    names.append("params")
+    with open(os.path.join(foldername, "_".join(names)) + ".json", "r") as fd:
         params = json.load(fd)
     return model, params
 
-def load_latest_model(foldername, model_type='knn'):
+
+def load_latest_model(foldername, model_type="knn"):
     """
     Parses through the files in the model folder and returns the latest model
     @model_type: can be overloaded to match any string. though the function surrounds a * after value
     """
     assert foldername, "Please pass in a foldername"
-    relevant_models = list(filter(lambda x: fnmatch.fnmatch(x, '*' + model_type + '*.pkl'), os.listdir(foldername)))
+    relevant_models = list(
+        filter(
+            lambda x: fnmatch.fnmatch(x, "*" + model_type + "*.pkl"),
+            os.listdir(foldername),
+        )
+    )
     assert relevant_models, "no relevant models found"
-    relevant_models.sort(key=lambda x: os.stat(os.path.join(foldername, x)).st_mtime, reverse=True)
+    relevant_models.sort(
+        key=lambda x: os.stat(os.path.join(foldername, x)).st_mtime, reverse=True
+    )
     latest_model = relevant_models[0]
-    return joblib.load(os.path.join(foldername,latest_model))
+    return joblib.load(os.path.join(foldername, latest_model))
+
 
 class MultiColumnLabelEncoder:
-    def __init__(self,columns = None):
+    def __init__(self, columns=None):
         self.encoders = defaultdict(LabelEncoder)
         if columns:
-            self.columns = columns # array of column names to encode
+            self.columns = columns  # array of column names to encode
             for each in self.columns:
                 self.encoders[each] = LabelEncoder()
 
-    def fit(self,X,y=None):
-        return self # not relevant here
+    def fit(self, X, y=None):
+        return self  # not relevant here
 
     def reverse_transform_all(self, X):
         output = copy.deepcopy(X)
@@ -145,37 +182,39 @@ class MultiColumnLabelEncoder:
             for col in self.columns:
                 output[col] = self.encoders[col].inverse_transform(output[col])
         else:
-            for colname,col in output.iteritems():
+            for colname, col in output.iteritems():
                 output[colname] = self.encoders[col].inverse_transform(col)
         return output
 
-    def transform(self,X):
-        '''
+    def transform(self, X):
+        """
         Transforms columns of X specified in self.columns using
         LabelEncoder(). If no columns specified, transforms all
         columns in X.
-        '''
+        """
         output = copy.deepcopy(X)
         if self.columns is not None:
             for col in self.columns:
                 output[col] = self.encoders[col].fit_transform(output[col])
         else:
-            for colname,col in output.iteritems():
+            for colname, col in output.iteritems():
                 output[colname] = self.encoders[col].fit_transform(col)
         return output
 
     def reverse_transform(self, X, y=None):
-        return self.fit(X,y).inverse_transform(X)
+        return self.fit(X, y).inverse_transform(X)
 
-    def fit_transform(self,X,y=None):
-        return self.fit(X,y).transform(X)
-
+    def fit_transform(self, X, y=None):
+        return self.fit(X, y).transform(X)
 
 
 def cross_val_predict_score(model, actuals, predictions):
     from sklearn.cross_validation import cross_val_predict
+
     return cross_val_predict(model, actuals, predictions)
+
 
 def accuracy_calc(actuals, predictions):
     from sklearn.metrics import accuracy_score
+
     return accuracy_score(actuals, predictions)
