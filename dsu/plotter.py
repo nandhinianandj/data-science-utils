@@ -57,7 +57,7 @@ def mtext(p, x, y, textstr, **kwargs):
         text_font_size="10pt",
     )
 
-def sb_lineplot(x=col1, y=col2, data=df, **kwargs):
+def sb_lineplot(x, y, df, **kwargs):
     return sns.lineplot(x=x, y=y, data=df, **kwargs)
 
 def sb_barplot(df, category, column, **kwargs):

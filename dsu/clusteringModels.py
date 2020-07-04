@@ -15,21 +15,20 @@ def plot_clusters(dataframe, clusterer, cluster_labels):
     dataframe = pd.DataFrame(dataframe)
     cols = list(dataframe.columns)
     dataframe["predictions"] = pd.Series(cluster_labels)
-    s_plot = plotter.pn_scatterplot(
-        dataframe,
-        cols[0],
-        cols[1],
-        groupCol="predictions",
-        xlabel="Feature space for 1st feature",
-        ylabel="Feature space for 2nd feature",
-        plttitle="Visualization of the clustered data",
-    )
+    s_plot = plotter.sb_scatterplot( dataframe[cols[0]], dataframe[cols[0]],
+                                    #groupCol="predictions",
+                                    #xlabel="Feature space for 1st feature",
+                                    #ylabel="Feature space for 2nd feature",
+                                    #plttitle="Visualization of the clustered data",
+                            )
 
     if hasattr(clusterer, "cluster_centers_"):
         for i, c in enumerate(clusterer.cluster_centers_):
             # Draw white circles at cluster centers
-            plotter.mtext(s_plot, c[0], c[1], "%s" % str(i), text_color="red")
-    plotter.show(s_plot)
+            #plotter.mtext(s_plot, c[0], c[1], "%s" % str(i), text_color="red")
+            #plotter.circle()
+            pass
+    #plotter.sb_show(s_plot)
 
 
 # TODO: add a way of weakening the discovered cluster structure and running again
@@ -126,13 +125,10 @@ def cluster_analyze(dataframe, name="", **kwargs):
         plot_data = np.c_[X, y_pred]
         columns = list(dataframe.columns) + ["classes"]
         new_df = pd.DataFrame(data=plot_data, columns=columns)
-        s_plot = plotter.scatterplot(
-            new_df,
-            columns[0],
-            columns[1],
-            plttitle="%s: %s" % (name, model_name),
-            groupCol="classes",
-        )
+        s_plot = plotter.sb_scatterplot( new_df[columns[0]], new_df[columns[1]],
+                                         #plttitle="%s: %s" % (name, model_name),
+                                         #groupCol="classes",
+                                    )
         plots.append(s_plot)
 
         if hasattr(algorithm, "cluster_centers_"):
@@ -143,9 +139,11 @@ def cluster_analyze(dataframe, name="", **kwargs):
             centers = pd.DataFrame(algorithm.cluster_centers_)
             for i, c in enumerate(algorithm.cluster_centers_):
                 # Draw white circles at cluster centers
-                plotter.mtext(s_plot, c[0], c[1], "%s" % str(i), text_color="red")
+                #plotter.mtext(s_plot, c[0], c[1], "%s" % str(i), text_color="red")
+                #plotter.circle()
+                pass
     # grid = gridplot(list(utils.chunks(plots,size=2)))
-    plotter.show(grid)
+    #plotter.sb_show(grid)
 
 
 def silhouette_analyze(dataframe, cluster_type="KMeans", n_clusters=None):
@@ -172,8 +170,10 @@ def silhouette_analyze(dataframe, cluster_type="KMeans", n_clusters=None):
     # A DF for plotting silhouetted score vs num of clusters
     cluster_scores_df = pd.DataFrame(columns=["cluster_size", "silhouette_score"])
     for j, clusternum in enumerate(n_clusters):
-        if cluster_type != "bgmm":
+        if cluster_type not in ["bgmm", "dbscan"]:
             clusterer = utils.get_model_obj(cluster_type, n_clusters=clusternum)
+        elif cluster_type == "dbscan":
+            clusterer = utils.get_model_obj(cluster_type)
         else:
             # We're passing max clusters/components, the Bayesian GMM will figure out appropriate num.
             clusterer = utils.get_model_obj(cluster_type, n_components=2 * clusternum)
@@ -204,9 +204,7 @@ def silhouette_analyze(dataframe, cluster_type="KMeans", n_clusters=None):
             )
             continue
     if cluster_type != "bgmm":
-            plotter.sb_lineplot(
-                data=cluster_scores_df, xcol="cluster_size", ycol="silhouette_score"
-            )
+            plotter.sb_lineplot( "cluster_size", "silhouette_score", cluster_scores_df)
 
 
 

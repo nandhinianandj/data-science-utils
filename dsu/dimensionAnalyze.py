@@ -7,13 +7,17 @@
 #
 #* Creation Date : 04-07-2020
 #
-#* Last Modified : Sunday 05 July 2020 03:00:13 AM IST
+#* Last Modified : Sunday 05 July 2020 04:14:27 AM IST
 #
 #* Created By :
 
 #_._._._._._._._._._._._._._._._._._._._._.#
 
 from . import plotter
+from . import utils
+
+import pandas as pd
+import numpy as np
 
 def fractal_dimension(image, threshold=0.9):
 
@@ -60,12 +64,12 @@ def fractal_analyze(dataframe, column, L=None, dim_type="box"):
 def hyperplot_analyze(dataframe, group=None, **kwargs):
     # Add pca, svd, linear discriminant analysis, tsne
     if not group:
-        plotter.hyper_plot(dataframe, **kwargs)
+        hyper_plot(dataframe, **kwargs)
     else:
         groupVals = dataframe[group]
         groupLabels = dataframe[group].unique()
         dataframe.drop(group, 1, inplace=True)
-        plotter.hyper_plot(dataframe, group=groupVals, legend=groupLabels, **kwargs)
+        hyper_plot(dataframe, group=groupVals, legend=groupLabels, **kwargs)
     pass
 
 
@@ -138,7 +142,7 @@ def _hausdorff_dimension(pixels):
     plot_df["Log(Ns)"] = np.log(Ns)
     # linear fit, polynomial of degree 1
     coeffs = np.polyfit(np.log(scales), np.log(Ns), 1)
-    plotter.sb_lineplot(data=plot_df, x='Log(scales)', y='Log(Ns)',
+    plotter.sb_lineplot('Log(scales)', 'Log(Ns)', plot_df,
                             title="log(scales) Vs log(Ns)")
 
 def _box_dimension(dataframe, column, L=None):
@@ -161,7 +165,7 @@ def _box_dimension(dataframe, column, L=None):
     new_df = pd.DataFrame(columns=["Box Size(1/r)", "No. of Boxes"])
     new_df["Box Size(1/r)"] = 1 / r
     new_df["No. of Boxes"] = N
-    return plotter.lineplot(new_df, title="Box Size(1/r) Vs No. of Boxes")
+    return plotter.sb_lineplot("Box Size(1/r)", "No. of Boxes", new_df, title="Box Size(1/r) Vs No. of Boxes")
 
 def count_boxes(data, box_size, M):
     # data = Series( data )
@@ -174,14 +178,8 @@ def count_boxes(data, box_size, M):
     counts = [i for i in counts if i != 0]
     return len(counts)
 
-def hyper_plot(
-    dataframe,
-    pca_plot=True,
-    reduce_meth="SparsePCA",
-    cluster=False,
-    n_clusters=None,
-    **kwargs
-):
+def hyper_plot( dataframe, pca_plot=True, reduce_meth="SparsePCA",
+                cluster=False, n_clusters=None, **kwargs):
     import hypertools as hyp
 
     if pca_plot:

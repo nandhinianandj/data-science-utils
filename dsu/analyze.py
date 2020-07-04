@@ -221,7 +221,7 @@ def non_linear_regression_analyze(df, target_cols=list(), trainsize=0.8, **kwarg
         model.build_model_from_xy([df[col1].values], [df[col2].values])
 
         print(" # Ace Models btw numerical cols")
-        plot = plotter.sb_lineplot(x=col1, y=col2, data=df[[col1, col2]])  # , title='%s Vs %s'%(col1, col2))
+        plot = plotter.sb_lineplot(col1, col2, df[[col1, col2]])  # , title='%s Vs %s'%(col1, col2))
         plots.append(plot)
     plotter.show(plots)
 
@@ -333,9 +333,7 @@ def regression_analyze( df, target_cols=list(),
         for model in models:
             modelName = model.__repr__().split("(")[0]
             tempRes[modelName] = list()
-            scatter = plotter.sb_scatterplot(
-                new_df[col1], new_df[col2]
-            )  # , plttitle=model.__repr__())
+            scatter = plotter.sb_scatterplot( new_df[col1], new_df[col2])  # , plttitle=model.__repr__())
             predicted = list(model.predict(new_df))
             print("Regression Score: %s" % (model.__repr__()))
             regScore = model.score(new_df, new_df[col2].values.reshape(-1, 1))
