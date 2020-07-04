@@ -38,15 +38,10 @@ def plot_missing_vals(df, sample=True, samplesize=1000):
         msno.dendrogram(df.sample(samplesize))
         msno.matrix(df.sample(samplesize))
 
-def dist_analyze(
-    df,
-    column=None,
-    category=None,
-    is_normal=True,
-    bayesian_hist=False,
-    kdeplot=True,
-    violinplot=False,
-):
+def dist_analyze( df, column=None,
+                  category=None, is_normal=True,
+                  bayesian_hist=False, kdeplot=True,
+                  violinplot=True):
     """
     Analyze/plot visual of a single distribution
     @params:
@@ -136,16 +131,9 @@ def outliers_analyze(df):
     return predictions
 
 
-def correlation_analyze(
-    df,
-    col1,
-    col2,
-    categories=[],
-    measures=[],
-    summary_only=False,
-    check_linearity=False,
-    trellis=False,
-):
+def correlation_analyze( df, col1, col2,
+                         categories=[], measures=[], summary_only=False,
+                         check_linearity=False, trellis=False,):
     """
     Visually plot possible correlation between two columns mentioned and other categories and
     measures involved
@@ -284,14 +272,9 @@ def pymc_log_reg_analyze(dataframe, target_col=str(), **kwargs):
         trace = pm.sample(1000, tune=1000, init="adapt_diag")
 
 
-def regression_analyze(
-    df,
-    target_cols=list(),
-    trainsize=0.8,
-    check_heteroskedasticity=True,
-    check_vif=True,
-    **kwargs
-):
+def regression_analyze( df, target_cols=list(),
+                        trainsize=0.8, check_heteroskedasticity=True,
+                        check_vif=True, **kwargs):
     """
     Plot regressed data vs original data for the passed columns.
     @params:

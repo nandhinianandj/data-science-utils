@@ -25,12 +25,6 @@ import numpy as np
 import pandas as pd
 import random
 
-
-from bokeh.plotting import figure, show, output_file, output_notebook, ColumnDataSource
-from bokeh.charts import Histogram
-import bokeh
-output_notebook()
-
 ```
 
 ```python
@@ -62,22 +56,30 @@ irisDf.skew()
 irisDf.corr()
 ```
 
+```python
+# sample 10% of data
+if len(irisDf) > 100000:
+    samplesize =  int(0.1 *len(irisDf))
+sampleDf = irisDf.sample(samplesize)
 ```
-analyze.missing_values(df, sample=True, samplesize=1000)
+
+```python
+analyze.missing_values(sampleDf, sample=True, samplesize=1000)
 ```
 
 ```python
 import itertools
 for combo in itertools.combinations(numericalCols, 2):
-    analyze.correlation_analyze(irisDf, combo[0], combo[1],
-                                measures=['sepal_length', 'petal_length', 'petal_width', 'sepal_width'])
+    analyze.correlation_analyze(sampleDf, combo[0], combo[1],
+                                measures=['sepal_length', 'petal_length', 'petal_width', 'sepal_width'],
+				check_linearity=True, trellis=True)
 ```
 
 ```python
 for col in numericalCols:
-    analyze.dist_analyze(irisDf, col, kdeplot=True, bayesian_hist=True)
+    analyze.dist_analyze(sampleDf, col, kdeplot=True, bayesian_hist=True)
 for col in catCols:
-    analyze.dist_analyze(irisDf, col, kdeplot=False, bayesian_hist=False)
+    analyze.dist_analyze(sampleDf, col, kdeplot=False, bayesian_hist=False)
 ```
 
 ```python
@@ -93,7 +95,6 @@ irisDf.tail()
 ```
 
 ```python
-irisDf['Class'] = [random.choice(range(2)) for x in range(len(irisDf))]
-irisDf.head()
-analyze.dimension_analyze(irisDf,group='Class')
+analyze.joint_dist_analyze(sampleDf, columns=numericalCols, categories=catCols)
 ```
+

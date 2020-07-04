@@ -103,7 +103,7 @@ def sb_violinplot(series, dataframe=None, groupCol=None, **kwargs):
         assert isinstance(series, pd.Series)
         plt = sns.violinplot(x=series, **kwargs)
     else:
-        assert dataframe and groupCol
+        assert (dataframe is not None) and groupCol
         assert isinstance(series, str)
         sns.violinplot(x=groupCol, y=series, data=dataframe, **kwargs)
         sns.swarmplot(x=groupCol, y=series, data=dataframe, **kwargs)
