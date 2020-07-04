@@ -1,9 +1,9 @@
 version.py
+templates/*.ipynb
 src/*
 *.html
 .Rhistory
 .DS_Store
-.ipynb_checkpoints
 __pycache__
 # Byte-compiled / optimized / DLL files
 __pycache__/

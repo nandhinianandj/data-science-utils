@@ -15,7 +15,6 @@ jupyter:
 ```python
 # Custom libraries
 from dsu import clusteringModels as cm
-from dsu import analyze
 from dsu import plotter
 # Standard libraries
 import json
@@ -23,12 +22,6 @@ import json
 import datetime
 import numpy as np
 import pandas as pd
-
-from bokeh.plotting import figure, show, output_file, output_notebook, ColumnDataSource
-from bokeh.charts import Histogram
-import bokeh
-output_notebook()
-
 ```
 
 ```python
@@ -40,17 +33,14 @@ irisDf.head()
 ```
 
 ```python
+# sample 10% of data
+if len(irisDf) > 100000:
+    samplesize =  int(0.1 *len(irisDf))
+sampleDf = irisDf.sample(samplesize)
+```
+
+```python
 target = irisDf.species
-#irisDf.drop('Species', 1, inplace=True)
-analyze.dimension_analyze(irisDf,group='species', animate=True, )
-```
-
-```python
-plotter.hyper_plot(irisDf, cluster=True, n_clusters=3)
-```
-
-```python
-plotter.hyper_plot(irisDf, pca_plot=True)
 ```
 
 ```python

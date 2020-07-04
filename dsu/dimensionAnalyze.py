@@ -7,7 +7,7 @@
 #
 #* Creation Date : 04-07-2020
 #
-#* Last Modified : Sunday 05 July 2020 01:53:14 AM IST
+#* Last Modified : Sunday 05 July 2020 03:00:13 AM IST
 #
 #* Created By :
 
@@ -53,9 +53,9 @@ def fractal_dimension(image, threshold=0.9):
 
 def fractal_analyze(dataframe, column, L=None, dim_type="box"):
     if dim_type == "box":
-        plotter.show(_box_dimension(dataframe, column, L=L))
+        plotter.sb_show(_box_dimension(dataframe, column, L=L))
     else:
-        plotter.show(_hausdorff_dimension(dataframe[column], L=L))
+        plotter.sb_show(_hausdorff_dimension(dataframe[column], L=L))
 
 def hyperplot_analyze(dataframe, group=None, **kwargs):
     # Add pca, svd, linear discriminant analysis, tsne

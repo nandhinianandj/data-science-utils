@@ -13,7 +13,8 @@ jupyter:
 ---
 
 ```python
-from dsu import analyze
+from dsu import dimensionAnalyze as da
+from dsu import utils
 ```
 
 ```python
@@ -32,16 +33,37 @@ numColumns = irisDf.select_dtypes(include=[np.number])
 ```
 
 ```python
-analyze.tsne_dim_analyze(numColumns)
+# sample 10% of data
+if len(irisDf) > 100000:
+    samplesize =  int(0.1 *len(irisDf))
+sampleDf = irisDf.sample(samplesize)
 ```
 
 ```python
-irisDf['Class'] = [random.choice(range(2)) for x in range(len(irisDf))]
-irisDf.head()
-analyze.hyperplot_analyze(irisDf,group='Class')
+da.tsne_dim_analyze(numColumns)
 ```
 
 ```python
-for col in numColumns:
-    analyze.fractal_dimension(irisDf, col)
+da.hyperplot_analyze(irisDf,group='Class')
+```
+
+```python
+da.fractal_analyze(irisDf, 'Class')
+```
+
+```python
+for combo in utils.chunks(numColumns, size=2):
+    da.fractal_dimension(irisDf[combo])
+```
+
+```python
+da.hyperplot_analyze(irisDf)
+```
+
+```python
+da.hyper_plot(irisDf, cluster=True, n_clusters=3)
+```
+
+```python
+da.tsne_dim_analyze(irisDf)
 ```
