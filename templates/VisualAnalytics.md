@@ -62,6 +62,10 @@ irisDf.skew()
 irisDf.corr()
 ```
 
+```
+analyze.missing_values(df, sample=True, samplesize=1000)
+```
+
 ```python
 import itertools
 for combo in itertools.combinations(numericalCols, 2):
