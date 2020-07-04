@@ -16,9 +16,9 @@ def test_stationarity(
 
     # Plot rolling statistics:
     new_df = pd.concat(timeseries, calcStatsDf)
-    orig = plotter.lineplot(new_df, color="blue", label="Original")
-    # mean = plotter.lineplot(calcStatsDf, fig=fig, color='red', label='Rolling Mean')
-    # std = plotter.lineplot(calcStatsDf, 'time', 'rollingSTD', fig=fig, color='black', label = 'Rolling Std')
+    orig = plotter.sb_lineplot(new_df, color="blue", label="Original")
+    # mean = plotter.sb_lineplot(calcStatsDf, fig=fig, color='red', label='Rolling Mean')
+    # std = plotter.sb_lineplot(calcStatsDf, 'time', 'rollingSTD', fig=fig, color='black', label = 'Rolling Std')
 
     if not skip_stationarity:
         # Perform Dickey-Fuller test:

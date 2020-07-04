@@ -204,8 +204,8 @@ def silhouette_analyze(dataframe, cluster_type="KMeans", n_clusters=None):
             )
             continue
     if cluster_type != "bgmm":
-            plotter.lineplot(
-                cluster_scores_df, xcol="cluster_size", ycol="silhouette_score"
+            plotter.sb_lineplot(
+                data=cluster_scores_df, xcol="cluster_size", ycol="silhouette_score"
             )
 
 

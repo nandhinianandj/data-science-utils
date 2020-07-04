@@ -17,18 +17,26 @@ from . import utils
 from . import statsutils as su
 
 
-def missing_values(df, sample=False, samplesize=1000):
+def missing_values(df, sample=False, samplesize=1000, groups=None):
     import missingno as msno
+    if groups:
+        for each in groups:
+            groupdf = df.groupby(each)
+            plot_missing_vals(groupdf, sample=sample, samplesize=samplesize)
+    else:
+        plot_missing_vals(df, sample=sample, samplesize=samplesize)
+
+def plot_missing_vals(df, sample=True, samplesize=1000):
     if not sample:
-        msno.matrix(df)
         msno.bar(df)
         msno.heatmap(df)
         msno.dendrogram(df)
+        msno.matrix(df)
     else:
-        msno.matrix(df.sample(samplesize))
         msno.bar(df.sample(samplesize))
         msno.heatmap(df.sample(samplesize))
         msno.dendrogram(df.sample(samplesize))
+        msno.matrix(df.sample(samplesize))
 
 def dist_analyze(
     df,
@@ -225,7 +233,7 @@ def non_linear_regression_analyze(df, target_cols=list(), trainsize=0.8, **kwarg
         model.build_model_from_xy([df[col1].values], [df[col2].values])
 
         print(" # Ace Models btw numerical cols")
-        plot = plotter.lineplot(df[[col1, col2]])  # , title='%s Vs %s'%(col1, col2))
+        plot = plotter.sb_lineplot(x=col1, y=col2, data=df[[col1, col2]])  # , title='%s Vs %s'%(col1, col2))
         plots.append(plot)
     plotter.show(plots)
 

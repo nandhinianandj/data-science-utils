@@ -81,9 +81,10 @@ for col in catCols:
 ```
 
 ```python
-#irisDf.drop('filename', inplace=True, axis=1)
-for col in numericalCols:
-    analyze.dist_analyze(irisDf, col, bayesian_hist=True)
+for catCol in catCols:
+    for col in numericalCols:
+    	plotter.sb_violinplot(sampleDf[col], groupCol=catCol, data=sampleDf, inner=None)
+	plt.show()
 ```
 
 

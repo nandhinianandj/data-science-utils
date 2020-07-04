@@ -47,16 +47,6 @@ def show_image(image, **kwargs):
     p.image(image=[image], x=0, y=0, dw=10, dh=10, palette="Spectral11")
     return p
 
-
-def lineplot(df, legend=None, title=None, **kwargs):
-    assert all(
-        [ptypes.is_numeric_dtype(df[col]) for col in df.columns]
-    ), "Only numeric datatypes"
-    if not title:
-        title = "%s Vs %s" % (kwargs.get("xcol"), kwargs.get("ycol"))
-    return Line(df, title=title, legend=True)
-
-
 def mtext(p, x, y, textstr, **kwargs):
     p.text(
         x,
@@ -67,6 +57,8 @@ def mtext(p, x, y, textstr, **kwargs):
         text_font_size="10pt",
     )
 
+def sb_lineplot(x=col1, y=col2, data=df, **kwargs):
+    return sns.lineplot(x=x, y=y, data=df, **kwargs)
 
 def sb_barplot(df, category, column, **kwargs):
     return sns.barplot(x=column, y=category, data=df, **kwargs)
@@ -113,7 +105,8 @@ def sb_violinplot(series, dataframe=None, groupCol=None, **kwargs):
     else:
         assert dataframe and groupCol
         assert isinstance(series, str)
-        plt = sns.violinplot(x=groupCol, y=series, data=dataframe, **kwargs)
+        sns.violinplot(x=groupCol, y=series, data=dataframe, **kwargs)
+        sns.swarmplot(x=groupCol, y=series, data=dataframe, **kwargs)
     return plt
 
 

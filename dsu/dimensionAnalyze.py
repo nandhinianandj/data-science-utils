@@ -7,7 +7,7 @@
 #
 #* Creation Date : 04-07-2020
 #
-#* Last Modified : Saturday 04 July 2020 10:24:17 PM IST
+#* Last Modified : Sunday 05 July 2020 01:53:14 AM IST
 #
 #* Created By :
 
@@ -138,7 +138,8 @@ def _hausdorff_dimension(pixels):
     plot_df["Log(Ns)"] = np.log(Ns)
     # linear fit, polynomial of degree 1
     coeffs = np.polyfit(np.log(scales), np.log(Ns), 1)
-    plotter.lineplot(plot_df, title="log(scales) Vs log(Ns)")
+    plotter.sb_lineplot(data=plot_df, x='Log(scales)', y='Log(Ns)',
+                            title="log(scales) Vs log(Ns)")
 
 def _box_dimension(dataframe, column, L=None):
     if not L:
