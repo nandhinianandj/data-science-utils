@@ -15,7 +15,7 @@ def plot_clusters(dataframe, clusterer, cluster_labels):
     dataframe = pd.DataFrame(dataframe)
     cols = list(dataframe.columns)
     dataframe["predictions"] = pd.Series(cluster_labels)
-    s_plot = plotter.scatterplot(
+    s_plot = plotter.pn_scatterplot(
         dataframe,
         cols[0],
         cols[1],
@@ -204,11 +204,10 @@ def silhouette_analyze(dataframe, cluster_type="KMeans", n_clusters=None):
             )
             continue
     if cluster_type != "bgmm":
-        plotter.show(
             plotter.lineplot(
                 cluster_scores_df, xcol="cluster_size", ycol="silhouette_score"
             )
-        )
+
 
 
 def som_analyze(dataframe, mapsize, algo_type="som"):

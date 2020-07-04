@@ -2,24 +2,29 @@
 from pandas.api import types as ptypes
 from math import ceil
 
-from IPython.display import display
 
+# plotting tools
 import matplotlib
 from matplotlib import pyplot as plt
+import seaborn as sns
+import plotnine
+
 import itertools
 import numpy as np
 import operator
 import os
 import pandas as pd
 import random
-import seaborn as sns
 
-sns.set(style="white")
+
 
 # TODO: Ugh.. this file/module needs a cleanup
 # Custom imports
 from . import utils
 
+def init_and_get_figure(*args, **kwargs):
+    fig = plt.figure(*args, **kwargs)
+    sns.set(style="white")
 
 def sb_gridplot(df, col1, col2, category1, category2, chunks=2):
     if category:
@@ -38,18 +43,9 @@ def sb_show():
 
 
 def show_image(image, **kwargs):
-    p = figure(x_range=(0, 10), y_range=(0, 10), **kwargs)
+    p = plt.figure(x_range=(0, 10), y_range=(0, 10), **kwargs)
     p.image(image=[image], x=0, y=0, dw=10, dh=10, palette="Spectral11")
     return p
-
-
-def show_var_imp(model, X, y):
-    imp = pd.DataFrame(
-        model.feature_importances_, columns=["Importance"], index=X.columns
-    )
-    imp = imp.sort_values(["Importance"], ascending=True)
-    imp[:10].plot(kind="barh")
-    print(model.score(X, y))
 
 
 def lineplot(df, legend=None, title=None, **kwargs):
@@ -59,29 +55,6 @@ def lineplot(df, legend=None, title=None, **kwargs):
     if not title:
         title = "%s Vs %s" % (kwargs.get("xcol"), kwargs.get("ycol"))
     return Line(df, title=title, legend=True)
-
-
-def histogram(histDF, values, bayesian_bins=False, **kwargs):
-    if not bayesian_bins:
-        return histDF[values].hist(**kwargs)
-    else:
-        import numpy as np
-
-        bins = utils.bayesian_blocks(histDF[values])
-        p1 = figure(title=kwargs.pop("title", "Histogram of %s" % values), tools="save")
-        hist, edges = np.histogram(histDF[values], bins=bins)
-        p1.quad(
-            top=hist,
-            bottom=0,
-            left=edges[:-1],
-            right=edges[1:],
-            fill_color="#036564",
-            line_color="#033649",
-        )
-        p1.legend.location = "top_left"
-        p1.xaxis.axis_label = "x"
-        p1.yaxis.axis_label = "Frequency"
-        return p1
 
 
 def mtext(p, x, y, textstr, **kwargs):
@@ -122,7 +95,6 @@ def sb_heatmap(corr_df, **kwargs):
     )
     return
 
-
 def sb_scatterplot(series1, series2, **kwargs):
     return sns.scatterplot(series1, series2, **kwargs)
 
@@ -156,21 +128,3 @@ def sb_jointplot(series1, series2):
     return plt
 
 
-def hyper_plot(
-    dataframe,
-    pca_plot=True,
-    reduce_meth="SparsePCA",
-    cluster=False,
-    n_clusters=None,
-    **kwargs
-):
-    import hypertools as hyp
-
-    if pca_plot:
-        assert reduce_meth, "must pass a reduction method"
-        hyp.plot(dataframe, "o", reduce=reduce_meth)
-    elif cluster:
-        assert n_clusters
-        hyp.plot(dataframe, "o", n_clusters=n_clusters, **kwargs)
-    else:
-        hyp.plot(dataframe, "o", **kwargs)

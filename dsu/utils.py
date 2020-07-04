@@ -455,60 +455,10 @@ def call_7z(filename):
     sp = subprocess.Popen(cmd, stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
 
 
-def count_boxes(data, box_size, M):
-    # data = Series( data )
-    N = np.int(np.floor(M / box_size))
-    counts = list()
-    for i in range(N):
-        condition = (data >= i * box_size) & (data < (i + 1) * box_size)
-        subset = data[condition]
-        counts.append(subset.count())
-    counts = [i for i in counts if i != 0]
-    return len(counts)
-
-
-def fractaldim(pointlist, boxlevel):
-    """Returns the approximate fractal dimension of pointlist,
-    via the box-counting algorithm.  The elements of pointset
-    should be three-element sequences of numbers between 0.0
-    and 1.0.  The boxlevel is the number of divisions made on
-    each dimension, and should be greater than 1."""
-    # From here https://mail.python.org/pipermail/python-list/2000-September/025263.html
-
-    if boxlevel <= 1.0:
-        return -1
-
-    pointdict = {}
-
-    def mapfunction(val, level=boxlevel):
-        return int(val * level)
-
-    for point in pointlist:
-        box = (
-            int(point[0] * boxlevel),
-            int(point[1] * boxlevel),
-            int(point[2] * boxlevel),
-        )
-        # box = tuple(map(mapfunction, point))
-        if not pointdict.has_key(box):
-            pointdict[box] = 1
-
-    num = len(pointdict.keys())
-
-    if num == 0:
-        return -1
-
-    return math.log(num) / math.log(boxlevel)
-
-
-def memoize(func):
-    cache = func.cache = {}
-
-    @functools.wraps(func)
-    def memoized_func(*args, **kwargs):
-        key = str(args) + str(kwargs)
-        if key not in cache:
-            cache[key] = func(*args, **kwargs)
-        return cache[key]
-
-    return memoized_func
+def print_var_imp(model, X, y):
+    imp = pd.DataFrame(
+        model.feature_importances_, columns=["Importance"], index=X.columns
+    )
+    imp = imp.sort_values(["Importance"], ascending=True)
+    imp[:10].plot(kind="barh")
+    print(model.score(X, y))
