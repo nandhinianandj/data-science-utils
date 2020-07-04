@@ -1,42 +1,23 @@
-#Isolation forest
-#-e git+https://github.com/linkedin/isolation-forest.git#egg
-# Encode Categories
-category-encoders
-arviz
-# survival
-lifelines
+
+cython
 # dimensionality
 -e git+https://github.com/DmitryUlyanov/Multicore-TSNE.git#egg=Multicore-TSNE
-cython
-# OR tools
-ortools
+
 # progress bar library for python and jupyter notebook
 tqdm
 # Visualization packages
 seaborn
 matplotlib
-gleam
+plotnine
+# missing data viz
 missingno
-leather
-ggplot
 #hypertools # For multi-dimensional data
-# google maps plot latitudes and longitudes
-gmplot
 
 patsy
 
 # Stats Packages
 statsmodels
 robustats
-
-# Feature selector for timeseries
-tsfresh
-#Forecasting for timeseries
-fbprophet
-
-# Automated sklearn
-#tpot
-#-e git+https://github.com/hyperopt/hyperopt-sklearn.git#egg=hpsklearn
 
 
 # matrix tool + data structure/frame
@@ -72,22 +53,7 @@ gensim
 spacy
 #glove
 
-#Light GBM
-#-e git+https://github.com/Microsoft/LightGBM.git#egg=lightgbm
-#-e git+https://github.com/ArdalanM/pyLightGBM.git#egg=pylightgbm
-
-
-# Manifold learning
-# -e git+https://github.com/lmcinnes/umap.git#egg=umap
-
-
-# Neural network packages
-#tensorflow
-#gym
-#keras
-#tensorboard
-# Tensorflow pre-trained models
-#tensorflow_hub==0.4.0
+# clustering with NNs
 -e git+https://github.com/sevamoo/SOMPY#egg=sompy
 #neat-python
 
@@ -95,11 +61,6 @@ spacy
 fuzzywuzzy
 # Faster Text search
 flashtext
-
-
-# For graphical models
-#pystruct
-#seqlearn
 
 # For understanding blackbox models
 #skater
