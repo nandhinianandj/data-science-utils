@@ -177,7 +177,7 @@ def setup_package():
     ]  # , 'pyLightGBM']
 
     metadata = dict(
-        name="datascienceutils",
+        name="dsu",
         version=get_version_info()[0],
         packages=["dsu", "dsu/features"],
         maintainer="Nandhini Anand",

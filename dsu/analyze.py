@@ -320,10 +320,10 @@ def regression_analyze(
             pm.train(new_df, target, column=None, modelType="RidgeRegression"),
             pm.train(new_df, target, column=None, modelType="RidgeRegressionCV"),
             pm.train(new_df, target, column=None, modelType="LassoRegression"),
-            # pm.train(new_df, target, column=None, modelType='ElasticNetRegression'),
-            # pm.train(new_df, target, column=None, modelType='SVMRegression'),
-            # pm.train(new_df, target, column=col1, modelType='IsotonicRegression'),
-            # pm.train(new_df, target, column=col1, modelType='logarithmicRegression'),
+            pm.train(new_df, target, column=None, modelType='ElasticNetRegression'),
+            pm.train(new_df, target, column=None, modelType='SVMRegression'),
+            #pm.train(new_df, target, column=col1, modelType='IsotonicRegression'),
+            pm.train(new_df, target, column=col1, modelType='logarithmicRegression'),
         ]
         tempRes = dict()
         if check_heteroskedasticity:
@@ -372,7 +372,6 @@ def regression_analyze(
     return finalRes
     # grid = plotter.gridplot(list(utils.chunks(plots, size=2)))
     # plotter.show(grid)
-
 
 def time_series_analysis(
     df,
@@ -443,8 +442,6 @@ def time_series_analysis(
         else:
             tsu.seasonal_decompose(ts)
 
-
-
 def causal_analyze(dataframe):
     for each in dataframe.columns:
         assert utils.is_numeric(dataframe, column=each)
@@ -459,6 +456,4 @@ def causal_analyze(dataframe):
     graph = ic_algorithm.search(dataframe, variable_types)
     drawing.draw_networkx(graph)
     pass
-
-
 

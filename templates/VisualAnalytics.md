@@ -14,8 +14,8 @@ jupyter:
 
 ```python
 # Custom libraries
-from datascienceutils import plotter
-from datascienceutils import analyze
+from dsu import plotter
+from dsu import analyze
 
 # Standard libraries
 import json
@@ -75,32 +75,17 @@ for combo in itertools.combinations(numericalCols, 2):
 
 ```python
 for col in numericalCols:
-    plotter.show(analyze.dist_analyze(irisDf, col, kdeplot=True, bayesian_hist=True))
+    analyze.dist_analyze(irisDf, col, kdeplot=True, bayesian_hist=True)
 for col in catCols:
-    plotter.show(analyze.dist_analyze(irisDf, col, kdeplot=False, bayesian_hist=False))
+    analyze.dist_analyze(irisDf, col, kdeplot=False, bayesian_hist=False)
 ```
 
 ```python
 #irisDf.drop('filename', inplace=True, axis=1)
 for col in numericalCols:
-    plotter.show(analyze.dist_analyze(irisDf, col, bayesian_hist=True))
+    analyze.dist_analyze(irisDf, col, bayesian_hist=True)
 ```
 
-```python
-analyze.regression_analyze(irisDf, numericalCols, check_vif=False, check_heteroskedasticity=False, check_dist_similarity=False)
-```
-
-```python
-analyze.non_linear_regression_analyze(irisDf, numericalCols, check_vif=False, check_heteroskedasticity=False)
-```
-
-```python
-analyze.bayesian_regression_analyze(irisDf, numericalCols)
-```
-
-```python
-irisDf.head()
-```
 
 ```python
 irisDf.tail()

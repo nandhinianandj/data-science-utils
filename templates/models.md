@@ -19,9 +19,9 @@ import pandas as pd
 import bokeh
 from bokeh.plotting import output_notebook
 
-from datascienceutils import analyze
-from datascienceutils import explain
-from datascienceutils import predictiveModels as pm
+from dsu import analyze
+from dsu import explain
+from dsu import predictiveModels as pm
 
 output_notebook()
 # Load the diabetes dataset
@@ -77,8 +77,8 @@ print('Variance score: %.2f' % log_model.score(diabetes_X_test, diabetes_y_test)
 ```
 
 ```python
-from datascienceutils import sklearnUtils as sku
-from datascienceutils import settings
+from dsu import sklearnUtils as sku
+from dsu import settings
 settings.MODELS_BASE_PATH='../models'
 params={'model_type': 'logarithmicRegression', 
         'output_type':'binary', 

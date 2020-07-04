@@ -26,7 +26,7 @@ from bokeh.plotting import figure, show, output_file, output_notebook, ColumnDat
 import bokeh
 output_notebook()
 
-from datascienceutils import analyze
+from dsu import analyze
 ```
 
 ```python

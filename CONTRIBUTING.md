@@ -1,4 +1,4 @@
-Contributing to datascienceutils
+Contributing to dsu
 
 What is "open work"?
 
@@ -9,7 +9,7 @@ Do work first, ask permission later. Fun, isn't it? If you are opening a new iss
 
 How you can contribute
 
-Whether you are a programmer or not, you can contribute to datascienceutils.
+Whether you are a programmer or not, you can contribute to dsu.
 Programmers:  See TODO.md for ideas/plans
 Non-programmers: The big pending work for non-programmers is documentation. There's almost no documentation at the moment, just some example notebooks.
 How?:

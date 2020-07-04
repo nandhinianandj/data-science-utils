@@ -14,10 +14,10 @@ jupyter:
 
 ```python
 # Custom libraries
-from datascienceutils import clusteringModels as cm
-from datascienceutils import analyze
-from datascienceutils import plotter
-from datascienceutils import sklearnUtils as sku
+from dsu import clusteringModels as cm
+from dsu import analyze
+from dsu import plotter
+from dsu import sklearnUtils as sku
 
 # Standard libraries
 import json
@@ -80,7 +80,7 @@ distribution_tests(diabetes_X[0])
 ```
 
 ```python
-from datascienceutils import statsutils as su
+from dsu import statsutils as su
 print(su.check_distribution(diabetes_X[0],))
 ```
 
@@ -99,7 +99,7 @@ print(files)
 ```
 
 ```python
-from datascienceutils import settings
+from dsu import settings
 settings.MODELS_BASE_PATH='../models'
 models = dict()
 for i,file in enumerate(files):
@@ -114,7 +114,7 @@ models.items()
 
 ```python
 res = list()
-from datascienceutils import modelValidators as mv
+from dsu import modelValidators as mv
 input_data = pd.DataFrame(diabetes_X_test)
 input_data.columns = map(str, input_data.columns)
 for k,(model, metadata) in models.items():

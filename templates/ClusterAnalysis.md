@@ -14,9 +14,9 @@ jupyter:
 
 ```python
 # Custom libraries
-from datascienceutils import clusteringModels as cm
-from datascienceutils import analyze
-from datascienceutils import plotter
+from dsu import clusteringModels as cm
+from dsu import analyze
+from dsu import plotter
 # Standard libraries
 import json
 %matplotlib inline
