@@ -36,6 +36,7 @@ ace = "^0.3.2"
 numpy = "^1.17"
 patsy = "^0.5.1"
 linfa = "^0.1.0"
+pytesseract = "^0.3.4"
 
 [tool.poetry.dev-dependencies]
 
