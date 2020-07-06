@@ -61,6 +61,8 @@ spacy
 fuzzywuzzy
 # Faster Text search
 flashtext
+#spellcorrection
+pyspellchecker
 
 # For understanding blackbox models
 #skater

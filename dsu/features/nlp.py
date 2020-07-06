@@ -1,5 +1,15 @@
-import flashtext
 
+def spell_correction(text):
+    from spellchecker import SpellChecker
+    spell = SpellChecker()
+    # find those words that may be misspelled
+    misspelled = spell.unknown(text)
+    result = dict()
+    for word in misspelled:
+        # Get the one `most likely` answer
+        print(word, spell.candidates(word))
+        result[word] = spell.correction(word)
+    return result
 
 def filter_letters_only(text):
     import re
@@ -122,9 +132,8 @@ def getAvgFeatureVecs(text, model, num_features):
 def word_cloud(train_qs):
     from wordcloud import WordCloud
 
-    cloud = WordCloud(width=1440, height=1080).generate(" ".join(train_qs.astype(str)))
-    plotter.show_image(cloud, figsize=(20, 15))
-
+    cloud = WordCloud(width=1440, height=1080).generate(" ".join(train_qs))
+    return cloud
 
 def word_similarity(word1, word2):
     from nltk.corpus import wordnet as wn

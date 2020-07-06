@@ -41,11 +41,8 @@ def sb_gridplot(df, col1, col2, category1, category2, chunks=2):
 def sb_show():
     plt.show()
 
-
 def show_image(image, **kwargs):
-    p = plt.figure(x_range=(0, 10), y_range=(0, 10), **kwargs)
-    p.image(image=[image], x=0, y=0, dw=10, dh=10, palette="Spectral11")
-    return p
+    plt.imshow(image)
 
 def mtext(p, x, y, textstr, **kwargs):
     p.text(
