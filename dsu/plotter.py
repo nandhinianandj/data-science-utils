@@ -101,13 +101,12 @@ def sb_histogram(series, kdeplot=False, bayesian_bins=False):
 def sb_violinplot(series, dataframe=None, groupCol=None, **kwargs):
     if not groupCol:
         assert isinstance(series, pd.Series)
-        plt = sns.violinplot(x=series, **kwargs)
+        sns.violinplot(x=series, **kwargs)
     else:
-        assert (dataframe is not None) and groupCol
-        assert isinstance(series, str)
+        assert groupCol
+        assert series in dataframe.columns
         sns.violinplot(x=groupCol, y=series, data=dataframe, **kwargs)
         sns.swarmplot(x=groupCol, y=series, data=dataframe, **kwargs)
-    return plt
 
 
 def sb_jointplot(series1, series2):

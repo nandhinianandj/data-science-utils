@@ -28,7 +28,7 @@ import random
 ```
 
 ```python
-irisDf = pd.read_csv('../data/Iris.csv')
+irisDf = pd.read_csv('~/playspace/data/Iris.csv')
 ```
 
 ```python
@@ -60,11 +60,17 @@ irisDf.corr()
 # sample 10% of data
 if len(irisDf) > 100000:
     samplesize =  int(0.1 *len(irisDf))
-sampleDf = irisDf.sample(samplesize)
+    sampleDf = irisDf.sample(samplesize)
+else:
+    sampleDf = irisDf
 ```
 
 ```python
-analyze.missing_values(sampleDf, sample=True, samplesize=1000)
+analyze.missing_values(sampleDf,)
+```
+
+```python
+analyze.missing_values(sampleDf, groups = ['Class'])
 ```
 
 ```python
@@ -77,22 +83,20 @@ for combo in itertools.combinations(numericalCols, 2):
 
 ```python
 for col in numericalCols:
-    analyze.dist_analyze(sampleDf, col, kdeplot=True, bayesian_hist=True)
-for col in catCols:
-    analyze.dist_analyze(sampleDf, col, kdeplot=False, bayesian_hist=False)
+    for catCol in catCols:
+        analyze.dist_analyze(sampleDf, col, category=catCol, kdeplot=True, bayesian_hist=True)
+
 ```
 
 ```python
 for catCol in catCols:
     for col in numericalCols:
-    	plotter.sb_violinplot(sampleDf[col], groupCol=catCol, data=sampleDf, inner=None)
-	plt.show()
+        print(col, catCol)
+        plotter.sb_violinplot(col, groupCol=catCol, dataframe=sampleDf)
+        plotter.sb_show()
+        
 ```
 
-
-```python
-irisDf.tail()
-```
 
 ```python
 analyze.joint_dist_analyze(sampleDf, columns=numericalCols, categories=catCols)

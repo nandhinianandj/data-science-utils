@@ -18,15 +18,15 @@ from . import statsutils as su
 
 
 def missing_values(df, sample=False, samplesize=1000, groups=None):
-    import missingno as msno
     if groups:
         for each in groups:
-            groupdf = df.groupby(each)
+            groupdf = df.groupby(each).apply(pd.isnull)
             plot_missing_vals(groupdf, sample=sample, samplesize=samplesize)
     else:
         plot_missing_vals(df, sample=sample, samplesize=samplesize)
 
 def plot_missing_vals(df, sample=True, samplesize=1000):
+    import missingno as msno
     if not sample:
         msno.bar(df)
         msno.heatmap(df)
@@ -82,16 +82,16 @@ def dist_analyze( df, column=None,
 
 
 def joint_dist_analyze(df, columns=None, categories=None):
-    plots = []
     for category in categories:
         for column in columns:
             assert utils.is_numeric(df, column=column)
             print("Variance of %s" % column, df[column].var())
             print("Skewness of %s" % column, df[column].skew())
             # Plot Barplots of combination of category and numerical columns
-            plots.append(plotter.sb_barplot(df, category, column))
-    grid = plotter.gridplot(list(utils.chunks(plots, size=2)))
-    return grid
+            plotter.sb_barplot(df, category, column)
+            plotter.sb_show()
+    #grid = plotter.gridplot(list(utils.chunks(plots, size=2)))
+    #return grid
 
 
 def outliers_analyze(df):
