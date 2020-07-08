@@ -1,3 +1,6 @@
+def ngram_tagger(text):
+    pass
+
 
 def spell_correction(text):
     from spellchecker import SpellChecker
