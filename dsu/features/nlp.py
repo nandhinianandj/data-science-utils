@@ -140,6 +140,28 @@ def word_similarity(word1, word2):
 
     return wn.synset(word1).path_similarity(wn.synset(word2))
 
+def sentiment(tagged_words, db='sentiwordnet'):
+    if db=='sentiwordnet':
+        pscore, nscore = 0.0, 0.0
+        from nltk.corpus import sentiwordnet as swn
+        for i in range(0,len(tagged_words)):
+            if 'NN' in tagged_words[i][1] and len(list(swn.senti_synsets(tagged_words[i][0],'n')))>0:
+                    pscore+=(list(swn.senti_synsets(tagged_words[i][0],'n'))[0]).pos_score() #positive score of a word
+                    nscore+=(list(swn.senti_synsets(tagged_words[i][0],'n'))[0]).neg_score()  #negative score of a word
+            elif 'VB' in tagged_words[i][1] and len(list(swn.senti_synsets(tagged_words[i][0],'v')))>0:
+                   pscore+=(list(swn.senti_synsets(tagged_words[i][0],'v'))[0]).pos_score()
+                   nscore+=(list(swn.senti_synsets(tagged_words[i][0],'v'))[0]).neg_score()
+            elif 'JJ' in tagged_words[i][1] and len(list(swn.senti_synsets(tagged_words[i][0],'a')))>0:
+                   pscore+=(list(swn.senti_synsets(tagged_words[i][0],'a'))[0]).pos_score()
+                   nscore+=(list(swn.senti_synsets(tagged_words[i][0],'a'))[0]).neg_score()
+            elif 'RB' in tagged_words[i][1] and len(list(swn.senti_synsets(tagged_words[i][0],'r')))>0:
+                   pscore+=(list(swn.senti_synsets(tagged_words[i][0],'r'))[0]).pos_score()
+                   nscore+=(list(swn.senti_synsets(tagged_words[i][0],'r'))[0]).neg_score()
+            return (pscore, nscore)
+    #elif db == 'sentiwords':
+
+    else:
+        raise NotImplementedError
 
 def tfidf_model(corpus, gensim=False):
     if gensim:
