@@ -1,3 +1,5 @@
+#### Everywhere text is a list of words.
+
 def spell_correction( text, method='spellchecker',
                       source_words=None, measure='levenshtein'):
     if method=='spellchecker':
@@ -13,16 +15,20 @@ def spell_correction( text, method='spellchecker',
     else:
         assert source_words, measure
         import Levenshtein
-        words = text.split()
+        words = text
         result = dict()
         for word in words:
-            distances = dict(map(lambda x: (x, Levenshtein.distance(x,word)), source_words))
-            closest_words = {k: v for k, v in sorted(distances.items(), key=lambda item: item[1])
-                    if v > 1}
+            distances = dict(map(lambda x: (x, Levenshtein.distance(x, word)), source_words))
+            closest_words = {k: v for k, v in sorted(distances.items(), key=lambda item: item[1]) }
             result.update({word: closest_words})
         return result
 
     pass
+
+def filter_non_words(text):
+    import nltk
+    nltk_words = set(nltk.corpus.words.words())
+    return " ".join(w for w in text if w.lower() in nltk_words )
 
 def filter_letters_only(text):
     import re
