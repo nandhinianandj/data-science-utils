@@ -107,10 +107,10 @@ def sentiment(words, db='sentiwordnet'):
         from nltk.corpus import sentiwordnet as swn
         pscore, nscore = 0.0, 0.0
         for i in range(0,len(words)):
-            top_synset = list(swn.senti_synsets(tagged_words[i]))[0]
+            top_synset = list(swn.senti_synsets(words[i]))
             if top_synset:
-                pscore += top_synset.pos_score()
-                nscore += top_synset.neg_score()
+                pscore += top_synset[0].pos_score()
+                nscore += top_synset[0].neg_score()
         return (pscore, nscore)
     #elif db == 'sentiwords':
 
