@@ -37,6 +37,7 @@ numpy = "^1.17"
 patsy = "^0.5.1"
 linfa = "^0.1.0"
 pytesseract = "^0.3.4"
+python-Levenshtein = "^0.12.0"
 
 [tool.poetry.dev-dependencies]
 
