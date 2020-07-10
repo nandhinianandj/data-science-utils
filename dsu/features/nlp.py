@@ -103,7 +103,7 @@ def wordnet_similarity(word1, word2):
 
 def sentiment(words, db='sentiwordnet'):
 
-    if db=='sentiwordnet':
+    if db == 'sentiwordnet':
         from nltk.corpus import sentiwordnet as swn
         pscore, nscore = 0.0, 0.0
         for i in range(0,len(words)):
@@ -112,8 +112,10 @@ def sentiment(words, db='sentiwordnet'):
                 pscore += top_synset[0].pos_score()
                 nscore += top_synset[0].neg_score()
         return (pscore, nscore)
-    #elif db == 'sentiwords':
-
+    elif db == 'afinn':
+        from afinn import Afinn
+        af = Afinn()
+        return af.score(' '.join(words))
     else:
         raise NotImplementedError
 
