@@ -94,13 +94,13 @@ def joint_dist_analyze(df, columns=None, categories=None):
     #return grid
 
 
-def outliers_analyze(df):
+def outliers_analyze(df, **kwargs):
 
     rng = np.random.RandomState(42)
 
     # Example settings
-    n_samples = 200
-    outliers_fraction = 0.25
+    n_samples = kwargs.get('samples', None) or 200
+    outliers_fraction = kwargs.get('outliers_fraction', None) or 0.25
     clusters_separation = [0, 1, 2]
 
     # define two outlier detection tools to be compared

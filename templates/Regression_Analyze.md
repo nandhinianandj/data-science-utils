@@ -53,6 +53,7 @@ analyze.pymc_log_reg_analyze(irisDf, numColumns)
 ```
 
 ```python
+analyze.outliers_analyze(irisDf)
 ```
 
 ```python
