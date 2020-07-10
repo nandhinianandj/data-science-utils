@@ -211,19 +211,17 @@ def correlation_analyze( df, col1, col2,
                 plotter.sb_show()
 
 
-def non_linear_regression_analyze(df, target_cols=list(), trainsize=0.8, **kwargs):
+def non_linear_regression_analyze(df, numericCols = list(),
+                                  target=str(), trainsize=0.8, **kwargs):
 
-    plots = list()
-    for col1, col2 in itertools.combinations(target_cols, 2):
-        from ace import model
+    from ace import model
 
-        model = model.Model()
-        model.build_model_from_xy([df[col1].values], [df[col2].values])
+    model = model.Model()
+    model.build_model_from_xy([df[numericCols].values], [df[target].values])
 
-        print(" # Ace Models btw numerical cols")
-        plot = plotter.sb_lineplot(col1, col2, df[[col1, col2]])  # , title='%s Vs %s'%(col1, col2))
-        plots.append(plot)
-    plotter.show(plots)
+    print(" # Ace Models btw numerical cols")
+    plot = plotter.sb_lineplot(col1, col2, df[[col1, col2]])  # , title='%s Vs %s'%(col1, col2))
+    plotter.sb_show()
 
 
 def pymc_plot_posterior_glm(df, xlabel, ylabel, trace):
@@ -272,15 +270,14 @@ def pymc_log_reg_analyze(dataframe, target_col=str(), **kwargs):
         trace = pm.sample(1000, tune=1000, init="adapt_diag")
 
 
-def regression_analyze( df, target_cols=list(),
+def regression_analyze( df, numericCols = list(), targetCols=list(),
                         trainsize=0.8, check_heteroskedasticity=True,
                         check_vif=True, **kwargs):
     """
     Plot regressed data vs original data for the passed columns.
     @params:
-        col1: x column,
-        col2: y column
-
+        numericCols:
+        targetCols:
     @optional:
         non_linear: Use the python ace module to calculate non-linear correlations too.(Warning can
         be very slow)
@@ -301,11 +298,10 @@ def regression_analyze( df, target_cols=list(),
     plots = list()
     results = list()
     finalRes = dict()
-    for col1, col2 in itertools.combinations(target_cols, 2):
-        new_df = df[[col1, col2]].copy(deep=True)
-        target = new_df[col2].values.reshape(-1, 1)
-        key = (col1, col2)
-        finalRes[key] = dict()
+    for col in targetCols:
+        new_df = df[numericCols]
+        target = df[col].values.reshape(-1, 1)
+        finalRes[col] = dict()
         models = [
             pm.train(new_df, target, column=None, modelType="LinearRegression"),
             pm.train(new_df, target, column=None, modelType="RidgeRegression"),
@@ -313,8 +309,6 @@ def regression_analyze( df, target_cols=list(),
             pm.train(new_df, target, column=None, modelType="LassoRegression"),
             pm.train(new_df, target, column=None, modelType='ElasticNetRegression'),
             pm.train(new_df, target, column=None, modelType='SVMRegression'),
-            pm.train(new_df, target, column=col1, modelType='IsotonicRegression'),
-            #pm.train(new_df, target, column=col1, modelType='logarithmicRegression'),
         ]
         tempRes = dict()
         if check_heteroskedasticity:
@@ -333,34 +327,31 @@ def regression_analyze( df, target_cols=list(),
         for model in models:
             modelName = model.__repr__().split("(")[0]
             tempRes[modelName] = list()
-            scatter = plotter.sb_scatterplot( new_df[col1], new_df[col2])  # , plttitle=model.__repr__())
             predicted = list(model.predict(new_df))
             print("Regression Score: %s" % (model.__repr__()))
-            regScore = model.score(new_df, new_df[col2].values.reshape(-1, 1))
+            regScore = model.score(new_df, new_df[col].values.reshape(-1, 1))
             print(regScore)
             tempRes[modelName].append({"score": regScore})
             # tempRes[modelName].append({'rank':model.rank_})
             tempRes[modelName].append({"intercept": model.intercept_})
-            tempRes[modelName].append({"coef": model.coef_})
+            if 'SVR' not in modelName:
+                tempRes[modelName].append({"coef": model.coef_})
+            else:
+                tempRes[modelName].append({"dual_coef": model.dual_coef_})
             if check_vif:
                 tempVIF = list()
                 tempRes[modelName].append({"VIF": []})
-
                 for col in [col1, col2]:
                     col_idx = list(df.columns).index(col)
-                    vifFactor = oi.variance_inflation_factor(
-                        df.values.reshape(-1, 1), col_idx
-                    )
+                    vifFactor = oi.variance_inflation_factor( df.values.reshape(-1, 1), col_idx)
                     tempVIF.append({col: vifFactor})
                     print("Variance Inflation Factors for %s" % col)
                     print(vifFactor)
                     tempRes[modelName]["VIF"].append({col: vifFactor})
 
-        finalRes[key] = tempRes
+        finalRes[col] = tempRes
     pprint.pprint(finalRes)
     return finalRes
-    # grid = plotter.gridplot(list(utils.chunks(plots, size=2)))
-    # plotter.show(grid)
 
 def time_series_analysis(   df, timeCol="date", valueCol=None,
                             timeInterval="30min", plot_title="timeseries",
