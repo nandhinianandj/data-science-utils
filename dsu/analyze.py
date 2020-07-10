@@ -313,8 +313,8 @@ def regression_analyze( df, target_cols=list(),
             pm.train(new_df, target, column=None, modelType="LassoRegression"),
             pm.train(new_df, target, column=None, modelType='ElasticNetRegression'),
             pm.train(new_df, target, column=None, modelType='SVMRegression'),
-            #pm.train(new_df, target, column=col1, modelType='IsotonicRegression'),
-            pm.train(new_df, target, column=col1, modelType='logarithmicRegression'),
+            pm.train(new_df, target, column=col1, modelType='IsotonicRegression'),
+            #pm.train(new_df, target, column=col1, modelType='logarithmicRegression'),
         ]
         tempRes = dict()
         if check_heteroskedasticity:
@@ -362,18 +362,10 @@ def regression_analyze( df, target_cols=list(),
     # grid = plotter.gridplot(list(utils.chunks(plots, size=2)))
     # plotter.show(grid)
 
-def time_series_analysis(
-    df,
-    timeCol="date",
-    valueCol=None,
-    timeInterval="30min",
-    plot_title="timeseries",
-    skip_stationarity=False,
-    skip_autocorrelation=False,
-    skip_seasonal_decompose=False,
-    psf_analyze=False,
-    **kwargs
-):
+def time_series_analysis(   df, timeCol="date", valueCol=None,
+                            timeInterval="30min", plot_title="timeseries",
+                            skip_stationarity=False, skip_autocorrelation=False,
+                            skip_seasonal_decompose=False, psf_analyze=False, **kwargs):
     """
     Plot time series, rolling mean, rolling std , autocorrelation plot, partial autocorrelation plot
     and seasonal decompose

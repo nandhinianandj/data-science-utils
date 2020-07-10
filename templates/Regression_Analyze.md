@@ -21,11 +21,6 @@ import numpy as np
 import pandas as pd
 import random
 
-from bokeh.plotting import figure, show, output_file, output_notebook, ColumnDataSource
-
-import bokeh
-output_notebook()
-
 from dsu import analyze
 ```
 
@@ -50,9 +45,15 @@ analyze.pymc_regression_analyze(irisDf, numColumns)
 ```
 
 ```python
-
+analyze.pymc_plot_posterior_glm(irisDf, 'sepal_length',  'sepal_width')
 ```
 
 ```python
+analyze.pymc_log_reg_analyze(irisDf, numColumns)
+```
 
+```python
+```
+
+```python
 ```

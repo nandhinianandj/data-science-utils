@@ -94,7 +94,7 @@ for catCol in catCols:
         print(col, catCol)
         plotter.sb_violinplot(col, groupCol=catCol, dataframe=sampleDf)
         plotter.sb_show()
-        
+
 ```
 
 
