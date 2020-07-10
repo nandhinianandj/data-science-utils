@@ -102,7 +102,7 @@ def outliers_analyze(df, **kwargs):
     n_samples = kwargs.get('samples', None) or 200
     outliers_fraction = kwargs.get('outliers_fraction', None) or 0.25
     clusters_separation = [0, 1, 2]
-
+    from sklearn import svm
     # define two outlier detection tools to be compared
     classifiers = {
         "One-Class SVM": svm.OneClassSVM(
