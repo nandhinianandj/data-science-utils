@@ -19,6 +19,8 @@ patsy
 statsmodels
 robustats
 
+# Data format
+pandasdmx
 
 # matrix tool + data structure/frame
 numpy
