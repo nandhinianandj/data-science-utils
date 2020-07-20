@@ -69,6 +69,8 @@ fuzzywuzzy
 flashtext
 #spellcorrection
 pyspellchecker
+wordcloud
+stylecloud
 
 # For understanding blackbox models
 #skater

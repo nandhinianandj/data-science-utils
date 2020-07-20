@@ -42,8 +42,7 @@ irisDf.describe()
 
 ```python
 from pandas_profiling import ProfileReport
-prof = ProfileReport(df, explorative=True)
-prof.to_notebook_iframe()
+prof = ProfileReport(irisDf)
 prof.to_file(output_file='output.html')
 ```
 
