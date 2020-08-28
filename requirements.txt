@@ -1,4 +1,4 @@
-
+joblib
 cython
 # dimensionality
 -e git+https://github.com/DmitryUlyanov/Multicore-TSNE.git#egg=Multicore-TSNE

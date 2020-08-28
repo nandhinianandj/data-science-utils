@@ -4,9 +4,9 @@ import numpy as np
 import os
 import pandas as pd
 import json
+import joblib
 
 from collections import defaultdict
-from sklearn.externals import joblib
 from sklearn.preprocessing import LabelEncoder, MultiLabelBinarizer, LabelBinarizer
 
 
@@ -75,7 +75,6 @@ def dump_model(model, filename, model_params):
         Dumps the model and the parameters as separate files
     """
     import uuid
-    from sklearn.externals import joblib
 
     assert model, "Model required"
     assert filename, "Filename Required"

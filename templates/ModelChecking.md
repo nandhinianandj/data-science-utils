@@ -89,7 +89,7 @@ plotter.show(plotter.lineplot(pd.DataFrame(diabetes_X[0], columns=['0'])))
 ```
 
 ```python
-from sklearn.externals import joblib
+import joblib
 
 import os
 import glob
@@ -105,7 +105,7 @@ models = dict()
 for i,file in enumerate(files):
     model = file.split('/')[-1][:-4]
     models[i] = sku.load_model(model)
-    
+
 ```
 
 ```python
@@ -118,19 +118,19 @@ from dsu import modelValidators as mv
 input_data = pd.DataFrame(diabetes_X_test)
 input_data.columns = map(str, input_data.columns)
 for k,(model, metadata) in models.items():
-       
+
     res.append(model.predict(diabetes_X_test))
     model_info = metadata
-    
+
     model_info.update({'model_class': 'regression'})
     print('model id: %s'%model_info['id'])
-    
+
     if model_info['model_class'] == 'regression':
         # Check the predictions are type of continuous variables (float or int)
         # parse and translate output_metadata to choice of tests
-        
-        mv.validate(model, model_info, input_data) 
-        
-    
+
+        mv.validate(model, model_info, input_data)
+
+
 
 ```
