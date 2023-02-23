@@ -1,14 +1,12 @@
 # Standard and External lib imports
 from pandas.api import types as ptypes
-from bokeh.mpl import to_bokeh
-from bokeh.io import gridplot
+from bokeh.layouts import gridplot
 from bokeh.plotting import figure, show, output_file, output_notebook, ColumnDataSource
 from bokeh.resources import CDN
 from bokeh.embed import components
 from bokeh.models import ( Text, PanTool, WheelZoomTool, LinearAxis,
                            SingleIntervalTicker, Range1d,  Plot,
-                           Text, Circle, HoverTool, Triangle)
-from bokeh.charts import Chart, Line
+                           Line,Text, Circle, HoverTool, Triangle)
 from math import ceil
 
 import matplotlib
@@ -185,7 +183,6 @@ def scatterplot(scatterDF, xcol, ycol,
         p = figure(title=plttitle, **fig_kwargs)
     else:
         p = figure(title=plttitle)
-    from bokeh.charts import Scatter
 
     if not xlabel:
         xlabel = xcol
@@ -276,13 +273,13 @@ def sb_violinplot(series, dataframe=None, groupCol = None, **kwargs):
         plt = sns.violinplot(x=groupCol, y=series, data=dataframe, **kwargs)
     plt.show()
 
-def sb_jointplot(series1, series2):
+def sb_jointplot(plotDf):
     import numpy as np
     import seaborn as sns
     sns.set(style="white")
 
     # Show the joint distribution using kernel density estimation
-    plt = sns.jointplot(series1, series2, kind="kde", size=7, space=0)
+    plt = sns.jointplot(plotDf, kind="kde", size=7, space=0)
 
 def hyper_plot(dataframe, pca_plot=True, reduce_meth='SparsePCA', cluster=False, n_clusters=None, **kwargs):
     import hypertools as hyp

@@ -1,4 +1,4 @@
-from bokeh.io import gridplot
+from bokeh.layouts import gridplot
 from sklearn import cluster
 from sklearn.neighbors import kneighbors_graph, KernelDensity
 import numpy as np

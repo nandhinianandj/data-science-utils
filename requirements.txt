@@ -1,9 +1,10 @@
+joblib
 # swiftapply for speeding up pandas  apply operations
 swifter
 #jupyter plugin
 wurlitzer
 # dimensionality
--e git+git@github.com:DmitryUlyanov/Multicore-TSNE.git#egg=Multicore-TSNE
+#-e git+git@github.com:DmitryUlyanov/Multicore-TSNE.git#egg=Multicore-TSNE
 cython
 # OR tools
 ortools

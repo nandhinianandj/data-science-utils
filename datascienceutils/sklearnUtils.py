@@ -1,12 +1,12 @@
 import copy
 import fnmatch
+import json
+import joblib
 import numpy as np
 import os
 import pandas as pd
-import json
 
 from collections import defaultdict
-from sklearn.externals import joblib
 from sklearn.preprocessing import LabelEncoder, MultiLabelBinarizer, LabelBinarizer
 
 

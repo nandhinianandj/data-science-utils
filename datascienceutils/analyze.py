@@ -1,5 +1,5 @@
 # Standard and external libraries
-from bokeh.io import gridplot
+from bokeh.layouts import gridplot
 from statsmodels.stats import outliers_influence
 from tqdm import tqdm_notebook
 
@@ -113,7 +113,8 @@ def correlation_analyze(df, col1, col2, categories=[], measures=[],
 
     u,v = col1, col2
     plots.append(plotter.scatterplot(df, u, v))
-    plotter.sb_jointplot(df[u], df[v])
+    plotDf=df[u,v]
+    plotter.sb_jointplot(plotDf)
     if check_linearity:
         u_2diff = np.gradient(df[u], 2)
         v_2diff = np.gradient(df[v], 2)

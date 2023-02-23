@@ -26,7 +26,7 @@ from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sklearn.manifold import TSNE
 
 # kernel density estimators
-from sklearn.neighbors.kde import KernelDensity
+from sklearn.neighbors import KernelDensity
 
 # (Gaussian) Mixture models
 from sklearn.mixture import *
