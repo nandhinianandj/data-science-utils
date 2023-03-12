@@ -90,21 +90,28 @@ def sb_scatterplot(series1, series2, **kwargs):
 
 def sb_histogram(series, kdeplot=False, bayesian_bins=False):
     if kdeplot:
-        return sns.distplot(series, kde=kdeplot)
+        return sns.displot(series, kind="hist")
     else:
-        return sns.distplot(series, kde=kdeplot, kde_kws={"bw": "silverman"})
+        return sns.displot(series, kind="kde",
+                        kde_kws={"bw": "silverman"})
 
 
-def sb_violinplot(series, dataframe=None, groupCol=None, **kwargs):
+def sb_violinplot(series=None, dataframe=None,
+                    xAxisCol=None, yAxisCol=None,
+                    groupCol=None, **kwargs):
     if not groupCol:
         assert isinstance(series, pd.Series)
         sns.violinplot(x=series, **kwargs)
     else:
         assert groupCol
         assert series in dataframe.columns
-        sns.violinplot(x=groupCol, y=series, data=dataframe, **kwargs)
-        sns.swarmplot(x=groupCol, y=series, data=dataframe, **kwargs)
+        sns.violinplot(x=xAxisCol, hue=groupCol, data=dataframe, **kwargs)
+        sns.swarmplot(x=xAxisCol, y=yAxisCol if yAxisCol else groupCol,
+                        hue=groupCol, data=dataframe, **kwargs)
 
+def sb_swarmplot(xAxisCol=None, yAxisCol=None, dataframe=None, groupCol=None, **kwargs):
+    sns.swarmplot(x=xAxisCol, y=yAxisCol if yAxisCol else groupCol,
+                        hue=groupCol, data=dataframe, **kwargs)
 
 def sb_jointplot(series1, series2):
     import numpy as np
@@ -116,4 +123,6 @@ def sb_jointplot(series1, series2):
     plt = sns.jointplot(series1, series2, kind="kde", size=7, space=0)
     return plt
 
-
+def sb_ecdfplot(dataframe, xAxisCol=None, groupCol=None,
+                stat=None, complementary=False, **kwargs):
+    sns.ecdfplot(data=dataframe, x=xAxisCol, hue=groupCol, stat=stat, complementary=complementary, **kwargs)

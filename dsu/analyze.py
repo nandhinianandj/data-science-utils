@@ -41,7 +41,7 @@ def plot_missing_vals(df, sample=True, samplesize=1000):
 def dist_analyze( df, column=None,
                   category=None, is_normal=True,
                   bayesian_hist=False, kdeplot=True,
-                  violinplot=True):
+                  violinplot=True, ecdfplot=True):
     """
     Analyze/plot visual of a single distribution
     @params:
@@ -78,6 +78,9 @@ def dist_analyze( df, column=None,
             plotter.sb_barplot(df, category, column)
         )  # , title='Distribution of %s'%column))
         plotter.sb_show()
+    if ecdfplot:
+        plotter.sb_ecdfplot(dataframe=df, y=column,
+                            stat="count", hue=category)
     return plots
 
 
