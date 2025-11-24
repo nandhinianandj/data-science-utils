@@ -1,4 +1,5 @@
 *.lock
+ds_causality
 version.py
 src/*
 .Rhistory
