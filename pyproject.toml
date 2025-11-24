@@ -1,0 +1,71 @@
+[build-system]
+requires = ["maturin>=1.0,<2.0"]
+build-backend = "maturin"
+
+[project]
+name = "datascienceutils"
+version = "0.1.0"
+description = "A set of functions for easing the work involved in data exploration stage before the Machine Learning/Statistical Modeling stage - Rust-powered"
+readme = "README.md"
+requires-python = ">=3.8"
+license = { text = "GPL-3.0" }
+authors = [
+    { name = "Software Mechanic", email = "softwaremechanic32@gmail.com" }
+]
+keywords = ["data-science", "machine-learning", "statistics", "visualization", "eda"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Rust",
+    "Topic :: Software Development",
+    "Topic :: Scientific/Engineering",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: POSIX",
+    "Operating System :: Unix",
+    "Operating System :: MacOS",
+]
+
+dependencies = [
+    "numpy>=1.20",
+    "pandas>=1.3",
+    "matplotlib>=3.4",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-nbmake>=1.4",
+    "jupyter>=1.0",
+    "ipython>=8.0",
+    "maturin>=1.0",
+]
+notebook = [
+    "jupyter>=1.0",
+    "ipython>=8.0",
+    "bokeh>=2.4",
+    "seaborn>=0.12",
+]
+
+[project.urls]
+Homepage = "https://github.com/emofeedback/data-science-utils"
+Repository = "https://github.com/emofeedback/data-science-utils"
+Documentation = "https://github.com/emofeedback/data-science-utils"
+
+[tool.maturin]
+manifest-path = "datascienceutils-py/Cargo.toml"
+python-source = "python"
+module-name = "datascienceutils"
+features = ["pyo3/extension-module"]
+
+[tool.pytest.ini_options]
+testpaths = ["python-tests"]
+python_files = "test_*.py"
+python_classes = "Test*"
+python_functions = "test_*"

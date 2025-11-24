@@ -1,0 +1,28 @@
+[package]
+name = "datascienceutils-py"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "Python bindings for datascienceutils - drop-in replacement for Jupyter notebooks"
+
+[lib]
+name = "datascienceutils"
+crate-type = ["cdylib"]
+
+[dependencies]
+datascienceutils-core = { path = "../datascienceutils-core" }
+
+# Python bindings
+pyo3.workspace = true
+numpy.workspace = true
+
+# Core dependencies needed for type conversions
+ndarray.workspace = true
+polars.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+
+[build-dependencies]
+pyo3-build-config = "0.20"

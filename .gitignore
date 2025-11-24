@@ -1,6 +1,6 @@
+*.lock
 version.py
 src/*
-*.html
 .Rhistory
 .DS_Store
 .ipynb_checkpoints

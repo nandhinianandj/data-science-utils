@@ -1,0 +1,72 @@
+[package]
+name = "datascienceutils-core"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "Core Rust library for data science utilities - analysis, clustering, statistics, and visualization"
+
+[dependencies]
+# Core numerical computing
+ndarray.workspace = true
+ndarray-stats.workspace = true
+ndarray-rand.workspace = true
+ndarray-linalg.workspace = true
+
+# DataFrames
+polars.workspace = true
+
+# Machine Learning
+linfa.workspace = true
+linfa-clustering.workspace = true
+linfa-reduction.workspace = true
+linfa-preprocessing.workspace = true
+linfa-trees.workspace = true
+linfa-linear.workspace = true
+linfa-svm.workspace = true
+linfa-tsne.workspace = true
+smartcore.workspace = true
+
+# Statistics
+statrs.workspace = true
+rand.workspace = true
+rand_distr.workspace = true
+
+# Plotting
+plotters.workspace = true
+plotters-backend.workspace = true
+
+# Serialization
+serde.workspace = true
+serde_json.workspace = true
+bincode.workspace = true
+
+# Utilities
+thiserror.workspace = true
+anyhow.workspace = true
+cached.workspace = true
+rayon.workspace = true
+chrono.workspace = true
+either.workspace = true
+
+# Time series
+augurs.workspace = true
+
+# Neural Networks (optional)
+burn = { workspace = true, optional = true }
+burn-ndarray = { workspace = true, optional = true }
+burn-autodiff = { workspace = true, optional = true }
+burn-import = { workspace = true, optional = true }
+
+# Model Quantization (optional)
+ort = { workspace = true, optional = true }
+
+[features]
+default = []
+neural-networks = ["burn", "burn-ndarray", "burn-autodiff", "burn-import"]
+quantization = ["ort", "neural-networks"]
+
+[dev-dependencies]
+criterion = "0.5"
+approx = "0.5"
