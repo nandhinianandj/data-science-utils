@@ -1,35 +1,19 @@
 //! # Neural Network Module
 //!
-//! This module provides neural network training and inference capabilities using the Burn framework.
+//! Comprehensive neural network training, inference, and deployment capabilities.
 //!
 //! ## Features
 //!
-//! - **High-level training API**: Simple functions for common tasks
-//! - **Pre-built architectures**: MLP, CNN, RNN/LSTM
-//! - **ONNX support**: Load pre-trained models
-//! - **Model quantization**: Optimize models for edge deployment
-//! - **Backend agnostic**: CPU, GPU, or WebAssembly
+//! - **Transfer Learning**: Easy wrappers for fine-tuning pre-trained models
+//! - **Model Quantization**: Optimize models for edge deployment
+//! - **Pre-built Architectures**: MLP, CNN, RNN/LSTM
+//! - **ONNX Support**: Load and run pre-trained models
+//! - **Edge Computing**: Device-specific optimizations
 //!
 //! ## Usage
 //!
-//! Enable the `neural-networks` feature in your `Cargo.toml`:
-//!
 //! ```toml
 //! datascienceutils-core = { version = "0.1", features = ["neural-networks"] }
-//! ```
-//!
-//! ## Example
-//!
-//! ```rust,ignore
-//! use datascienceutils_core::nn::quick::train_classifier;
-//! use ndarray::array;
-//!
-//! // Quick training with sensible defaults
-//! let x_train = array![[0.0, 0.0], [0.0, 1.0], [1.0, 0.0], [1.0, 1.0]];
-//! let y_train = array![0, 1, 1, 0];  // XOR problem
-//!
-//! let model = train_classifier(x_train, y_train, None, None)?;
-//! let predictions = model.predict(x_test)?;
 //! ```
 
 #[cfg(feature = "neural-networks")]
@@ -47,21 +31,36 @@ pub mod losses;
 #[cfg(feature = "neural-networks")]
 pub mod quick;
 
-#[cfg(all(feature = "neural-networks", feature = "burn-import"))]
+#[cfg(feature = "neural-networks")]
 pub mod onnx;
+
+#[cfg(feature = "neural-networks")]
+pub mod transfer;
 
 #[cfg(feature = "quantization")]
 pub mod quantization;
 
 // Re-export commonly used types
 #[cfg(feature = "neural-networks")]
-pub use trainer::Trainer;
-
-#[cfg(feature = "neural-networks")]
 pub use optimizers::OptimizerConfig;
 
 #[cfg(feature = "neural-networks")]
 pub use losses::LossFunction;
 
+#[cfg(feature = "neural-networks")]
+pub use models::mlp::{Activation, MLPBuilder, MLPConfig};
+
+#[cfg(feature = "neural-networks")]
+pub use onnx::ONNXModel;
+
+#[cfg(feature = "neural-networks")]
+pub use transfer::{
+    fine_tune, feature_extractor, load_pretrained, 
+    PretrainedModel, TransferConfig
+};
+
 #[cfg(feature = "quantization")]
-pub use quantization::{QuantizationConfig, QuantizationMethod, QuantizedModel};
+pub use quantization::{
+    optimize_for_device, quantize_model, EdgeDevice, 
+    QuantizationConfig, QuantizationMethod, QuantizedModel, QuantizationStats
+};

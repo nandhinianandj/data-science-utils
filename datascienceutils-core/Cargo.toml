@@ -62,10 +62,18 @@ burn-import = { workspace = true, optional = true }
 # Model Quantization (optional)
 ort = { workspace = true, optional = true }
 
+# Causal Analysis (optional)
+causal-hub = { workspace = true, optional = true }
+
+# Bayesian Inference (optional)
+bayes-rs = { workspace = true, optional = true }
+
 [features]
 default = []
 neural-networks = ["burn", "burn-ndarray", "burn-autodiff", "burn-import"]
 quantization = ["ort", "neural-networks"]
+causal-analysis = ["causal-hub"]
+bayesian-inference = ["bayes-rs"]
 
 [dev-dependencies]
 criterion = "0.5"

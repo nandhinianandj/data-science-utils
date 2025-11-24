@@ -21,12 +21,53 @@ Shows outlier detection methods:
 - Percentile capping
 - Outlier removal
 
-### 3. Sampling & Utilities (`03_sampling_utilities.ipynb`)
-Covers sampling algorithms and utilities:
-- Distribution sampling (normal, uniform)
+### 4. Sampling Utilities (`03_sampling_utilities.ipynb`)
+
+Demonstrates various sampling techniques:
+- Stratified sampling
+- Reservoir sampling
 - Bootstrap sampling
-- Bayesian blocks (optimal binning)
-- Fractal dimension calculation
+- Random sampling with replacement
+
+**Dependencies**: `ndarray`, `rand`
+
+---
+
+## 5. Causal Analysis Demo (`05_causal_analysis_demo.ipynb`) 🆕
+
+**DoWhy-like causal inference capabilities:**
+- Average Treatment Effect (ATE) estimation
+- Propensity Score Matching
+- Instrumental Variables
+- Difference-in-Differences
+- Causal relationship visualization
+
+**Use Cases**:
+- Medical treatment studies
+- Policy evaluation
+- Marketing campaign analysis
+- A/B test causal effects
+
+**Dependencies**: `datascienceutils-core` (with `causal-analysis` feature), `ndarray`, `plotters`
+
+---
+
+## 6. Bayesian Inference Demo (`06_bayesian_inference_demo.ipynb`) 🆕
+
+**PyMC-like Bayesian modeling:**
+- MCMC Sampling (Metropolis-Hastings)
+- Bayesian A/B Testing
+- Convergence Diagnostics (R-hat, ESS)
+- Posterior Distributions
+- Credible Intervals
+
+**Use Cases**:
+- E-commerce conversion optimization
+- Medical trial analysis
+- Probabilistic forecasting
+- Uncertainty quantification
+
+**Dependencies**: `datascienceutils-core` (with `bayesian-inference` feature), `ndarray`, `plotters`
 
 ---
 

@@ -62,14 +62,20 @@ either = "1.9"
 # Time series
 augurs = "0.10"
 
-# Neural Networks
-burn = { version = "0.14", features = ["train", "std"] }
-burn-ndarray = "0.14"
-burn-autodiff = "0.14"
-burn-import = { version = "0.14", features = ["onnx"] }
+# Neural Networks - Updated to v0.20 pre-release
+burn = { version = "0.20.0-pre.2", features = ["train", "std"] }
+burn-ndarray = "0.20.0-pre.2"
+burn-autodiff = "0.20.0-pre.2"
+burn-import = { version = "0.20.0-pre.2", features = ["onnx"] }
 
 # Model Quantization
 ort = { version = "2.0.0-rc.10", features = ["load-dynamic"] }
+
+# Causal Analysis
+causal-hub = "0.0.2"
+
+# Bayesian Inference
+bayes-rs = "0.1.0"
 
 [profile.release]
 opt-level = 3
