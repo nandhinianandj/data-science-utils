@@ -5,7 +5,7 @@ RUN pew new dsu
 
 RUN pew workon dsu && pip install jupyter_contrib_nbextensions && \
 	jupyter contrib nbextension install --user && jupyter nbextension enable codefolding/main \
-	&& jupyter nbextension enable ExecutionTime/main
+	&& jupyter nbextension enable ExecutionTime/main && pip install -r /requirements.txt
 
 ADD requirements.txt /
 RUN pip install -r /requirements.txt

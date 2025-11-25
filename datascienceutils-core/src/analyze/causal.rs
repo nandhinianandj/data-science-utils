@@ -181,7 +181,7 @@ impl Default for CausalGraph {
 /// # Returns
 /// Estimated average treatment effect
 pub fn estimate_ate(
-    confounders: &Array2<f64>,
+    _confounders: &Array2<f64>,
     treatment: &Array1<f64>,
     outcome: &Array1<f64>,
 ) -> DsuResult<f64> {
@@ -227,7 +227,7 @@ pub fn estimate_ate(
 /// Propensity scores (probability of treatment given confounders)
 pub fn propensity_score(
     confounders: &Array2<f64>,
-    treatment: &Array1<f64>,
+    _treatment: &Array1<f64>,
 ) -> DsuResult<Array1<f64>> {
     // Simplified logistic regression for propensity scores
     // In practice, would use proper logistic regression

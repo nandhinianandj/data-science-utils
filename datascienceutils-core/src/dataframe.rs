@@ -187,7 +187,7 @@ impl DsuDataFrame {
     }
 
     /// Group by columns
-    pub fn group_by(&self, by: Vec<&str>) -> DsuResult<GroupBy> {
+    pub fn group_by(&self, by: Vec<&str>) -> DsuResult<GroupBy<'_>> {
         self.df
             .group_by(by)
             .map_err(|e| DsuError::DataError(e.to_string()))

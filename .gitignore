@@ -1,7 +1,6 @@
 *.lock
 ds_causality
 version.py
-src/*
 .Rhistory
 .DS_Store
 .ipynb_checkpoints
@@ -13,8 +12,6 @@ __pycache__/
 
 # C extensions
 *.so
-# anything that starts with a .
-^.*
 # Distribution / packaging
 .Python
 data
