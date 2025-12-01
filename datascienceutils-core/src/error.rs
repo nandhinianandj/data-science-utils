@@ -20,6 +20,10 @@ pub enum DsuError {
     #[error("Clustering error: {0}")]
     ClusteringError(String),
 
+    /// Error during prediction/classification
+    #[error("Prediction error: {0}")]
+    PredictionError(String),
+
     /// Error during plotting
     #[error("Plotting error: {0}")]
     PlottingError(String),

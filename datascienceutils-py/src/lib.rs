@@ -777,6 +777,41 @@ fn hdbscan_cluster(
 
 use datascienceutils_core::analyze::bayesian;
 
+/// Spectral Clustering Result
+#[pyclass]
+struct SpectralResult {
+    #[pyo3(get)]
+    labels: Vec<usize>,
+}
+
+/// Perform Spectral Clustering
+///
+/// Args:
+///     data: Input data (n_samples x n_features)
+///     n_clusters: Number of clusters
+///     gamma: RBF kernel coefficient (default: 1.0)
+///     seed: Random seed (default: 42)
+///
+/// Returns:
+///     SpectralResult object
+#[pyfunction]
+#[pyo3(signature = (data, n_clusters, gamma=1.0, seed=42))]
+fn spectral_cluster(
+    py: Python,
+    data: PyReadonlyArray2<f64>,
+    n_clusters: usize,
+    gamma: f64,
+    seed: u64,
+) -> PyResult<SpectralResult> {
+    use datascienceutils_core::cluster::spectral;
+    let data = data.as_array();
+    let result = spectral::spectral_cluster(data, n_clusters, gamma, seed)
+        .map_err(to_py_err)?;
+    Ok(SpectralResult {
+        labels: result.labels,
+    })
+}
+
 /// Bayesian A/B Test Result
 #[pyclass]
 struct ABTestResult {
@@ -826,13 +861,13 @@ fn bayesian_ab_test(
 /// Returns:
 ///     2D array of samples (num_samples x num_params)
 #[pyfunction]
-fn mcmc_sample(
-    py: Python,
+fn mcmc_sample<'py>(
+    py: Python<'py>,
     log_posterior: PyObject,
-    initial: PyReadonlyArray1<f64>,
+    initial: PyReadonlyArray1<'py, f64>,
     proposal_std: f64,
     num_samples: usize,
-) -> PyResult<&PyArray2<f64>> {
+) -> PyResult<&'py PyArray2<f64>> {
     let initial = initial.as_array().to_owned();
     
     // Wrap Python function
@@ -884,6 +919,142 @@ fn effective_sample_size(
 ) -> PyResult<f64> {
     let samples = samples.as_array();
     Ok(bayesian::effective_sample_size(&samples.to_owned()))
+}
+
+// ============================================================================
+// Clustering & Predictive Functions (New)
+// ============================================================================
+
+/// K-Means Clustering Result
+#[pyclass]
+struct KMeansResult {
+    #[pyo3(get)]
+    labels: Vec<usize>,
+    #[pyo3(get)]
+    centroids: Vec<Vec<f64>>,
+    #[pyo3(get)]
+    inertia: f64,
+}
+
+/// Perform K-Means clustering
+///
+/// Args:
+///     data: Input data (n_samples x n_features)
+///     n_clusters: Number of clusters
+///     max_iter: Maximum iterations (default: 300)
+///     tolerance: Convergence tolerance (default: 1e-4)
+///     seed: Random seed (default: 42)
+///
+/// Returns:
+///     KMeansResult object
+#[pyfunction]
+#[pyo3(signature = (data, n_clusters, max_iter=300, tolerance=1e-4, seed=42))]
+fn kmeans_cluster(
+    py: Python,
+    data: PyReadonlyArray2<f64>,
+    n_clusters: usize,
+    max_iter: usize,
+    tolerance: f64,
+    seed: u64,
+) -> PyResult<KMeansResult> {
+    use datascienceutils_core::cluster::kmeans;
+    let data = data.as_array();
+    let result = kmeans::kmeans_cluster(data, n_clusters, max_iter, tolerance, seed)
+        .map_err(to_py_err)?;
+    Ok(KMeansResult {
+        labels: result.labels,
+        centroids: result.centroids,
+        inertia: result.inertia,
+    })
+}
+
+/// KNN Classification Result
+#[pyclass]
+struct KNNResult {
+    #[pyo3(get)]
+    predictions: Vec<f64>,
+    #[pyo3(get)]
+    accuracy: Option<f64>,
+}
+
+/// Perform KNN classification
+///
+/// Args:
+///     train_data: Training features
+///     train_target: Training labels
+///     test_data: Test features
+///     k: Number of neighbors (default: 5)
+///     weight: Weight function "uniform" or "distance" (default: "uniform")
+///     algorithm: Search algorithm "linear", "kd_tree", "cover_tree", "ball_tree" (default: "linear")
+///
+/// Returns:
+///     KNNResult object
+#[pyfunction]
+#[pyo3(signature = (train_data, train_target, test_data, k=5, weight="uniform", algorithm="linear"))]
+fn knn_classify(
+    py: Python,
+    train_data: PyReadonlyArray2<f64>,
+    train_target: PyReadonlyArray1<f64>,
+    test_data: PyReadonlyArray2<f64>,
+    k: usize,
+    weight: &str,
+    algorithm: &str,
+) -> PyResult<KNNResult> {
+    use datascienceutils_core::predictive::knn;
+    let train_data = train_data.as_array();
+    let train_target = train_target.as_array();
+    let test_data = test_data.as_array();
+    
+    let result = knn::knn_classify(train_data, train_target, test_data, k, weight, algorithm)
+        .map_err(to_py_err)?;
+        
+    Ok(KNNResult {
+        predictions: result.predictions,
+        accuracy: result.accuracy,
+    })
+}
+
+/// K-Medians Clustering Result
+#[pyclass]
+struct KMediansResult {
+    #[pyo3(get)]
+    labels: Vec<usize>,
+    #[pyo3(get)]
+    centroids: Vec<Vec<f64>>,
+    #[pyo3(get)]
+    cost: f64,
+}
+
+/// Perform K-Medians clustering
+///
+/// Args:
+///     data: Input data (n_samples x n_features)
+///     n_clusters: Number of clusters
+///     max_iter: Maximum iterations (default: 300)
+///     tolerance: Convergence tolerance (default: 1e-4)
+///     seed: Random seed (default: 42)
+///
+/// Returns:
+///     KMediansResult object
+#[pyfunction]
+#[pyo3(signature = (data, n_clusters, max_iter=300, tolerance=1e-4, seed=42))]
+fn kmedians_cluster(
+    py: Python,
+    data: PyReadonlyArray2<f64>,
+    n_clusters: usize,
+    max_iter: usize,
+    tolerance: f64,
+    seed: u64,
+) -> PyResult<KMediansResult> {
+    use datascienceutils_core::cluster::kmedians;
+    let data = data.as_array();
+    let result = kmedians::kmedians_cluster(data, n_clusters, max_iter, tolerance, seed)
+        .map_err(to_py_err)?;
+    Ok(KMediansResult {
+        labels: result.labels,
+        centroids: result.centroids,
+        cost: result.cost,
+    })
 }
 
 // ============================================================================
@@ -950,6 +1121,22 @@ fn datascienceutils(_py: Python, m: &PyModule) -> PyResult<()> {
         m.add_class::<HdbscanResult>()?;
         m.add_function(wrap_pyfunction!(hdbscan_cluster, m)?)?;
     }
+    
+    // K-Means
+    m.add_class::<KMeansResult>()?;
+    m.add_function(wrap_pyfunction!(kmeans_cluster, m)?)?;
+    
+    // Spectral Clustering
+    m.add_class::<SpectralResult>()?;
+    m.add_function(wrap_pyfunction!(spectral_cluster, m)?)?;
+    
+    // KNN
+    m.add_class::<KNNResult>()?;
+    m.add_function(wrap_pyfunction!(knn_classify, m)?)?;
+    
+    // K-Medians
+    m.add_class::<KMediansResult>()?;
+    m.add_function(wrap_pyfunction!(kmedians_cluster, m)?)?;
     
     Ok(())
 }

@@ -28,7 +28,8 @@ serde_json.workspace = true
 pyo3-build-config = "0.20"
 
 [features]
-default = ["causal-analysis", "clustering-hdbscan"]
+default = ["causal-analysis", "clustering-hdbscan", "bayesian-inference"]
 causal-analysis = ["datascienceutils-core/causal-analysis"]
 clustering-hdbscan = ["datascienceutils-core/clustering-hdbscan"]
+bayesian-inference = ["datascienceutils-core/bayesian-inference"]
 
