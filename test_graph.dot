@@ -1,0 +1,11 @@
+digraph CausalGraph {
+  rankdir=LR;
+  node [shape=ellipse, style=filled, fillcolor=lightblue];
+  "Age";
+  "Education";
+  "Income";
+  "Health";
+  "Age" -> "Health" [label="0.60", style="bold, color=red"];
+  "Education" -> "Income" [label="0.80", style="bold, color=red"];
+  "Age" -> "Income" [label="0.30", style="bold, color=red"];
+}

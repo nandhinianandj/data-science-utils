@@ -9,14 +9,15 @@ A high-performance Rust implementation of data science utilities for exploratory
 
 ## 🚀 Features
 
+- **Causal Analysis**: ATE, PSM, IV, DiD, RDD, Synthetic Control, Mediation, CATE with graph visualization
 - **Statistical Analysis**: Chi-square tests, ANOVA, distribution fitting, correlation analysis
+- **Outlier Detection**: Sigma deviation, IQR, Z-score, Modified Z-score, percentile capping
+- **Sampling**: Reservoir sampling, stratified sampling, bootstrap, distribution samplers
 - **Clustering**: K-Means, DBSCAN, Hierarchical, Spectral, SOM with silhouette analysis
 - **Dimensionality Reduction**: PCA, t-SNE, UMAP, factor analysis
 - **Time Series**: Stationarity tests, autocorrelation, seasonal decomposition
 - **Visualization**: 25+ plot types using plotters (histograms, heatmaps, scatter, violin, etc.)
 - **Feature Engineering**: Scaling, normalization, encoding, selection
-- **Outlier Detection**: Sigma deviation, IQR, percentile capping, Z-score
-- **Sampling**: Reservoir sampling, file sampling, distribution samplers
 
 ## 📦 Installation
 
@@ -43,42 +44,93 @@ maturin develop --release
 
 ```python
 import datascienceutils as dsu
-import pandas as pd
 import numpy as np
 
-# Load data
-df = pd.read_csv('data.csv')
+# ===== Causal Analysis =====
+# Create a causal graph
+graph = dsu.CausalGraph()
+graph.add_node("Treatment")
+graph.add_node("Outcome")
+graph.add_node("Confounder")
+graph.add_edge("Confounder", "Treatment")
+graph.add_edge("Treatment", "Outcome")
+graph.save_dot("causal_graph.dot")
 
-# Distribution analysis
-dsu.dist_analyze(df, column='age', is_normal=True, kdeplot=True)
+# Estimate Average Treatment Effect
+confounders = np.random.randn(100, 2)
+treatment = (confounders[:, 0] > 0).astype(float)
+outcome = treatment * 5.0 + confounders[:, 1] + np.random.randn(100)
+ate = dsu.estimate_ate(confounders, treatment, outcome)
+
+# Propensity Score Matching
+psm_ate = dsu.propensity_score_matching(confounders, treatment, outcome)
+
+# Difference-in-Differences
+group = np.array([0, 0, 1, 1])
+time = np.array([0, 1, 0, 1])
+outcome = np.array([50, 52, 50, 68])
+did = dsu.diff_in_diff(group, time, outcome)
+
+# ===== Outlier Detection =====
+data = np.array([1.0, 2.0, 3.0, 4.0, 5.0, 100.0])
+
+# Detect outliers using different methods
+outliers_sigma, lower, upper = dsu.detect_outliers_sigma(data, n_sigma=2.0)
+outliers_iqr, _, _ = dsu.detect_outliers_iqr(data, k=1.5)
+outliers_z = dsu.detect_outliers_zscore(data, threshold=2.0)
+
+# Remove or cap outliers
+cleaned = dsu.remove_outliers(data, outliers_sigma)
+capped = dsu.cap_outliers_percentile(data, 5.0, 95.0)
+
+# ===== Sampling =====
+# Sample from distributions
+normal_samples = dsu.sample_normal(mean=0.0, std_dev=1.0, n=1000)
+uniform_samples = dsu.sample_uniform(low=0.0, high=10.0, n=1000)
+
+# Bootstrap sampling
+bootstrap_samples = dsu.bootstrap_sample(data, n_samples=100)
+
+# ===== Statistics =====
+x = np.array([1.0, 2.0, 3.0, 4.0, 5.0])
+y = np.array([2.0, 4.0, 6.0, 8.0, 10.0])
 
 # Correlation analysis
-dsu.correlation_analyze(df, 'feature1', 'feature2')
+pearson_r = dsu.pearson_correlation(x, y)
+spearman_rho = dsu.spearman_correlation(x, y)
+kendall_tau = dsu.kendall_correlation(x, y)
 
-# Clustering
-dsu.cluster_analyze(df, name='customer_segments')
-
-# Time series analysis
-dsu.time_series_analysis(df, timeCol='date', valueCol='sales')
+# Statistical tests
+stat, p_value, dof = dsu.chi2_test_independence(observed_matrix)
+f_stat, p_value = dsu.anova_oneway([group1, group2, group3])
 ```
 
 ### Rust
 
 ```rust
 use datascienceutils_core::prelude::*;
+use datascienceutils_core::analyze::causal::*;
 use ndarray::array;
 
 fn main() -> DsuResult<()> {
+    // Causal Analysis
+    let mut graph = CausalGraph::new();
+    graph.add_node("Treatment")?;
+    graph.add_node("Outcome")?;
+    graph.add_edge("Treatment", "Outcome")?;
+    graph.save_dot("graph.dot")?;
+    
+    // Outlier Detection
+    let data = array![1.0, 2.0, 3.0, 4.0, 5.0, 100.0];
+    let (outliers, lower, upper) = detect_outliers_sigma(&data.view(), 2.0)?;
+    
+    // Sampling
+    let samples = sample_normal(0.0, 1.0, 1000)?;
+    
     // Statistical analysis
-    let data = array![1.0, 2.0, 3.0, 4.0, 5.0];
-    let pct_missing = na_pct(&data.view());
-    
-    // Bayesian blocks for optimal binning
-    let edges = bayesian_blocks(&data.view())?;
-    
-    // Fractal dimension
-    let points = array![[0.1, 0.2], [0.3, 0.4]];
-    let dim = fractaldim(&points, 10)?;
+    let x = array![1.0, 2.0, 3.0, 4.0, 5.0];
+    let y = array![2.0, 4.0, 6.0, 8.0, 10.0];
+    let r = pearson_correlation(&x.view(), &y.view())?;
     
     Ok(())
 }

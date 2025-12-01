@@ -1,182 +1,182 @@
-# DataScienceUtils - Jupyter Notebooks
+# Data Science Utils - Jupyter Notebooks
 
-This directory contains Jupyter notebooks demonstrating the usage of the Rust-powered DataScienceUtils library.
+This directory contains demonstration notebooks for the datascienceutils library.
 
-## Notebooks
+## Available Notebooks
 
-### 1. Statistics Tests (`01_statistics_tests.ipynb`)
-Demonstrates statistical analysis functions:
-- Chi-square tests (independence & goodness of fit)
-- Normality testing (Anderson-Darling)
-- Correlation analysis (Pearson, Spearman, Kendall)
-- Distribution fitting (KS test)
-- ANOVA (one-way)
+### 1. [Causal Analysis Demo](05_causal_analysis_demo.ipynb)
+**Status**: ✅ Complete (Rust kernel)
 
-### 2. Outlier Detection (`02_outlier_detection.ipynb`)
-Shows outlier detection methods:
-- Sigma deviation method
-- IQR (Interquartile Range) method
-- Z-score method
-- Modified Z-score (MAD-based)
-- Percentile capping
-- Outlier removal
-
-### 4. Sampling Utilities (`03_sampling_utilities.ipynb`)
-
-Demonstrates various sampling techniques:
-- Stratified sampling
-- Reservoir sampling
-- Bootstrap sampling
-- Random sampling with replacement
-
-**Dependencies**: `ndarray`, `rand`
-
----
-
-## 5. Causal Analysis Demo (`05_causal_analysis_demo.ipynb`) 🆕
-
-**DoWhy-like causal inference capabilities:**
+Demonstrates causal inference capabilities:
 - Average Treatment Effect (ATE) estimation
-- Propensity Score Matching
-- Instrumental Variables
-- Difference-in-Differences
-- Causal relationship visualization
+- Propensity Score Matching (PSM)
+- Instrumental Variables (IV)
+- Difference-in-Differences (DiD)
+- Causal graph creation and manipulation
 
-**Use Cases**:
-- Medical treatment studies
-- Policy evaluation
-- Marketing campaign analysis
-- A/B test causal effects
-
-**Dependencies**: `datascienceutils-core` (with `causal-analysis` feature), `ndarray`, `plotters`
+**Requirements**: evcxr Jupyter kernel for Rust
 
 ---
 
-## 6. Bayesian Inference Demo (`06_bayesian_inference_demo.ipynb`) 🆕
+### 2. [Outlier Detection Demo](06_outliers_detection_demo.ipynb)
+**Status**: ✅ Complete (Python kernel)
 
-**PyMC-like Bayesian modeling:**
-- MCMC Sampling (Metropolis-Hastings)
-- Bayesian A/B Testing
-- Convergence Diagnostics (R-hat, ESS)
-- Posterior Distributions
-- Credible Intervals
+Comprehensive outlier detection methods:
+- **Sigma Deviation Method** - Standard deviation-based detection
+- **IQR Method** - Interquartile range method
+- **Z-Score Method** - Standardized score method
+- **Modified Z-Score** - MAD-based robust method
+- **Percentile Capping** - Cap values at percentiles
+- **Outlier Removal** - Remove detected outliers
 
-**Use Cases**:
-- E-commerce conversion optimization
-- Medical trial analysis
-- Probabilistic forecasting
-- Uncertainty quantification
+**Features**:
+- Visual comparisons of all methods
+- Before/after visualizations
+- Method recommendations
 
-**Dependencies**: `datascienceutils-core` (with `bayesian-inference` feature), `ndarray`, `plotters`
+**Requirements**: Python 3.8+, matplotlib, numpy, datascienceutils
 
 ---
 
-## Rust Data Analysis Notebooks
+### 3. [Sampling Methods Demo](07_sampling_methods_demo.ipynb)
+**Status**: ✅ Complete (Python kernel)
 
-The following notebooks are from the [rust-data-analysis](https://github.com/wiseaidev/rust-data-analysis) repository and demonstrate advanced data analysis techniques using Rust:
+Sampling and resampling techniques:
+- **Normal Distribution Sampling** - Gaussian samples
+- **Uniform Distribution Sampling** - Uniform samples
+- **Bootstrap Sampling** - Resampling with replacement
+- **Confidence Intervals** - Bootstrap-based CI estimation
 
-### 1. Iris Data Analysis (`1-iris-data-analysis-rust.ipynb`)
-Comprehensive analysis of the Iris dataset:
-- DataFrame operations with Polars
-- Data visualization with Plotters
-- Machine learning with SmartCore
-- Array operations with ndarray
-- **Dependencies**: polars, ndarray, plotters, smartcore
+**Features**:
+- Distribution comparisons
+- Bootstrap for mean, median, std dev
+- Visual confidence intervals
+- Statistical inference examples
 
-### 2. Ndarray Tutorial (`2-ndarray-tutorial.ipynb`)
-Deep dive into ndarray and linear algebra:
-- Array creation and manipulation
-- Linear algebra operations (eigenvalues, SVD, determinants)
-- Matrix operations (inverse, solve, trace)
-- Random array generation
-- **Dependencies**: ndarray, ndarray-linalg, ndarray-rand
+**Requirements**: Python 3.8+, matplotlib, numpy, datascienceutils
 
-### 3. Polars Tutorial Part 1 (`3-polars-tutorial-part-1.ipynb`)
-Introduction to Polars DataFrames:
-- DataFrame creation and I/O
-- Data selection and filtering
-- Date/time operations with chrono
-- Lazy evaluation
-- **Dependencies**: polars, chrono
+---
 
-### 4. Polars Tutorial Part 2 (`4-polars-tutorial-part-2.ipynb`)
-Advanced Polars operations:
-- Complex transformations
-- Either type for error handling
-- Advanced aggregations
-- Window functions
-- **Dependencies**: polars, either
+### 4. [Causal Inference Basics](09_causal_inference_basics.ipynb)
+**Status**: ✅ Complete (Python kernel)
 
-### 5. Probability Theory Tutorial (`5-probability-theory-tutorial.ipynb`)
-Statistical distributions and probability:
-- Probability distributions (normal, binomial, etc.)
-- Statistical measures
-- Visualization with Plotters
-- Distribution fitting
-- **Dependencies**: statrs, plotters
+Basic causal inference methods:
+- **Average Treatment Effect (ATE)** - Regression-based estimation
+- **Propensity Score Matching (PSM)** - Matching treated/control units
+- **Instrumental Variables (IV)** - Two-stage least squares
+- **Difference-in-Differences (DiD)** - Panel data analysis
 
-### 6. Plotters Tutorial Part 1 (`6-plotters-tutorial-part-1.ipynb`)
-Data visualization with Plotters:
-- Line plots and scatter plots
-- Error bars and histograms
-- 3D plotting
-- Custom styling
-- **Dependencies**: plotters, ndarray, ndarray-rand
+**Features**:
+- Synthetic data examples for each method
+- Step-by-step explanations
+- Comprehensive visualizations
+- Method comparison and interpretation
 
-### 7. Calculus Tutorial Part 1 (`7-calculus-tutorial-part-1.ipynb`)
-Numerical calculus operations:
-- Derivatives and integrals
-- Numerical methods
-- Function analysis
-- **Dependencies**: Standard library only
+**Requirements**: Python 3.8+, matplotlib, numpy, datascienceutils
 
-## Running the Notebooks
+---
 
-### Setup
+### 5. [Advanced Causal Estimators](10_advanced_causal_estimators.ipynb)
+**Status**: ✅ Complete (Python kernel)
 
-1. Activate the virtual environment:
+Advanced causal inference techniques:
+- **Regression Discontinuity Design (RDD)** - Sharp cutoff analysis
+- **Synthetic Control Method** - Comparative case studies
+- **Mediation Analysis** - Direct and indirect effects
+- **Conditional Average Treatment Effect (CATE)** - Heterogeneous treatment effects
+
+**Features**:
+- Real-world inspired scenarios
+- Before/after visualizations
+- Effect decomposition
+- Subgroup analysis
+
+**Requirements**: Python 3.8+, matplotlib, numpy, datascienceutils
+
+---
+
+### 6. [Causal Graph Operations](11_causal_graph_operations.ipynb)
+**Status**: ✅ Complete (Python kernel)
+
+Causal graph construction and manipulation:
+- Creating and querying causal graphs
+- Adding weighted edges
+- Freezing edges/subgraphs (domain knowledge)
+- DOT export for Graphviz visualization
+- Common causal structures (confounding, mediation, collider, IV)
+
+**Features**:
+- Multiple graph examples
+- Graph visualization with Graphviz
+- Best practices for graph construction
+- Real-world complex examples
+
+**Requirements**: Python 3.8+, datascienceutils
+**Optional**: graphviz (for rendering DOT files)
+
+---
+
+## Setup Instructions
+
+### Python Notebooks (06, 07, 09, 10, 11)
+
+1. **Install datascienceutils**:
 ```bash
-source venv/bin/activate
+# Create virtual environment
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# Install maturin
+pip install maturin
+
+# Build and install datascienceutils
+cd /path/to/data-science-utils
+maturin develop --release
 ```
 
-2. Start Jupyter:
+2. **Install Jupyter and dependencies**:
 ```bash
-jupyter notebook
+pip install jupyter matplotlib numpy
 ```
 
-3. Navigate to the `notebooks/` directory and open any notebook.
+3. **Run notebook**:
+```bash
+# Run Jupyter in the notebooks directory
+jupyter notebook notebooks/
 
-### Requirements
+# Or open a specific notebook
+jupyter notebook notebooks/09_causal_inference_basics.ipynb
+```
 
-All required packages are installed in the virtual environment:
-- numpy
-- pandas
-- matplotlib
-- seaborn
-- scipy
-- jupyter
-- datascienceutils (Rust-powered)
+### Rust Notebook (05)
 
-## Performance
+1. **Install evcxr Jupyter kernel**:
+```bash
+cargo install evcxr_jupyter
+evcxr_jupyter --install
+```
 
-The Rust implementation provides significant performance improvements over pure Python:
-- Faster statistical computations
-- Efficient outlier detection
-- Quick sampling operations
-- Optimized numerical algorithms
+2. **Run notebook**:
+```bash
+jupyter notebook notebooks/05_causal_analysis_demo.ipynb
+```
 
-## Examples
+## Quick Start
 
-Each notebook includes:
-- Clear explanations
-- Working code examples
-- Visualizations
-- Performance comparisons
-- Real-world use cases
+```python
+# Example: Outlier Detection
+import datascienceutils as dsu
+import numpy as np
 
-## Notes
+data = np.array([1, 2, 3, 4, 5, 100])  # 100 is an outlier
+outliers, lower, upper = dsu.detect_outliers_iqr(data, k=1.5)
+print(f"Outliers at indices: {outliers}")
+```
 
-- All functions are drop-in replacements for their Python equivalents
-- The API is designed to be familiar to Python data scientists
-- Rust's type safety ensures robust error handling
-- No GIL limitations for parallel processing
+```python
+# Example: Bootstrap Sampling
+samples = dsu.bootstrap_sample(data, n_samples=1000)
+means = [s.mean() for s in samples]
+ci = (np.percentile(means, 2.5), np.percentile(means, 97.5))
+print(f"95% CI: {ci}")
+```

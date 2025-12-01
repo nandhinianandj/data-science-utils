@@ -36,6 +36,7 @@ dependencies = [
     "numpy>=1.20",
     "pandas>=1.3",
     "matplotlib>=3.4",
+    "scikit-learn>=1.0",
 ]
 
 [project.optional-dependencies]
@@ -60,7 +61,6 @@ Documentation = "https://github.com/emofeedback/data-science-utils"
 
 [tool.maturin]
 manifest-path = "datascienceutils-py/Cargo.toml"
-python-source = "python"
 module-name = "datascienceutils"
 features = ["pyo3/extension-module"]
 

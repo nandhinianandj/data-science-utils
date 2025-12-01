@@ -12,7 +12,7 @@ name = "datascienceutils"
 crate-type = ["cdylib"]
 
 [dependencies]
-datascienceutils-core = { path = "../datascienceutils-core" }
+datascienceutils-core = { path = "../datascienceutils-core", features = ["causal-analysis"] }
 
 # Python bindings
 pyo3.workspace = true
@@ -26,3 +26,9 @@ serde_json.workspace = true
 
 [build-dependencies]
 pyo3-build-config = "0.20"
+
+[features]
+default = ["causal-analysis", "clustering-hdbscan"]
+causal-analysis = ["datascienceutils-core/causal-analysis"]
+clustering-hdbscan = ["datascienceutils-core/clustering-hdbscan"]
+

@@ -68,12 +68,16 @@ causal-hub = { workspace = true, optional = true }
 # Bayesian Inference (optional)
 bayes-rs = { workspace = true, optional = true }
 
+# Clustering
+hdbscan = { path = "../hdbscan", optional = true, features = ["parallel"] }
+
 [features]
 default = []
 neural-networks = ["burn", "burn-ndarray", "burn-autodiff", "burn-import"]
 quantization = ["ort", "neural-networks"]
 causal-analysis = ["causal-hub"]
 bayesian-inference = ["bayes-rs"]
+clustering-hdbscan = ["hdbscan"]
 
 [dev-dependencies]
 criterion = "0.5"

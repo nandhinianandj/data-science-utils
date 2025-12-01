@@ -1,0 +1,11 @@
+[package]
+name = "test-causal-notebook"
+version = "0.1.0"
+edition = "2024"
+
+[workspace]
+
+[dependencies]
+datascienceutils-core = { path = "../datascienceutils-core", features = ["causal-analysis"] }
+ndarray = "0.15"
+rand = "0.8"
