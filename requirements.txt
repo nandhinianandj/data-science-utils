@@ -11,7 +11,7 @@ ortools
 # progress bar library for python and jupyter notebook
 tqdm
 # Visualization packages
-bokeh==0.10.0
+bokeh==3.8.2
 seaborn
 matplotlib
 # shapely
