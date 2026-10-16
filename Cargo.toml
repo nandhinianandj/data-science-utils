@@ -18,6 +18,7 @@ ndarray = { version = "0.15", features = ["rayon", "serde"] }
 ndarray-stats = "0.5"
 ndarray-rand = "0.14"
 ndarray-linalg = { version = "0.16", features = ["openblas-static"] }
+openblas-src = { version = "0.10", default-features = false, features = ["cblas", "static", "rustls"] }
 
 # DataFrames
 polars = { version = "0.35", features = ["lazy", "dtype-full", "parquet", "csv"] }
@@ -62,8 +63,7 @@ either = "1.9"
 # Time series
 augurs = "0.10"
 
-# Neural Networks - Updated to v0.20 pre-release
-burn = { version = "0.20.0-pre.2", features = ["train", "std"] }
+burn = { version = "0.20.0-pre.2", default-features = false, features = ["train", "std"] }
 burn-ndarray = "0.20.0-pre.2"
 burn-autodiff = "0.20.0-pre.2"
 burn-import = { version = "0.20.0-pre.2", features = ["onnx"] }

@@ -1063,7 +1063,7 @@ fn kmedians_cluster(
 
 /// Python module initialization
 #[pymodule]
-fn datascienceutils(_py: Python, m: &PyModule) -> PyResult<()> {
+fn _core(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add("__version__", env!("CARGO_PKG_VERSION"))?;
     
     // Statistics functions
@@ -1104,7 +1104,6 @@ fn datascienceutils(_py: Python, m: &PyModule) -> PyResult<()> {
         m.add_function(wrap_pyfunction!(regression_discontinuity, m)?)?;
         m.add_function(wrap_pyfunction!(synthetic_control, m)?)?;
         m.add_function(wrap_pyfunction!(mediation_analysis, m)?)?;
-        m.add_function(wrap_pyfunction!(conditional_ate, m)?)?;
         m.add_function(wrap_pyfunction!(conditional_ate, m)?)?;
     }
     

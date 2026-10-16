@@ -61,9 +61,9 @@ except Exception as e:
 # Test 3: Difference-in-Differences
 print("\n3. Testing DiD...")
 try:
-    group = np.array([0, 0, 0, 0, 1, 1, 1, 1])
-    time = np.array([0, 0, 1, 1, 0, 0, 1, 1])
-    outcome = np.array([50, 52, 51, 53, 50, 51, 50, 68])
+    group = np.array([0, 0, 0, 0, 1, 1, 1, 1], dtype=np.float64)
+    time = np.array([0, 0, 1, 1, 0, 0, 1, 1], dtype=np.float64)
+    outcome = np.array([50, 52, 51, 53, 50, 51, 50, 68], dtype=np.float64)
     
     did = dsu.diff_in_diff(group, time, outcome)
     print(f"   DiD estimate: {did:.2f}")
@@ -205,7 +205,12 @@ try:
         [117, 119, 121, 123, 125],
     ])
     
-    sc_estimate = dsu.synthetic_control(treated_pre, treated_post, control_pre, control_post)
+    sc_estimate = dsu.synthetic_control(
+        treated_pre.astype(float),
+        treated_post.astype(float),
+        control_pre.astype(float),
+        control_post.astype(float),
+    )
     print(f"   Synthetic Control estimate: {sc_estimate:.2f}")
     print("   ✓ Synthetic Control works!")
 except Exception as e:
@@ -241,10 +246,8 @@ try:
     true_cate = 10 - 0.2 * (covariates[:, 0] - 50) + 0.1 * (covariates[:, 1] - 70)
     outcome_cate = 50 + 0.3 * covariates[:, 0] + 0.5 * covariates[:, 1] + true_cate * treatment_cate + np.random.randn(n) * 5
     
-    cate_estimates = dsu.conditional_ate(treatment_cate, outcome_cate, covariates)
-    print(f"   CATE mean: {cate_estimates.mean():.2f}")
-    print(f"   CATE std: {cate_estimates.std():.2f}")
-    print(f"   CATE range: [{cate_estimates.min():.2f}, {cate_estimates.max():.2f}]")
+    cate_estimates = dsu.conditional_ate(covariates, treatment_cate, outcome_cate, 0)
+    print(f"   CATE subgroups count: {len(cate_estimates)}")
     print("   ✓ CATE works!")
 except Exception as e:
     print(f"   ✗ CATE failed: {e}")

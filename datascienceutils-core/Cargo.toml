@@ -13,6 +13,7 @@ ndarray.workspace = true
 ndarray-stats.workspace = true
 ndarray-rand.workspace = true
 ndarray-linalg.workspace = true
+openblas-src.workspace = true
 
 # DataFrames
 polars.workspace = true

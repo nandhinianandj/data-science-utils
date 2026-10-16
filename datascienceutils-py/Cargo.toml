@@ -8,7 +8,7 @@ repository.workspace = true
 description = "Python bindings for datascienceutils - drop-in replacement for Jupyter notebooks"
 
 [lib]
-name = "datascienceutils"
+name = "_core"
 crate-type = ["cdylib"]
 
 [dependencies]
