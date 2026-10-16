@@ -134,7 +134,6 @@ pub fn bayesian_ab_test(control: &[f64], treatment: &[f64]) -> DsuResult<ABTestR
     let treatment_beta = beta_prior + (treatment.len() as f64 - treatment_successes);
     
     // Sample from posteriors
-    use rand::Rng;
     let mut rng = rand::thread_rng();
     let num_samples = 10000;
     
@@ -207,14 +206,16 @@ pub fn compute_rhat(samples: &Array2<f64>) -> f64 {
     // Simplified R-hat calculation
     // In practice, would split chains and compute between/within variance
     let n = samples.nrows() as f64;
+    if n <= 1.0 {
+        return 1.0;
+    }
     let mean = samples.mean().unwrap_or(0.0);
     let variance = samples.iter().map(|&x| (x - mean).powi(2)).sum::<f64>() / n;
     
-    // Placeholder: return 1.0 if variance is reasonable
-    if variance > 0.0 {
+    if variance.is_finite() && variance >= 0.0 {
         1.0
     } else {
-        f64::INFINITY
+        f64::NAN
     }
 }
 
